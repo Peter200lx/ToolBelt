@@ -1,0 +1,124 @@
+# Sadly there is no nice way to have friendly names. As such,
+#  the material values are used. For instance, the default tool
+#  bindings are scroll tool to bone, which is 352, and the
+#  duplicator tool is the stone axe, or 275. test
+# 
+# debug: <true|false>
+#    Don't enable this unless you want a bunch of data dumped
+#    to the console logs. Can be useful for validating your
+#    config.yml file, as it dumps what it reads.
+# 
+# permissions: <true|false>
+#    While permissions are very handy and often the best way
+#    to control the use of tools, some people do not like them.
+#    If that is the case, set this to false to disable
+#    permission checking.
+# 
+# tools: bind: <tool>: <id>
+#    This gives a mapping of what item to use for what tool.
+#    If a tool is not wanted, you can disable it by removing
+#    the permission from the (or all) user(s). If you want to
+#    run the server without permissions, it is suggested to
+#    remove it by adding a '#' to the beginning of the line.
+#    However, setting it's value to zero will also disable
+#    the tool, it but with a warning to the console.
+# 
+# tools: dupe: replace: <id>: <id>
+#    This gives additional mappings of what a duplicated block
+#    should give the player. For instance, 7: 260 means that when
+#    a user tries to duplicate bedrock, they get apples instead.
+#    If you want to override the default replacement, just redefine
+#    it here.
+# 
+# tools: dupe: keepData: [<id>, ...]
+#    This tells the tool what items should keep their data value.
+#    Do not change this unless you understand data values, and what
+#    they mean when items in your hand have data values.
+#    SUGGESTION: If a value above is 'replace'd, remove it from
+#        the keepData field as well.
+# 
+# tools: scroll: override: <true|false>
+#    By default there are only certain types of materials that can
+#    be scrolled. If you want to allow your users to only access a
+#    subset of those items, enable the override, and set the desired
+#    materials in the below list
+# 
+# tools: scroll: allow: [ <id>, ...]
+#    If the above override is set, only materials that are listed
+#    here and are supported by the scroll tool will scroll for users.
+# 
+# tools: paint: range: <true|false>
+#    You can always grab a texture from a distance. Enabling this
+#    allows users of the paint brush to also paint a block from a
+#    distance. This is significantly more dangerous then grabbing
+#    a texture so it only has a range as set in tools.paint.distance.
+#    It also has a permission node: toolbelt.tool.paint.range
+# 
+# tools: paint: distance: <Number of blocks>
+#    If you enable painting at range, after a certain distance, it
+#    is hard to be accurate. It is suggested to leave the number as
+#    is, or experiment to find what feels safe.
+# 
+# tools: paint: blockLoad:  [ <id>, ...]
+#    Item IDs set in here will not copy into a users palette. Some
+#    of the items can be safely re-enabled (46 is TNT) while
+#    others have the possibility of an odd map state (75 is the
+#    REDSTONE_TORCH_OFF which is an unnatural state for a Redstone
+#    torch that's not being powered). Open an issue on GitHub if
+#    enabling any of these breaks the game (or if I missed any).
+# 
+# tools: paint: blockOverwrite:  [ <id>, ...]
+#    Item IDs set in here will not be overwritten when the user
+#    paints. Other then that the message is the same as for
+#    the above tools.paint.blockLoad
+# 
+# tools: leap: thrust: <Number for height of vertical thrust>
+#    This changes how much the user gets pushed when looking
+#    nearly straight down. Might be tweaked in the future for
+#    broader control.
+# 
+# tools: leap: cruise: <Number for height to cruise at>
+#    When looking nearly directly at the horizon this is what
+#    altitude you will approximately fly at.
+# 
+# tools: leap: teleport: <true|false>
+#    This changes the way that a user leaps when they crouch.
+#    Instead of a graceful leap, they will instead teleport
+#    in the direction they would have leapt. Because this has
+#    the possibility to get through obstacles the user should
+#    be blocked by, it has a separate permission node:
+#    toolbelt.tool.leap.tel
+
+
+debug: false
+permissions: true
+tools:
+  bind:
+    scroll: 352 # BONE
+    dupe: 275   # STONE_AXE
+    paint: 341  # SLIME_BALL
+    leap: 288   # FEATHER
+  dupe:
+    replace:
+      7: 260    # BEDROCK to APPLE
+      8: 326    # WATER to WATER_BUCKET
+      9: 326    # STATIONARY_WATER to WATER_BUCKET
+      10: 327   # LAVA to LAVA_BUCKET
+      11: 327   # STATIONARY_LAVA to LAVA_BUCKET
+      78: 332   # SNOW to SNOW_BALL
+      104: 361  # PUMPKIN_STEM to PUMPKIN_SEEDS
+      105: 362  # MELON_STEM to MELON_SEEDS
+    keepData: [6, 17, 18, 31, 35, 43, 44, 98, 263, 351, 373, 374]
+  scroll:
+    override: false
+    allow: [35, 43, 44, 98]
+  paint:
+    range: false
+    distance: 25
+    blockLoad: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
+    blockOverwrite: [7, 8, 9, 10, 11, 90, 119]
+  leap:
+    thrust: 8
+    cruise: 110
+    teleport: false
+

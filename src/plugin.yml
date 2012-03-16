@@ -1,0 +1,44 @@
+name: toolbelt
+main: com.github.peter200lx.toolbelt.ToolBelt
+version: 0.1
+website: https://github.com/Peter200lx/ToolBelt
+author: peter200lx
+description: >
+             Go armed out into the world with an assortment of gizmos at your side.
+commands:
+  toolbelt:
+    description: Holder command for reload and more
+    aliases: tb
+    usage: |
+           /<command> [reload|tools]
+           Example: /<command> - Prints help for plugin.
+           Example: /<command> reload - Reloads settings from disk
+           Example: /<command> tools - Lists tools available to player
+permissions:
+    toolbelt.*:
+        description: Gives access to all permissions for toolbelt
+        default: op
+        children:
+            toolbelt.reload: true
+            toolbelt.tool.dupe: true
+            toolbelt.tool.scroll: true
+            toolbelt.tool.paint: true
+            toolbelt.tool.paint: true
+            toolbelt.tool.paint.range: true
+            toolbelt.tool.leap: true
+            toolbelt.tool.leap.tel: true
+    toolbelt.reload:
+        description: Allows the player to reload toolbelt from configuration file.
+    toolbelt.tool.dupe:
+        description: Allows the player to use the duplicator tool.
+    toolbelt.tool.scroll:
+        description: Allows the player to use the data scrolling tool.
+    toolbelt.tool.paint:
+        description: Allows the player to use the paint tool.
+    toolbelt.tool.paint.range:
+        description: Allows the player to use the paint tool at a distance.
+    toolbelt.tool.leap:
+        description: Allows the player to make huge leaps with the right tool.
+    toolbelt.tool.leap.tel:
+        description: Allows the player to teleport by crouching while leaping.
+
