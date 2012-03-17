@@ -25,6 +25,8 @@ public class Paint extends Tool  {
 
 	public static String name = "paint";
 
+	private HashSet<Material> onlyAllow;
+
 	private HashSet<Material> blockLoad;
 
 	private HashSet<Material> blockOverwrite;
@@ -49,7 +51,8 @@ public class Paint extends Tool  {
 				target = event.getClickedBlock().getState().getData();
 			else
 				target = subject.getTargetBlock(null, 200).getState().getData();
-			if(!blockLoad.contains(target.getItemType())	){
+			if(!blockLoad.contains(target.getItemType()) && ( onlyAllow.isEmpty() ||
+					onlyAllow.contains(target.getItemType()) ) ){
 				pPalette.get(subject.getName()).put(subject.getInventory().getHeldItemSlot(), target );
 				paintPrint("Paint is now ",subject,target);
 			} else {
@@ -67,7 +70,8 @@ public class Paint extends Tool  {
 					target = subject.getTargetBlock(null, dist);
 				}else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 					target = event.getClickedBlock();
-				if(target != null && !blockOverwrite.contains(target.getType())) {
+				if(target != null && !blockOverwrite.contains(target.getType())       &&
+						(onlyAllow.isEmpty() || onlyAllow.contains(target.getType())) ){
 					target.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
 				}
 			}
@@ -130,7 +134,37 @@ public class Paint extends Tool  {
 						"distance is set even if it is not enabled");
 		}
 
-		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".blockLoad");
+		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".onlyAllow");
+
+		if(intL == null) {
+			log.warning("["+modName+"] "+tSet+"."+name+".onlyAllow is returning null");
+			return false;
+		}
+
+		HashSet<Material> holdOnlyAllow = new HashSet<Material>();
+		for(Integer entry : intL) {
+			if(entry > 0) {
+				Material type = Material.getMaterial(entry);
+				if(type != null) {
+					holdOnlyAllow.add(type);
+					if(isDebug()) log.info( "["+modName+"][loadConf] onlyAllow: "+type);
+					continue;
+				}
+			}
+			log.warning("["+modName+"] "+tSet+"."+name+".onlyAllow: '" + entry +
+					"' is not a Material type" );
+			return false;
+		}
+		onlyAllow = holdOnlyAllow;
+
+		if(isDebug()) {
+			if(onlyAllow.isEmpty())
+				log.info( "["+modName+"][loadConf] As onlyAllow is an empty list, all materials not blocked are allowed");
+			else
+				log.info( "["+modName+"][loadConf] As onlyAllow contains items, only those materials can be painted");
+		}
+
+		intL = conf.getIntegerList(tSet+"."+name+".blockLoad");
 
 		if(intL == null) {
 			log.warning("["+modName+"] "+tSet+"."+name+".blockLoad is returning null");

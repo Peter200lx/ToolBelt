@@ -59,6 +59,19 @@
 #    is hard to be accurate. It is suggested to leave the number as
 #    is, or experiment to find what feels safe.
 # 
+# tools: paint: onlyAllow:  <[]|[ <id>, ...]>
+#    If you want to very explicitly limit which blocks can be
+#    loaded into the paint brush, and what types of blocks can
+#    be overwritten, specify those blocks here. By default this
+#    list is empty, which means that all materials not blocked
+#    in the next two lists are allowed. NOTE: this list does not
+#    overwrite the two block lists below, it simply further
+#    restricts the use of the paint brush. Example, onlyAllow: [3,35]
+#    blockLoad: [7], blockOverwrite: [7,35] means that the player
+#    can load dirt or wool into the paintbrush, but only overwrite
+#    dirt blocks. They can't load/overwrite bedrock both because
+#    it is not in onlyAllow and because it's block*ed
+# 
 # tools: paint: blockLoad:  [ <id>, ...]
 #    Item IDs set in here will not copy into a users palette. Some
 #    of the items can be safely re-enabled (46 is TNT) while
@@ -115,6 +128,7 @@ tools:
   paint:
     range: false
     distance: 25
+    onlyAllow: []
     blockLoad: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
     blockOverwrite: [7, 8, 9, 10, 11, 90, 119]
   leap:
