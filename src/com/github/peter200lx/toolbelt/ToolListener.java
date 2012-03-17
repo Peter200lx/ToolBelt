@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class ToolListener implements Listener {
 
@@ -30,11 +31,13 @@ public class ToolListener implements Listener {
 
 	@EventHandler
 	public void catchItemChange(PlayerItemHeldEvent event) {
-		for(Tool tool:master.tools) {
-			if(tool.getType().equals(event.getPlayer().getInventory().getItem(
-						event.getNewSlot()).getType()) &&
-					tool.hasPerm(event.getPlayer())) {
-				tool.handleItemChange(event);
+		ItemStack cur = event.getPlayer().getInventory().getItem(event.getNewSlot());
+		if(cur != null) {
+			for(Tool tool:master.tools) {
+				if(tool.getType().equals(cur.getType()) &&
+						tool.hasPerm(event.getPlayer())) {
+					tool.handleItemChange(event);
+				}
 			}
 		}
 	}
