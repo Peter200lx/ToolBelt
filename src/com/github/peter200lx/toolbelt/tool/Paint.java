@@ -124,8 +124,11 @@ public class Paint extends Tool  {
 		if(isDebug()) log.info("["+modName+"][loadConf] Painting at range is set to "+range);
 
 		dist = conf.getInt(tSet+"."+name+".distance", 25);
-		if(isDebug()) log.info("["+modName+"][loadConf] Painting range distance is set to "+dist);
-		if(!range) log.info("["+modName+"][loadConf] Painting range distance is set even if it is not enabled");
+		if(isDebug()) {
+			log.info("["+modName+"][loadConf] Painting range distance is set to "+dist);
+			if(!range) log.info("["+modName+"][loadConf] Painting range "+
+						"distance is set even if it is not enabled");
+		}
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".blockLoad");
 
