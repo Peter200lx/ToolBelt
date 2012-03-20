@@ -160,6 +160,7 @@ public class Scroll extends Tool {
 				}
 
 				clicked.setData(data, false);
+				event.getPlayer().sendBlockChange(clicked.getLocation(), clicked.getType(), data);
 
 				event.getPlayer().sendMessage(ChatColor.GREEN + "Block is now " + ChatColor.GOLD +
 						clicked.getType() + ChatColor.WHITE + ":" +
@@ -181,9 +182,6 @@ public class Scroll extends Tool {
 				data = (byte) (max - 1);
 			else
 				data = (byte) ((data - 1) % max);
-			if(event.getPlayer().getGameMode().equals(GameMode.SURVIVAL))
-				event.getPlayer().sendMessage("Data value scrolled, you might "+
-					"not see the change");
 		} else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 			data = (byte) ((data + 1) % max);
 		}
