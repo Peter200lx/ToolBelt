@@ -36,7 +36,7 @@ import org.bukkit.material.TrapDoor;
 import org.bukkit.material.Tree;
 import org.bukkit.material.Wool;
 
-public class Tool {
+public abstract class Tool {
 
 	protected Tool(String modName, boolean debug, boolean permissions) {
 		this.modName = modName;
@@ -59,10 +59,6 @@ public class Tool {
 
 	protected static HashSet<Material> printData = new HashSet<Material>();
 
-	public String getName() {
-		return name;
-	}
-
 	public Material getType() {
 		return type;
 	}
@@ -79,14 +75,12 @@ public class Tool {
 		return permissions;
 	}
 
-	public String getPermStr() {
+	protected String getPermStr() {
 		return modName.toLowerCase()+".tool."+name;
 	}
 
-	public void handleInteract(PlayerInteractEvent event) {
-		//All tools will override this as it is the
-		//  left/right click event catch
-	}
+	//This catches left/right click events
+	public abstract void handleInteract(PlayerInteractEvent event);
 
 	public void handleItemChange(PlayerItemHeldEvent event) {
 		//Only some tools will override this, it is the
@@ -105,10 +99,8 @@ public class Tool {
 			return true;
 	}
 
-	public boolean printUse(CommandSender sender) {
-		//All tools should override this
-		return false;
-	}
+	//This is for printing use instructions for a player
+	public abstract boolean printUse(CommandSender sender);
 
 	public boolean loadConf(String tSet, FileConfiguration conf) {
 		//All tools should override this IF they have
