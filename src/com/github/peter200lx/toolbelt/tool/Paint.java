@@ -79,7 +79,10 @@ public class Paint extends Tool  {
 						(onlyAllow.isEmpty() || onlyAllow.contains(target.getType())) ){
 					target.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
 				}else if(target != null) {
-					subject.sendMessage(ChatColor.RED + "You can't overwrite "+ChatColor.GOLD+target.getType());
+					if(target.getType().equals(Material.AIR))
+						subject.sendMessage(ChatColor.RED + "Target is out of range");
+					else
+						subject.sendMessage(ChatColor.RED + "You can't overwrite "+ChatColor.GOLD+target.getType());
 				}
 			}
 		}
