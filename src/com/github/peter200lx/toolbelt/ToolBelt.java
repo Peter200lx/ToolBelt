@@ -31,7 +31,7 @@ public class ToolBelt extends JavaPlugin {
 
 	private boolean permissions;
 
-	public List<Tool> tools;
+	public List<ToolInterface> tools;
 
 	@Override
 	public void onDisable() {
@@ -74,7 +74,7 @@ public class ToolBelt extends JavaPlugin {
 					else {
 						sender.sendMessage("[WARNING] Configuration file load error, "+
 						"check console logs");
-						tools = new ArrayList<Tool>();
+						tools = new ArrayList<ToolInterface>();
 						sender.sendMessage("[WARNING] Tools have been disabled until "+
 								"a valid config file is loaded");
 						if(!console) log.warning(" Tools have been disabled until "+
@@ -89,7 +89,7 @@ public class ToolBelt extends JavaPlugin {
 					sender.sendMessage("This command can only be run by a player");
 				} else {
 					Boolean any = false;
-					for(Tool tool: tools) {
+					for(ToolInterface tool: tools) {
 						if(tool.printUse(sender))
 							any = true;
 					}
@@ -150,7 +150,7 @@ public class ToolBelt extends JavaPlugin {
 		available.put(Paint.name, new Paint(cName,debug,permissions));
 		available.put(Leap.name, new Leap(cName,debug,permissions));
 
-		List<Tool> holdTool = new ArrayList<Tool>();
+		List<ToolInterface> holdTool = new ArrayList<ToolInterface>();
 		for(Entry<String, Object> entry :sect.getValues(false).entrySet()) {
 			if(entry.getValue() instanceof Number) {
 				int id = ((Number)entry.getValue()).intValue();
@@ -183,7 +183,7 @@ public class ToolBelt extends JavaPlugin {
 		tools = holdTool;
 
 		//Load tool specific configuration
-		for(Tool tool: tools) {
+		for(ToolInterface tool: tools) {
 			if(!tool.loadConf(tSet, conf))
 				return false;
 		}

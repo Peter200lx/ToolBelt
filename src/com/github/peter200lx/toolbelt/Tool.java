@@ -36,7 +36,7 @@ import org.bukkit.material.TrapDoor;
 import org.bukkit.material.Tree;
 import org.bukkit.material.Wool;
 
-public abstract class Tool {
+public abstract class Tool implements ToolInterface {
 
 	protected Tool(String modName, boolean debug, boolean permissions) {
 		this.modName = modName;
