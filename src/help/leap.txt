@@ -1,0 +1,27 @@
+# Here are the configuration descriptions for the leap tool
+# 
+# tools: leap: thrust: <Number for height of vertical thrust>
+#    This changes how much the user gets pushed when looking
+#    nearly straight down. Might be tweaked in the future for
+#    broader control.
+# 
+# tools: leap: cruise: <Number for height to cruise at>
+#    When looking nearly directly at the horizon this is what
+#    altitude you will approximately fly at.
+# 
+# tools: leap: teleport: <true|false>
+#    This changes the way that a user leaps when they crouch.
+#    Instead of a graceful leap, they will instead teleport
+#    in the direction they would have leapt. Because this has
+#    the possibility to get through obstacles the user should
+#    be blocked by, it has a separate permission node:
+#    toolbelt.tool.leap.tel
+
+
+tools:
+  bind:
+    leap: 288   # FEATHER
+  leap:
+    thrust: 8
+    cruise: 110
+    teleport: false

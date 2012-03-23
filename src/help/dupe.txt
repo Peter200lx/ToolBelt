@@ -1,0 +1,34 @@
+# Here are the configuration descriptions for the dupe tool
+# 
+# tools: dupe: replace: <id>: <id>
+#    This gives additional mappings of what a duplicated block
+#    should give the player. For instance, 7: 260 means that when
+#    a user tries to duplicate bedrock, they get apples instead.
+#    If you want to override the default replacement, just redefine
+#    it here.
+# 
+# tools: dupe: keepData: [<id>, ...]
+#    This tells the tool what items should keep their data value.
+#    Do not change this unless you understand data values, and what
+#    they mean when items in your hand have data values.
+#    SUGGESTION: If a value above is 'replace'd, remove it from
+#        the keepData field as well.
+
+
+tools:
+  bind:
+    scroll: 352 # BONE
+    dupe: 275   # STONE_AXE
+    paint: 341  # SLIME_BALL
+    leap: 288   # FEATHER
+  dupe:
+    replace:
+      7: 260    # BEDROCK to APPLE
+      8: 326    # WATER to WATER_BUCKET
+      9: 326    # STATIONARY_WATER to WATER_BUCKET
+      10: 327   # LAVA to LAVA_BUCKET
+      11: 327   # STATIONARY_LAVA to LAVA_BUCKET
+      78: 332   # SNOW to SNOW_BALL
+      104: 361  # PUMPKIN_STEM to PUMPKIN_SEEDS
+      105: 362  # MELON_STEM to MELON_SEEDS
+    keepData: [6, 17, 18, 31, 35, 43, 44, 98, 263, 351, 373, 374]

@@ -35,6 +35,7 @@ import org.bukkit.material.Torch;
 import org.bukkit.material.TrapDoor;
 import org.bukkit.material.Tree;
 import org.bukkit.material.Wool;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class Tool implements ToolInterface {
 
@@ -109,6 +110,11 @@ public abstract class Tool implements ToolInterface {
 		//All tools should override this IF they have
 		//  configuration options they need to grab.
 		return false;
+	}
+
+	public void saveHelp(JavaPlugin host) {
+		if(isDebug()) log.info("["+modName+"] Help saved for: "+getToolName());
+		host.saveResource("help/"+getToolName()+".txt", true);
 	}
 
 	protected String data2Str(MaterialData b) {

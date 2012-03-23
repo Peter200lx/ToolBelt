@@ -1,0 +1,19 @@
+# Here are the configuration descriptions for the scroll tool
+# 
+# tools: scroll: override: <true|false>
+#    By default there are only certain types of materials that can
+#    be scrolled. If you want to allow your users to only access a
+#    subset of those items, enable the override, and set the desired
+#    materials in the below list
+# 
+# tools: scroll: allow: [ <id>, ...]
+#    If the above override is set, only materials that are listed
+#    here and are supported by the scroll tool will scroll for users.
+
+
+tools:
+  bind:
+    scroll: 352 # BONE
+  scroll:
+    override: false
+    allow: [35, 43, 44, 98]

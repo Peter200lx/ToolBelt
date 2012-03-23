@@ -186,6 +186,7 @@ public class ToolBelt extends JavaPlugin {
 		for(ToolInterface tool: tools) {
 			if(!tool.loadConf(tSet, conf))
 				return false;
+			tool.saveHelp(this);
 		}
 
 		return true;

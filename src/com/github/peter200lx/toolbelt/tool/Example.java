@@ -6,6 +6,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.Tool;
 
+//Instructions for setting up a new tool
+
+//Add permission node(s) to plugin.yml
+
+//Add configuration options (if any) to config.yml
+
+//Create a help file in src/help/unique_lowercase_name.txt
+
 //You will also need to add a line in ToolBelt.java in
 // the loadConf() function.
 //Put the following line (without the //) after the last similar line

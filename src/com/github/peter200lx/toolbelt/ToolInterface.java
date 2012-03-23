@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public interface ToolInterface {
 
@@ -41,4 +42,8 @@ public interface ToolInterface {
 	//If the tool has its own area in config.yml, then here is
 	// where those settings are loaded
 	public boolean loadConf(String tSet, FileConfiguration conf);
+
+	//If the tool has its own area in config.yml, then this is
+	// what will set up the help file for configuration.
+	public void saveHelp(JavaPlugin host);
 }
