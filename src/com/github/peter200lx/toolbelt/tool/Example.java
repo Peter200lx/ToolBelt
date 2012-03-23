@@ -23,6 +23,11 @@ public class Example extends Tool  {
 	public static String name = "unique_lowercase_name";
 
 	@Override
+	public String getToolName() {
+		return name;
+	}
+
+	@Override
 	public void handleInteract(PlayerInteractEvent event){
 		//Handle left and right clicks in here
 		// This is where the main logic of your program should go

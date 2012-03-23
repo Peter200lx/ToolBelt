@@ -31,6 +31,11 @@ public class Duplicator extends Tool {
 	private static HashSet<Material> keepData;
 
 	@Override
+	public String getToolName() {
+		return name;
+	}
+
+	@Override
 	@SuppressWarnings("deprecation")	//TODO Investigate replacement .updateInventory()
 	public void handleInteract(PlayerInteractEvent event){
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {

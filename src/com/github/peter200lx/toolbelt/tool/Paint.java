@@ -38,6 +38,11 @@ public class Paint extends Tool  {
 	private HashMap<String, HashMap<Integer, MaterialData>> pPalette = new HashMap<String, HashMap<Integer, MaterialData>>();
 
 	@Override
+	public String getToolName() {
+		return name;
+	}
+
+	@Override
 	public void handleInteract(PlayerInteractEvent event){
 		Player subject = event.getPlayer();
 		if(!pPalette.containsKey(subject.getName())) {

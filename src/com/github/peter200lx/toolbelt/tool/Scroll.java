@@ -37,6 +37,11 @@ public class Scroll extends Tool {
 	public static HashMap<Material, Integer> dataMap;
 
 	@Override
+	public String getToolName() {
+		return name;
+	}
+
+	@Override
 	public void handleInteract(PlayerInteractEvent event){
 		Action act = event.getAction();
 		if(act.equals(Action.LEFT_CLICK_BLOCK)||(act.equals(Action.RIGHT_CLICK_BLOCK))) {

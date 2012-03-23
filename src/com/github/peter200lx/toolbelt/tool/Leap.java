@@ -26,6 +26,11 @@ public class Leap extends Tool {
 	private int leapCruise;
 
 	@Override
+	public String getToolName() {
+		return name;
+	}
+
+	@Override
 	public void handleInteract(PlayerInteractEvent event){
 		Action act = event.getAction();
 		Player subject = event.getPlayer();

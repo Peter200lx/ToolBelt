@@ -20,6 +20,9 @@ public interface ToolInterface {
 	// This should only ever be set in ToolBelt.loadConf()
 	public void setType(Material type);
 
+	//Returns the tool specific name
+	public String getToolName();
+
 	//This catches left/right click events
 	public void handleInteract(PlayerInteractEvent event);
 

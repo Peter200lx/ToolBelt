@@ -49,7 +49,7 @@ public abstract class Tool implements ToolInterface {
 
 	protected String modName;
 
-	public static String name = null;
+	public static String name;
 
 	private Material type;
 
@@ -66,6 +66,9 @@ public abstract class Tool implements ToolInterface {
 	public void setType(Material type) {
 		this.type = type;
 	}
+
+	//Each tool must implement this so that the tool specific name is returned
+	public abstract String getToolName();
 
 	protected boolean isDebug() {
 		return debug;
