@@ -22,6 +22,7 @@ import org.bukkit.material.Lever;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.PistonBaseMaterial;
 import org.bukkit.material.PoweredRail;
+import org.bukkit.material.Step;
 import org.bukkit.material.TrapDoor;
 
 import com.github.peter200lx.toolbelt.Tool;
@@ -289,8 +290,10 @@ public class Scroll extends Tool {
 		dm.put(Material.WOOD_PLATE, 0);
 		//Add Coal? No block to click
 		//Add Tools & Armor? No block to click
-		dm.put(Material.STEP, 7);
-		dm.put(Material.DOUBLE_STEP, 7);
+		Step x = new Step();
+		dm.put(Material.STEP, x.getTextures().toArray().length);
+		dm.put(Material.DOUBLE_STEP, x.getTextures().toArray().length);
+		x = null;
 		dm.put(Material.SNOW, 8);
 		dm.put(Material.CAKE_BLOCK, 6);
 		dm.put(Material.BED_BLOCK, 0);
