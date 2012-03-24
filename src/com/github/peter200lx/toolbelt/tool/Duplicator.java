@@ -130,26 +130,12 @@ public class Duplicator extends Tool {
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".keepData");
 
-		if(intL == null) {
-			log.warning("["+modName+"] "+tSet+"."+name+".keepData is returning null");
+		keepData = loadMatList(intL,new HashSet<Material>(),tSet+"."+name+".keepData");
+		if(keepData == null)
 			return false;
-		}
 
-		HashSet<Material> holdKeepData = new HashSet<Material>();
-		for(Integer entry : intL) {
-			if(entry > 0) {
-				Material type = Material.getMaterial(entry);
-				if(type != null) {
-					holdKeepData.add(type);
-					if(isDebug()) log.info( "["+modName+"][loadConf] keepData: "+type);
-					continue;
-				}
-			}
-			log.warning("["+modName+"] "+tSet+"."+name+".keepData: '" + entry +
-					"' is not a Material type" );
-			return false;
-		}
-		keepData = holdKeepData;
+		if(isDebug()) logMatSet(keepData,"loadConf",name+".keepData:");
+
 		return true;
 	}
 

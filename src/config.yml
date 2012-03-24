@@ -26,6 +26,39 @@
 #    remove it by adding a '#' to the beginning of the line.
 #    However, setting it's value to zero will also disable
 #    the tool, it but with a warning to the console.
+# 
+# tools: global: <list type>:
+#    Any list in the tools.global section only applies to tools
+#    that have a list of the same name. If the tool specific
+#    version of the list is [], then the global list takes
+#    precedence.
+# 
+# tools: global: onlyAllow:  <[]|[ <id>, ...]>
+#    If you want to very explicitly limit which materials can be
+#    copied into tools, and what types of materials can be
+#    overwritten, specify those blocks here. By default this
+#    list is empty, which means that all materials not blocked
+#    in the next two lists are allowed. NOTE: this list does not
+#    overwrite the two block lists below, it simply further
+#    restricts the use of tools. Example, onlyAllow: [3,35]
+#    stopCopy: [7], stopOverwrite: [7,35] means that the player
+#    can copy dirt or wool with any tool, but only overwrite
+#    dirt blocks. They can't load/overwrite bedrock both because
+#    it is not in onlyAllow and because it's blocked in the stop*
+#    lists
+# 
+# tools: global: stopCopy:  [ <id>, ...]
+#    Item IDs set in here will not copy into a tool. Some
+#    of the items can be safely re-enabled (46 is TNT) while
+#    others have the possibility of an odd map state (75 is the
+#    REDSTONE_TORCH_OFF which is an unnatural state for a Redstone
+#    torch that's not being powered). Open an issue on GitHub if
+#    enabling any of these breaks the game (or if I missed any).
+# 
+# tools: global: stopOverwrite:  [ <id>, ...]
+#    Item IDs set in here will not be overwritten when the user
+#    paints. Other then that the message is the same as for
+#    the above stopCopy
 
 
 debug: false
@@ -36,6 +69,10 @@ tools:
     scroll: 352 # BONE
     paint: 341  # SLIME_BALL
     leap: 288   # FEATHER
+  global:
+    onlyAllow: []
+    stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
+    stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
   dupe:
     replace:
       7: 260    # BEDROCK to APPLE
@@ -54,8 +91,8 @@ tools:
     range: false
     distance: 25
     onlyAllow: []
-    blockLoad: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
-    blockOverwrite: [7, 8, 9, 10, 11, 90, 119]
+    stopCopy: []
+    stopOverwrite: []
   leap:
     thrust: 8
     cruise: 110

@@ -1,6 +1,7 @@
 package com.github.peter200lx.toolbelt;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
@@ -57,6 +58,12 @@ public abstract class Tool implements ToolInterface {
 	private boolean debug;
 
 	private boolean permissions;
+
+	protected HashSet<Material> onlyAllow;
+
+	protected HashSet<Material> stopCopy;
+
+	protected HashSet<Material> stopOverwrite;
 
 	protected static HashSet<Material> printData = new HashSet<Material>();
 
@@ -115,6 +122,83 @@ public abstract class Tool implements ToolInterface {
 	public void saveHelp(JavaPlugin host) {
 		if(isDebug()) log.info("["+modName+"] Help saved for: "+getToolName());
 		host.saveResource("help/"+getToolName()+".txt", true);
+	}
+
+	protected boolean loadGlobalRestrictions(String tSet, FileConfiguration conf) {
+		String globalName = "global";
+
+		List<Integer> intL = conf.getIntegerList(tSet+"."+globalName+".onlyAllow");
+
+		onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+globalName+".onlyAllow");
+		if(onlyAllow == null)
+			return false;
+
+		if(isDebug()) {
+			logMatSet(onlyAllow,"loadGlobalRestrictions",globalName+".onlyAllow:");
+			if(onlyAllow.isEmpty())
+				log.info( "["+modName+"][loadGlobalRestrictions] As onlyAllow is empty, all non-restricted materials are allowed");
+			else
+				log.info( "["+modName+"][loadGlobalRestrictions] As onlyAllow has items, only those materials can be painted");
+		}
+
+		intL = conf.getIntegerList(tSet+"."+globalName+".stopCopy");
+
+		stopCopy = loadMatList(intL,defStop(),tSet+"."+globalName+".stopCopy");
+		if(stopCopy == null)
+			return false;
+
+		if(isDebug()) logMatSet(stopCopy,"loadGlobalRestrictions",globalName+".stopCopy:");
+
+		intL = conf.getIntegerList(tSet+"."+globalName+".stopOverwrite");
+
+		stopOverwrite = loadMatList(intL,defStop(),tSet+"."+globalName+".stopOverwrite");
+		if(stopOverwrite == null)
+			return false;
+
+		if(isDebug()) logMatSet(stopOverwrite,"loadGlobalRestrictions",globalName+".stopOverwrite:");
+
+		return true;
+	}
+
+	protected HashSet<Material> loadMatList(List<Integer> input, HashSet<Material> def, String warnMessage) {
+		if(input == null) {
+			log.warning("["+modName+"] "+warnMessage+" is returning null");
+			return null;
+		}else if(def == null) {
+			log.warning("["+modName+"]*** Warn tool developer that their call to loadMatList() is bad "+warnMessage);
+			return null;
+		}
+		for(Integer entry : input) {
+			if(entry > 0) {
+				Material type = Material.getMaterial(entry);
+				if(type != null) {
+					def.add(type);
+					continue;
+				}
+			}
+			log.warning("["+modName+"] "+warnMessage + ": '" + entry +
+					"' is not a Material type" );
+			return null;
+		}
+		return def;
+	}
+
+	protected void logMatSet(HashSet<Material> set, String function, String summary) {
+		for(Material mat: set) {
+			log.info("["+modName+"]["+function+"] "+summary+" "+mat.toString());
+		}
+	}
+
+	protected HashSet<Material> defStop() {
+		HashSet<Material> stop = new HashSet<Material>();
+		stop.add(Material.AIR);
+		stop.add(Material.BED_BLOCK);
+		stop.add(Material.PISTON_EXTENSION);
+		stop.add(Material.PISTON_MOVING_PIECE);
+		stop.add(Material.FIRE);
+		stop.add(Material.WOODEN_DOOR);
+		stop.add(Material.IRON_DOOR_BLOCK);
+		return stop;
 	}
 
 	protected String data2Str(MaterialData b) {

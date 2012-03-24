@@ -25,12 +25,6 @@ public class Paint extends Tool  {
 
 	public static String name = "paint";
 
-	private HashSet<Material> onlyAllow;
-
-	private HashSet<Material> blockLoad;
-
-	private HashSet<Material> blockOverwrite;
-
 	private boolean range = false;
 
 	private Integer dist = 25;
@@ -56,7 +50,7 @@ public class Paint extends Tool  {
 				target = event.getClickedBlock().getState().getData();
 			else
 				target = subject.getTargetBlock(null, 200).getState().getData();
-			if(!blockLoad.contains(target.getItemType()) && ( onlyAllow.isEmpty() ||
+			if(!stopCopy.contains(target.getItemType()) && ( onlyAllow.isEmpty() ||
 					onlyAllow.contains(target.getItemType()) ) ){
 				pPalette.get(subject.getName()).put(subject.getInventory().getHeldItemSlot(), target );
 				paintPrint("Paint is now ",subject,target);
@@ -75,7 +69,7 @@ public class Paint extends Tool  {
 					target = subject.getTargetBlock(null, dist);
 				}else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 					target = event.getClickedBlock();
-				if(target != null && !blockOverwrite.contains(target.getType())       &&
+				if(target != null && !stopOverwrite.contains(target.getType())       &&
 						(onlyAllow.isEmpty() || onlyAllow.contains(target.getType())) ){
 					target.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
 				}else if(target != null) {
@@ -144,94 +138,57 @@ public class Paint extends Tool  {
 						"distance is set even if it is not enabled");
 		}
 
+		//Load the default restriction configuration
+		if(!loadGlobalRestrictions(tSet,conf))
+			return false;
+
 		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".onlyAllow");
 
-		if(intL == null) {
-			log.warning("["+modName+"] "+tSet+"."+name+".onlyAllow is returning null");
-			return false;
-		}
+		if(!intL.isEmpty())
+		{
+			if(isDebug())
+				log.info( "["+modName+"][loadConf] As "+name+".onlyAllow has items, it overwrites the global");
 
-		HashSet<Material> holdOnlyAllow = new HashSet<Material>();
-		for(Integer entry : intL) {
-			if(entry > 0) {
-				Material type = Material.getMaterial(entry);
-				if(type != null) {
-					holdOnlyAllow.add(type);
-					if(isDebug()) log.info( "["+modName+"][loadConf] onlyAllow: "+type);
-					continue;
-				}
+			onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+name+".onlyAllow");
+			if(onlyAllow == null)
+				return false;
+
+			if(isDebug()) {
+				logMatSet(onlyAllow,"loadGlobalRestrictions",name+".onlyAllow:");
+				log.info( "["+modName+"][loadConf] As "+name+".onlyAllow has items, only those materials are usable");
 			}
-			log.warning("["+modName+"] "+tSet+"."+name+".onlyAllow: '" + entry +
-					"' is not a Material type" );
-			return false;
-		}
-		onlyAllow = holdOnlyAllow;
-
-		if(isDebug()) {
-			if(onlyAllow.isEmpty())
-				log.info( "["+modName+"][loadConf] As onlyAllow is an empty list, all materials not blocked are allowed");
-			else
-				log.info( "["+modName+"][loadConf] As onlyAllow contains items, only those materials can be painted");
+		} else if(isDebug()&& !onlyAllow.isEmpty()) {
+			log.info( "["+modName+"][loadConf] As global.onlyAllow has items, only those materials are usable");
 		}
 
-		intL = conf.getIntegerList(tSet+"."+name+".blockLoad");
+		intL = conf.getIntegerList(tSet+"."+name+".stopCopy");
 
-		if(intL == null) {
-			log.warning("["+modName+"] "+tSet+"."+name+".blockLoad is returning null");
-			return false;
+		if(!intL.isEmpty())
+		{
+			if(isDebug())
+				log.info( "["+modName+"][loadConf] As "+name+".stopCopy has items, it overwrites the global");
+
+			stopCopy = loadMatList(intL,defStop(),tSet+"."+name+".stopCopy");
+			if(stopCopy == null)
+				return false;
+
+			if(isDebug()) logMatSet(stopCopy,"loadConf",name+".stopCopy:");
 		}
 
-		HashSet<Material> holdPaintBlock = defPaintBlock();
-		for(Integer entry : intL) {
-			if(entry > 0) {
-				Material type = Material.getMaterial(entry);
-				if(type != null) {
-					holdPaintBlock.add(type);
-					if(isDebug()) log.info( "["+modName+"][loadConf] added to blockLoad: "+type);
-					continue;
-				}
-			}
-			log.warning("["+modName+"] "+tSet+"."+name+".blockLoad: '" + entry +
-					"' is not a Material type" );
-			return false;
-		}
-		blockLoad = holdPaintBlock;
+		intL = conf.getIntegerList(tSet+"."+name+".stopOverwrite");
 
-		intL = conf.getIntegerList(tSet+"."+name+".blockOverwrite");
+		if(!intL.isEmpty())
+		{
+			if(isDebug())
+				log.info( "["+modName+"][loadConf] As "+name+".stopOverwrite has items, it overwrites the global");
 
-		if(intL == null) {
-			log.warning("["+modName+"] "+tSet+"."+name+".blockOverwrite is returning null");
-			return false;
-		}
+			stopOverwrite = loadMatList(intL,defStop(),tSet+"."+name+".stopOverwrite");
+			if(stopOverwrite == null)
+				return false;
 
-		holdPaintBlock = defPaintBlock();
-		for(Integer entry : intL) {
-			if(entry > 0) {
-				Material type = Material.getMaterial(entry);
-				if(type != null) {
-					holdPaintBlock.add(type);
-					if(isDebug()) log.info( "["+modName+"][loadConf] added to blockOverwrite: "+type);
-					continue;
-				}
-			}
-			log.warning("["+modName+"] "+tSet+"."+name+".blockOverwrite: '" + entry +
-					"' is not a Material type" );
-			return false;
+			if(isDebug()) logMatSet(stopOverwrite,"loadGlobalRestrictions",name+".stopOverwrite:");
 		}
-		blockOverwrite = holdPaintBlock;
 		return true;
-	}
-
-	private HashSet<Material> defPaintBlock() {
-		HashSet<Material> pb = new HashSet<Material>();
-		pb.add(Material.AIR);
-		pb.add(Material.BED_BLOCK);
-		pb.add(Material.PISTON_EXTENSION);
-		pb.add(Material.PISTON_MOVING_PIECE);
-		pb.add(Material.FIRE);
-		pb.add(Material.WOODEN_DOOR);
-		pb.add(Material.IRON_DOOR_BLOCK);
-		return pb;
 	}
 
 }

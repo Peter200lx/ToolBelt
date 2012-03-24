@@ -1,5 +1,8 @@
 # Here are the configuration descriptions for the scroll tool
 # 
+# The "tools: bind:" setting is specified in greater detail
+#  in the config.yml file
+# 
 # tools: scroll: override: <true|false>
 #    By default there are only certain types of materials that can
 #    be scrolled. If you want to allow your users to only access a

@@ -1,5 +1,8 @@
 # Here are the configuration descriptions for the leap tool
 # 
+# The "tools: bind:" setting is specified in greater detail
+#  in the config.yml file
+# 
 # tools: leap: thrust: <Number for height of vertical thrust>
 #    This changes how much the user gets pushed when looking
 #    nearly straight down. Might be tweaked in the future for

@@ -1,5 +1,8 @@
 # Here are the configuration descriptions for the dupe tool
 # 
+# The "tools: bind:" setting is specified in greater detail
+#  in the config.yml file
+# 
 # tools: dupe: replace: <id>: <id>
 #    This gives additional mappings of what a duplicated block
 #    should give the player. For instance, 7: 260 means that when
@@ -17,10 +20,7 @@
 
 tools:
   bind:
-    scroll: 352 # BONE
     dupe: 275   # STONE_AXE
-    paint: 341  # SLIME_BALL
-    leap: 288   # FEATHER
   dupe:
     replace:
       7: 260    # BEDROCK to APPLE
