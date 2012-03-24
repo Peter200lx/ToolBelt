@@ -84,8 +84,9 @@ public class Leap extends Tool {
 				}
 			}
 			if (subject.isSneaking() && leapTeleport && (hasTeleportPerm(subject)))
-				subject.teleport(new Location(subject.getWorld(), subject.getLocation().getX() + pX,
-						subject.getLocation().getY() + pY, subject.getLocation().getZ() + pZ,
+				subject.teleport(new Location(subject.getWorld(),
+						subject.getLocation().getX() + pX, subject.getLocation().getY() + pY,
+						subject.getLocation().getZ() + pZ,
 						subject.getLocation().getYaw(), subject.getLocation().getPitch()));
 			else
 				subject.setVelocity(new Vector(pX, pY / 2.5D, pZ));
@@ -121,11 +122,14 @@ public class Leap extends Tool {
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
 		leapTeleport = conf.getBoolean("tools.leap.teleport", false);
-		if(isDebug()) log.info("["+modName+"][loadConf] Teleport leaping is set to "+leapTeleport);
+		if(isDebug())
+			log.info("["+modName+"][loadConf] Teleport leaping is set to "+leapTeleport);
 		leapThrust = conf.getInt("tools.leap.thrust", 8);
-		if(isDebug()) log.info("["+modName+"][loadConf] Flap thrust is set to "+leapThrust);
+		if(isDebug())
+			log.info("["+modName+"][loadConf] Flap thrust is set to "+leapThrust);
 		leapCruise = conf.getInt("tools.leap.cruise", 110);
-		if(isDebug()) log.info("["+modName+"][loadConf] Cruising altitude is set to "+leapCruise);
+		if(isDebug())
+			log.info("["+modName+"][loadConf] Cruising altitude is set to "+leapCruise);
 		return true;
 	}
 

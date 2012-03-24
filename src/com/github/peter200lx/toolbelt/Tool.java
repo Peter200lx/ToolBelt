@@ -129,16 +129,19 @@ public abstract class Tool implements ToolInterface {
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+globalName+".onlyAllow");
 
-		onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+globalName+".onlyAllow");
+		onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+
+				globalName+".onlyAllow");
 		if(onlyAllow == null)
 			return false;
 
 		if(isDebug()) {
 			logMatSet(onlyAllow,"loadGlobalRestrictions",globalName+".onlyAllow:");
 			if(onlyAllow.isEmpty())
-				log.info( "["+modName+"][loadGlobalRestrictions] As onlyAllow is empty, all non-restricted materials are allowed");
+				log.info( "["+modName+"][loadGlobalRestrictions] As onlyAllow"+
+						" is empty, all non-restricted materials are allowed");
 			else
-				log.info( "["+modName+"][loadGlobalRestrictions] As onlyAllow has items, only those materials can be painted");
+				log.info( "["+modName+"][loadGlobalRestrictions] As onlyAllow "+
+						"has items, only those materials can be painted");
 		}
 
 		intL = conf.getIntegerList(tSet+"."+globalName+".stopCopy");
@@ -147,25 +150,30 @@ public abstract class Tool implements ToolInterface {
 		if(stopCopy == null)
 			return false;
 
-		if(isDebug()) logMatSet(stopCopy,"loadGlobalRestrictions",globalName+".stopCopy:");
+		if(isDebug()) logMatSet(stopCopy,"loadGlobalRestrictions",globalName+
+				".stopCopy:");
 
 		intL = conf.getIntegerList(tSet+"."+globalName+".stopOverwrite");
 
-		stopOverwrite = loadMatList(intL,defStop(),tSet+"."+globalName+".stopOverwrite");
+		stopOverwrite = loadMatList(intL,defStop(),tSet+"."+globalName+
+				".stopOverwrite");
 		if(stopOverwrite == null)
 			return false;
 
-		if(isDebug()) logMatSet(stopOverwrite,"loadGlobalRestrictions",globalName+".stopOverwrite:");
+		if(isDebug()) logMatSet(stopOverwrite,"loadGlobalRestrictions",
+				globalName+".stopOverwrite:");
 
 		return true;
 	}
 
-	protected HashSet<Material> loadMatList(List<Integer> input, HashSet<Material> def, String warnMessage) {
+	protected HashSet<Material> loadMatList(List<Integer> input,
+			HashSet<Material> def, String warnMessage) {
 		if(input == null) {
 			log.warning("["+modName+"] "+warnMessage+" is returning null");
 			return null;
 		}else if(def == null) {
-			log.warning("["+modName+"]*** Warn tool developer that their call to loadMatList() is bad "+warnMessage);
+			log.warning("["+modName+"]*** Warn tool developer that their call"+
+					" to loadMatList() is bad "+warnMessage);
 			return null;
 		}
 		for(Integer entry : input) {
@@ -212,7 +220,7 @@ public abstract class Tool implements ToolInterface {
 				return ""+data;
 		case LEAVES:
 		case SAPLING:
-			if(((Tree)b).getSpecies() != null)	//Checked because there are unnamed tree colors
+			if(((Tree)b).getSpecies() != null)
 				return ((Tree)b).getSpecies().toString();
 			else
 				return ""+data;
@@ -309,7 +317,8 @@ public abstract class Tool implements ToolInterface {
 			return ""+((Cake)b).getSlicesRemaining()+"/6 REMAINING";
 		case DIODE_BLOCK_OFF:
 		case DIODE_BLOCK_ON:
-			return ((Diode)b).getFacing().toString()+" with DELAY of "+((Diode)b).getDelay();
+			return ((Diode)b).getFacing().toString()+" with DELAY of "+
+				((Diode)b).getDelay();
 		case LONG_GRASS:
 			return ((LongGrass)b).getSpecies().toString();
 		case TRAP_DOOR:

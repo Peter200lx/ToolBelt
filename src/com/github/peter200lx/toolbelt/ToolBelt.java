@@ -42,7 +42,8 @@ public class ToolBelt extends JavaPlugin {
 	public void onEnable() {
 		if(loadConf()) {
 			// Register our events
-			getServer().getPluginManager().registerEvents(new ToolListener(this), this);
+			getServer().getPluginManager().registerEvents(
+					new ToolListener(this), this);
 
 			//Print yadp loaded message
 			if(debug) {
@@ -56,7 +57,8 @@ public class ToolBelt extends JavaPlugin {
 		}
 	}
 
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
+	public boolean onCommand(CommandSender sender, Command cmd,
+			String commandLabel, String[] args){
 		//Safety check for determining console status
 		boolean console = true;
 		if (sender instanceof Player) {
@@ -67,13 +69,14 @@ public class ToolBelt extends JavaPlugin {
 				cmd.getName().equalsIgnoreCase("tb")   ) &&(args.length == 1)){
 			if(args[0].contentEquals("reload")) {
 				if(hasAdminPerm(sender,lowName+".reload")) {
-					if(!console) log.info("["+cName+"] "+sender.getName()+" Just ran /toolbelt reload");
+					if(!console) log.info("["+cName+"] "+sender.getName()+
+							" Just ran /toolbelt reload");
 					this.reloadConfig();
 					if(loadConf())
 						sender.sendMessage("Configuration file config.yml has been reloaded");
 					else {
 						sender.sendMessage("[WARNING] Configuration file load error, "+
-						"check console logs");
+								"check console logs");
 						tools = new ArrayList<ToolInterface>();
 						sender.sendMessage("[WARNING] Tools have been disabled until "+
 								"a valid config file is loaded");

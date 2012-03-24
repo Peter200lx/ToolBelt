@@ -114,7 +114,7 @@ public class Scroll extends Tool {
 						data = simpScroll(event, (byte)(data&0x07), 2, 6);
 						break;
 					case CHEST:
-						//It doesn't look like CHEST can be safely scrolled because of double chests.
+						//CHEST can not be safely scrolled because of double chests.
 						p.sendMessage(clicked.getType()+" is not scrollable");
 						return;
 					case STONE_PLATE:
@@ -156,7 +156,8 @@ public class Scroll extends Tool {
 							data |= 0x04;
 						break;
 					case BREWING_STAND:
-						p.sendMessage("Stand data just is for visual indication of placed glass bottles");
+						p.sendMessage("Stand data just is for visual indication"+
+								" of placed glass bottles");
 						return;
 					default:
 						p.sendMessage(clicked.getType()+" is not yet scrollable");
@@ -221,7 +222,8 @@ public class Scroll extends Tool {
 					if(type != null) {
 						if(supported.containsKey(type)) {
 							holdDataMap.put(type, supported.get(type));
-							if(isDebug()) log.info( "["+modName+"][loadConf] "+name+" allow: "+type);
+							if(isDebug()) log.info( "["+modName+"][loadConf] "+
+									name+" allow: "+type);
 						} else {
 							log.warning("["+modName+"] "+tSet+"."+name+".allow: '" + entry +
 										"' is not supported for scrolling" );
@@ -236,7 +238,8 @@ public class Scroll extends Tool {
 			}
 			dataMap = holdDataMap;
 		} else {
-			if(isDebug()) log.info( "["+modName+"][loadConf] "+name+" loadout set to all plugin supported materials");
+			if(isDebug()) log.info( "["+modName+"][loadConf] "+name+
+					" loadout set to all plugin supported materials");
 			dataMap = supported;
 		}
 		return true;

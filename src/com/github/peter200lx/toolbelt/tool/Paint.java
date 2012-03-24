@@ -28,7 +28,8 @@ public class Paint extends Tool  {
 	private Integer rangeDef = 0;
 	private Integer rangeCrouch = 25;
 
-	private HashMap<String, HashMap<Integer, MaterialData>> pPalette = new HashMap<String, HashMap<Integer, MaterialData>>();
+	private HashMap<String, HashMap<Integer, MaterialData>> pPalette =
+			new HashMap<String, HashMap<Integer, MaterialData>>();
 
 	@Override
 	public String getToolName() {
@@ -51,17 +52,20 @@ public class Paint extends Tool  {
 				target = subject.getTargetBlock(null, 200).getState().getData();
 			if(!stopCopy.contains(target.getItemType()) && ( onlyAllow.isEmpty() ||
 					onlyAllow.contains(target.getItemType()) ) ){
-				pPalette.get(subject.getName()).put(subject.getInventory().getHeldItemSlot(), target );
+				pPalette.get(subject.getName()).put(
+						subject.getInventory().getHeldItemSlot(), target );
 				paintPrint("Paint is now ",subject,target);
 			} else {
 				subject.sendMessage(ChatColor.RED + "Was not able to grab a block to paint.");
-				MaterialData old = pPalette.get(subject.getName()).get(subject.getInventory().getHeldItemSlot());
+				MaterialData old = pPalette.get(subject.getName()).get(
+						subject.getInventory().getHeldItemSlot());
 				paintPrint("Paint is still ",subject,old);
 			}
 		} else if(event.getAction().equals(Action.RIGHT_CLICK_AIR)	||
 				event.getAction().equals(Action.RIGHT_CLICK_BLOCK)	){
 			//Draw paint
-			MaterialData set = pPalette.get(subject.getName()).get(subject.getInventory().getHeldItemSlot());
+			MaterialData set = pPalette.get(subject.getName()).get(
+					subject.getInventory().getHeldItemSlot());
 			if(set != null) {
 				Block target = null;
 				if(hasRangePerm(subject) && event.getAction().equals(Action.RIGHT_CLICK_AIR) ){
@@ -78,7 +82,8 @@ public class Paint extends Tool  {
 					if(target.getType().equals(Material.AIR))
 						subject.sendMessage(ChatColor.RED + "Target is out of range");
 					else
-						subject.sendMessage(ChatColor.RED + "You can't overwrite "+ChatColor.GOLD+target.getType());
+						subject.sendMessage(ChatColor.RED + "You can't overwrite "+
+								ChatColor.GOLD+target.getType());
 				}
 			}
 		}
@@ -125,7 +130,8 @@ public class Paint extends Tool  {
 					sender.sendMessage("Be careful, you can paint at a range of up to "+
 						rangeDef+" blocks.");
 				if(rangeCrouch > 0)
-					sender.sendMessage("If you crouch, you can paint at a range of "+rangeCrouch);
+					sender.sendMessage("If you crouch, you can paint at a range of "+
+							rangeCrouch);
 			}
 			return true;
 		}
@@ -142,8 +148,10 @@ public class Paint extends Tool  {
 		rangeDef = conf.getInt(tSet+"."+name+".rangeDefault", 0);
 		rangeCrouch = conf.getInt(tSet+"."+name+".rangeCrouch", 25);
 		if(isDebug()) {
-			log.info("["+modName+"][loadConf] Default painting range distance is set to "+rangeDef);
-			log.info("["+modName+"][loadConf] Crouched painting range distance is set to "+rangeCrouch);
+			log.info("["+modName+"][loadConf] Default painting range distance is set to "+
+					rangeDef);
+			log.info("["+modName+"][loadConf] Crouched painting range distance is set to "+
+					rangeCrouch);
 		}
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".onlyAllow");
@@ -151,7 +159,8 @@ public class Paint extends Tool  {
 		if(!intL.isEmpty())
 		{
 			if(isDebug())
-				log.info( "["+modName+"][loadConf] As "+name+".onlyAllow has items, it overwrites the global");
+				log.info( "["+modName+"][loadConf] As "+name+".onlyAllow has items,"+
+						" it overwrites the global");
 
 			onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+name+".onlyAllow");
 			if(onlyAllow == null)
@@ -159,10 +168,12 @@ public class Paint extends Tool  {
 
 			if(isDebug()) {
 				logMatSet(onlyAllow,"loadGlobalRestrictions",name+".onlyAllow:");
-				log.info( "["+modName+"][loadConf] As "+name+".onlyAllow has items, only those materials are usable");
+				log.info( "["+modName+"][loadConf] As "+name+".onlyAllow has items,"+
+						" only those materials are usable");
 			}
 		} else if(isDebug()&& !onlyAllow.isEmpty()) {
-			log.info( "["+modName+"][loadConf] As global.onlyAllow has items, only those materials are usable");
+			log.info( "["+modName+"][loadConf] As global.onlyAllow has items,"+
+					" only those materials are usable");
 		}
 
 		intL = conf.getIntegerList(tSet+"."+name+".stopCopy");
@@ -170,7 +181,8 @@ public class Paint extends Tool  {
 		if(!intL.isEmpty())
 		{
 			if(isDebug())
-				log.info( "["+modName+"][loadConf] As "+name+".stopCopy has items, it overwrites the global");
+				log.info( "["+modName+"][loadConf] As "+name+".stopCopy has items,"+
+						" it overwrites the global");
 
 			stopCopy = loadMatList(intL,defStop(),tSet+"."+name+".stopCopy");
 			if(stopCopy == null)
@@ -184,13 +196,15 @@ public class Paint extends Tool  {
 		if(!intL.isEmpty())
 		{
 			if(isDebug())
-				log.info( "["+modName+"][loadConf] As "+name+".stopOverwrite has items, it overwrites the global");
+				log.info( "["+modName+"][loadConf] As "+name+".stopOverwrite has items,"+
+						" it overwrites the global");
 
 			stopOverwrite = loadMatList(intL,defStop(),tSet+"."+name+".stopOverwrite");
 			if(stopOverwrite == null)
 				return false;
 
-			if(isDebug()) logMatSet(stopOverwrite,"loadGlobalRestrictions",name+".stopOverwrite:");
+			if(isDebug()) logMatSet(stopOverwrite,"loadGlobalRestrictions",
+					name+".stopOverwrite:");
 		}
 		return true;
 	}

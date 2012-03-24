@@ -64,7 +64,8 @@ public class Duplicator extends Tool {
 					type.equals(Material.LOG)&&toUse.equals(Material.SAPLING)||
 					type.equals(Material.LEAVES)&&toUse.equals(Material.LOG) ||
 					type.equals(Material.LEAVES)&&toUse.equals(Material.SAPLING)	)	) {
-				subject.getInventory().addItem(new ItemStack(toUse, 64, (short) 0, clicked.getData()));
+				subject.getInventory().addItem(new ItemStack(toUse,
+						64, (short) 0, clicked.getData()));
 			} else {
 				subject.getInventory().addItem(new ItemStack(toUse, 64));
 			}
