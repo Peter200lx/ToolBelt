@@ -119,7 +119,7 @@ public abstract class Tool implements ToolInterface {
 
 	protected String data2Str(MaterialData b) {
 		byte data = b.getData();
-		if(isDebug()) log.info("["+modName+"][data2str] Block "+b.toString());
+		//if(isDebug()) log.info("["+modName+"][data2str] Block "+b.toString());
 		switch(b.getItemType()) {
 		case LOG:
 			if(((Tree)b).getSpecies() != null)
