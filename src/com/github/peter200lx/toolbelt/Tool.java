@@ -306,12 +306,12 @@ public abstract class Tool implements ToolInterface {
 		case SNOW:
 			if(data == 0x0)			return "1/8 HEIGHT";
 			else if(data == 0x1)	return "2/8 HEIGHT";
-			else if(data == 0x3)	return "3/8 HEIGHT (STEP)";
-			else if(data == 0x4)	return "4/8 HEIGHT (STEP)";
-			else if(data == 0x5)	return "5/8 HEIGHT (STEP)";
-			else if(data == 0x6)	return "6/8 HEIGHT (STEP)";
-			else if(data == 0x7)	return "7/8 HEIGHT (STEP)";
-			else if(data == 0x8)	return "FULL HEIGHT (STEP)";
+			else if(data == 0x2)	return "3/8 HEIGHT (STEP)";
+			else if(data == 0x3)	return "4/8 HEIGHT (STEP)";
+			else if(data == 0x4)	return "5/8 HEIGHT (STEP)";
+			else if(data == 0x5)	return "6/8 HEIGHT (STEP)";
+			else if(data == 0x6)	return "7/8 HEIGHT (STEP)";
+			else if(data == 0x7)	return "FULL HEIGHT (STEP)";
 			else					return ""+data;
 		case CAKE_BLOCK:
 			return ""+((Cake)b).getSlicesRemaining()+"/6 REMAINING";
