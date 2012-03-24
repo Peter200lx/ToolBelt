@@ -1,7 +1,7 @@
 # Sadly there is no nice way to have friendly names. As such,
-#  the material values are used. For instance, the default tool
+#  the material values are used. For instance, two of the tool
 #  bindings are scroll tool to bone, which is 352, and the
-#  duplicator tool is the stone axe, or 275. test
+#  duplicator tool is the stone axe, or 275.
 # 
 # Individual tool configuration option descriptions are found
 #  in the help/<tool>.txt files. Those files will always have
