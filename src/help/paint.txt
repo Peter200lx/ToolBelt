@@ -3,17 +3,21 @@
 # The "tools: bind:" and "tools: global: *:" settings are
 #  specified in greater detail in the config.yml file
 # 
-# tools: paint: range: <true|false>
-#    You can always grab a texture from a distance. Enabling this
-#    allows users of the paint brush to also paint a block from a
-#    distance. This is significantly more dangerous then grabbing
-#    a texture so it only has a range as set in tools.paint.distance.
-#    It also has a permission node: toolbelt.tool.paint.range
-# 
-# tools: paint: distance: <Number of blocks>
-#    If you enable painting at range, after a certain distance, it
+# tools: paint: rangeDefault: <Number of blocks>
+#    You can always grab a texture from a distance. Setting this
+#    to a non-zero value allows users of the paint brush to also
+#    paint a block from a distance. After a certain distance, it
 #    is hard to be accurate. It is suggested to leave the number as
-#    is, or experiment to find what feels safe.
+#    is and modify rangeCrouch. In order to use the paintbrush at
+#    range, if permissions are enabled, as user must have:
+#        toolbelt.tool.paint.range
+# 
+# tools: paint: rangeCrouch: <Number of blocks>
+#    This follows the same rules as rangeDefault, including the use
+#    of the same permission node. It is safer to have this at a non-
+#    zero number as a user can only use this range while crouching.
+#    This tries to force the user to specifically choose to paint
+#    distant blocks. However both of these can be modified as wished.
 # 
 # tools: paint: onlyAllow:  <[]|[ <id>, ...]>
 #    Read the tools.global.onlyAllow help in config.yml for details.
@@ -36,8 +40,8 @@ tools:
     stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
     stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
   paint:
-    range: false
-    distance: 25
+    rangeDefault: 0
+    rangeCrouch: 25
     onlyAllow: []
     stopCopy: []
     stopOverwrite: []

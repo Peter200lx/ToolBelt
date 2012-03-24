@@ -88,8 +88,8 @@ tools:
     override: false
     allow: [35, 43, 44, 98]
   paint:
-    range: false
-    distance: 25
+    rangeDefault: 0
+    rangeCrouch: 25
     onlyAllow: []
     stopCopy: []
     stopOverwrite: []

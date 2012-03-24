@@ -25,9 +25,8 @@ public class Paint extends Tool  {
 
 	public static String name = "paint";
 
-	private boolean range = false;
-
-	private Integer dist = 25;
+	private Integer rangeDef = 0;
+	private Integer rangeCrouch = 25;
 
 	private HashMap<String, HashMap<Integer, MaterialData>> pPalette = new HashMap<String, HashMap<Integer, MaterialData>>();
 
@@ -65,8 +64,11 @@ public class Paint extends Tool  {
 			MaterialData set = pPalette.get(subject.getName()).get(subject.getInventory().getHeldItemSlot());
 			if(set != null) {
 				Block target = null;
-				if(range && hasRangePerm(subject) && event.getAction().equals(Action.RIGHT_CLICK_AIR) ){
-					target = subject.getTargetBlock(null, dist);
+				if(hasRangePerm(subject) && event.getAction().equals(Action.RIGHT_CLICK_AIR) ){
+					if((rangeDef > 0) && !subject.isSneaking())
+						target = subject.getTargetBlock(null, rangeDef);
+					else if((rangeCrouch > 0)&& subject.isSneaking())
+						target = subject.getTargetBlock(null, rangeCrouch);
 				}else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 					target = event.getClickedBlock();
 				if(target != null && !stopOverwrite.contains(target.getType())       &&
@@ -118,9 +120,13 @@ public class Paint extends Tool  {
 					" to load a block into your paintbrush");
 			sender.sendMessage("Right-click with the "+getType()+
 					" to paint that block");
-			if(range)
-				sender.sendMessage("Be careful, you can paint at a range of up to "+
-						dist+" blocks.");
+			if(hasRangePerm(sender)) {
+				if(rangeDef > 0)
+					sender.sendMessage("Be careful, you can paint at a range of up to "+
+						rangeDef+" blocks.");
+				if(rangeCrouch > 0)
+					sender.sendMessage("If you crouch, you can paint at a range of "+rangeCrouch);
+			}
 			return true;
 		}
 		return false;
@@ -128,19 +134,17 @@ public class Paint extends Tool  {
 
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
-		range = conf.getBoolean(tSet+"."+name+".range", false);
-		if(isDebug()) log.info("["+modName+"][loadConf] Painting at range is set to "+range);
-
-		dist = conf.getInt(tSet+"."+name+".distance", 25);
-		if(isDebug()) {
-			log.info("["+modName+"][loadConf] Painting range distance is set to "+dist);
-			if(!range) log.info("["+modName+"][loadConf] Painting range "+
-						"distance is set even if it is not enabled");
-		}
 
 		//Load the default restriction configuration
 		if(!loadGlobalRestrictions(tSet,conf))
 			return false;
+
+		rangeDef = conf.getInt(tSet+"."+name+".rangeDefault", 0);
+		rangeCrouch = conf.getInt(tSet+"."+name+".rangeCrouch", 25);
+		if(isDebug()) {
+			log.info("["+modName+"][loadConf] Default painting range distance is set to "+rangeDef);
+			log.info("["+modName+"][loadConf] Crouched painting range distance is set to "+rangeCrouch);
+		}
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".onlyAllow");
 
