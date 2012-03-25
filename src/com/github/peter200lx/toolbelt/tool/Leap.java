@@ -1,6 +1,7 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -13,8 +14,9 @@ import com.github.peter200lx.toolbelt.Tool;
 
 public class Leap extends Tool {
 
-	public Leap(String modName, boolean debug, boolean permissions) {
-		super(modName, debug, permissions);
+	public Leap(String modName, Server server, boolean debug,
+			boolean permissions, boolean useEvent) {
+		super(modName, server, debug, permissions, useEvent);
 	}
 
 	public static String name = "leap";

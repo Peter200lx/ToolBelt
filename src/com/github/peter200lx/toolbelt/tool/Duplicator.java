@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,8 +21,8 @@ import com.github.peter200lx.toolbelt.Tool;
 
 public class Duplicator extends Tool {
 
-	public Duplicator(String modName, boolean debug, boolean permissions) {
-		super(modName, debug, permissions);
+	public Duplicator(String modName, Server server, boolean debug, boolean permissions, boolean useEvent) {
+		super(modName, server, debug, permissions, useEvent);
 	}
 
 	public static String name = "dupe";

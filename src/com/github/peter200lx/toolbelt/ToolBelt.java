@@ -31,6 +31,8 @@ public class ToolBelt extends JavaPlugin {
 
 	private boolean permissions;
 
+	private boolean useEvent;
+
 	public List<ToolInterface> tools;
 
 	@Override
@@ -140,6 +142,10 @@ public class ToolBelt extends JavaPlugin {
 		permissions = conf.getBoolean("permissions", true);
 		if(debug) log.info( "["+cName+"][loadConf] permmissions are "+permissions);
 
+		//Check and set the useEvent flag
+		useEvent = conf.getBoolean("useEvent", true);
+		if(debug) log.info( "["+cName+"][loadConf] The plugin will use Block Events: "+useEvent);
+
 		ConfigurationSection sect = conf.getConfigurationSection(tSet+".bind");
 
 		if(sect == null) {
@@ -148,10 +154,11 @@ public class ToolBelt extends JavaPlugin {
 		}
 
 		HashMap<String,Tool> available = new HashMap<String,Tool>();
-		available.put(Duplicator.name, new Duplicator(cName,debug,permissions));
-		available.put(Scroll.name, new Scroll(cName,debug,permissions));
-		available.put(Paint.name, new Paint(cName,debug,permissions));
-		available.put(Leap.name, new Leap(cName,debug,permissions));
+		available.put(Duplicator.name, new Duplicator(cName,this.getServer(),
+				debug,permissions,useEvent));
+		available.put(Scroll.name, new Scroll(cName,this.getServer(),debug,permissions,useEvent));
+		available.put(Paint.name, new Paint(cName,this.getServer(),debug,permissions,useEvent));
+		available.put(Leap.name, new Leap(cName,this.getServer(),debug,permissions,useEvent));
 
 		List<ToolInterface> holdTool = new ArrayList<ToolInterface>();
 		for(Entry<String, Object> entry :sect.getValues(false).entrySet()) {

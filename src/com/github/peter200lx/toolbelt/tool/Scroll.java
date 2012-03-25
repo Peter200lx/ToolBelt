@@ -9,6 +9,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.TreeSpecies;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -29,8 +30,9 @@ import com.github.peter200lx.toolbelt.Tool;
 
 public class Scroll extends Tool {
 
-	public Scroll(String modName, boolean debug, boolean permissions) {
-		super(modName, debug, permissions);
+	public Scroll(String modName, Server server, boolean debug,
+			boolean permissions, boolean useEvent) {
+		super(modName, server, debug, permissions, useEvent);
 	}
 
 	public static String name = "scroll";
@@ -166,12 +168,21 @@ public class Scroll extends Tool {
 					}
 				}
 
-				clicked.setData(data, false);
-				event.getPlayer().sendBlockChange(clicked.getLocation(), clicked.getType(), data);
-
-				event.getPlayer().sendMessage(ChatColor.GREEN + "Block is now " + ChatColor.GOLD +
-						clicked.getType() + ChatColor.WHITE + ":" +
-						ChatColor.BLUE + data2Str(clicked.getState().getData()));
+				MaterialData newInfo = clicked.getState().getData();
+				newInfo.setData(data);
+				if(spawnBuild(clicked,event.getPlayer())) {
+					if(isUseEvent()) {
+						if(safeReplace(newInfo,clicked,event.getPlayer(),true))
+							event.getPlayer().sendMessage(ChatColor.GREEN + "Block is now " +
+									ChatColor.GOLD + clicked.getType() + ChatColor.WHITE + ":" +
+									ChatColor.BLUE + data2Str(clicked.getState().getData()));
+					}else {
+						clicked.setTypeIdAndData(newInfo.getItemTypeId(), newInfo.getData(), false);
+						event.getPlayer().sendMessage(ChatColor.GREEN + "Block is now " +
+								ChatColor.GOLD + clicked.getType() + ChatColor.WHITE + ":" +
+								ChatColor.BLUE + data2Str(clicked.getState().getData()));
+					}
+				}
 			}
 		}
 	}

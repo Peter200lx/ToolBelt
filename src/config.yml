@@ -18,6 +18,15 @@
 #    If that is the case, set this to false to disable
 #    permission checking.
 # 
+# useEvent: <true|false>
+#    If you have a region restricting plugin like WorldGuard
+#    or a logging plugin like LogBlock, having this enabled
+#    should follow the region restrictions, and log changes.
+#    If you don't care about such protection, you should be
+#    able to disable this. If you find a plugin that does
+#    not integrate with this option, please open an issue at:
+#    https://github.com/Peter200lx/ToolBelt/issues
+# 
 # tools: bind: <tool>: <id>
 #    This gives a mapping of what item to use for what tool.
 #    If a tool is not wanted, you can disable it by removing
@@ -63,6 +72,7 @@
 
 debug: false
 permissions: true
+useEvent: true
 tools:
   bind:
     dupe: 275   # STONE_AXE

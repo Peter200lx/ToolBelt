@@ -1,5 +1,6 @@
 package com.github.peter200lx.toolbelt.tool;
 
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -20,8 +21,9 @@ import com.github.peter200lx.toolbelt.Tool;
 //available.put(Example.name, new Example(cName,debug,permissions));
 public class Example extends Tool  {
 
-	protected Example(String modName, boolean debug, boolean permissions) {
-		super(modName, debug, permissions);
+	protected Example(String modName, Server server, boolean debug,
+			boolean permissions, boolean useEvent) {
+		super(modName, server, debug, permissions, useEvent);
 		// You shouldn't need to add anything here. However if you have
 		//  something you want to setup when the tool is loaded/reloaded
 		//  you can put that logic here.

@@ -4,12 +4,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Server;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.material.Cake;
 import org.bukkit.material.Coal;
@@ -40,10 +48,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class Tool implements ToolInterface {
 
-	protected Tool(String modName, boolean debug, boolean permissions) {
+	protected Tool(String modName, Server server, boolean debug,
+			boolean permissions, boolean useEvent) {
 		this.modName = modName;
+		this.server = server;
 		this.debug = debug;
 		this.permissions = permissions;
+		this.useEvent = useEvent;
 		setPrintData();
 	}
 
@@ -55,9 +66,13 @@ public abstract class Tool implements ToolInterface {
 
 	private Material type;
 
+	protected Server server;
+
 	private boolean debug;
 
 	private boolean permissions;
+
+	private boolean useEvent;
 
 	protected HashSet<Material> onlyAllow;
 
@@ -84,6 +99,10 @@ public abstract class Tool implements ToolInterface {
 
 	protected boolean isPermissions() {
 		return permissions;
+	}
+
+	protected boolean isUseEvent() {
+		return useEvent;
 	}
 
 	protected String getPermStr() {
@@ -122,6 +141,41 @@ public abstract class Tool implements ToolInterface {
 	public void saveHelp(JavaPlugin host) {
 		if(isDebug()) log.info("["+modName+"] Help saved for: "+getToolName());
 		host.saveResource("help/"+getToolName()+".txt", true);
+	}
+
+	protected boolean spawnBuild(Block target, Player subject) {
+		int spawnSize = server.getSpawnRadius();
+		if (subject.isOp())
+			return true;
+		else if(spawnSize <= 0)
+			return true;
+		else {
+			Location spawn = target.getWorld().getSpawnLocation();
+			int distanceFromSpawn = (int) Math.max(
+					Math.abs(target.getX() - spawn.getX()),
+					Math.abs(target.getZ() - spawn.getZ()));
+			return (distanceFromSpawn > spawnSize);
+		}
+	}
+
+	//This is only needed if breaking a block and not replacing it with a new block
+	protected boolean safeBreak(Block target, Player subject, boolean applyPhysics) {
+		BlockBreakEvent canBreak = new BlockBreakEvent(target.getState().getBlock(),subject);
+		server.getPluginManager().callEvent(canBreak);
+		if(!canBreak.isCancelled())
+			target.setTypeId(0, applyPhysics);
+		return !canBreak.isCancelled();
+	}
+
+	protected boolean safeReplace(MaterialData newInfo, Block old, Player subject, boolean canBuild) {
+		BlockState oldInfo = old.getState();
+		old.setTypeIdAndData(newInfo.getItemTypeId(), newInfo.getData(), false);
+		ItemStack type = newInfo.toItemStack();
+		BlockPlaceEvent canPlace = new BlockPlaceEvent(old,oldInfo,old,type,subject,canBuild);
+		server.getPluginManager().callEvent(canPlace);
+		if(canPlace.isCancelled())
+			old.setTypeIdAndData(oldInfo.getTypeId(), oldInfo.getData().getData(), false);
+		return !canPlace.isCancelled();
 	}
 
 	protected boolean loadGlobalRestrictions(String tSet, FileConfiguration conf) {

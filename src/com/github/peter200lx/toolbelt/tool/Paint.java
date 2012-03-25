@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,8 +20,9 @@ import com.github.peter200lx.toolbelt.Tool;
 
 public class Paint extends Tool  {
 
-	public Paint(String modName, boolean debug, boolean permissions) {
-		super(modName, debug, permissions);
+	public Paint(String modName, Server server, boolean debug,
+			boolean permissions, boolean useEvent) {
+		super(modName, server, debug, permissions, useEvent);
 	}
 
 	public static String name = "paint";
@@ -77,7 +79,12 @@ public class Paint extends Tool  {
 					target = event.getClickedBlock();
 				if(target != null && !stopOverwrite.contains(target.getType())       &&
 						(onlyAllow.isEmpty() || onlyAllow.contains(target.getType())) ){
-					target.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
+					if(spawnBuild(target,subject)) {
+						if(isUseEvent())
+							safeReplace(set,target,subject,true);
+						else
+							target.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
+					}
 				}else if(target != null) {
 					if(target.getType().equals(Material.AIR))
 						subject.sendMessage(ChatColor.RED + "Target is out of range");
