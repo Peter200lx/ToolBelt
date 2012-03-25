@@ -87,7 +87,7 @@ public abstract class Tool implements ToolInterface {
 	}
 
 	protected String getPermStr() {
-		return modName.toLowerCase()+".tool."+name;
+		return modName.toLowerCase()+".tool."+getToolName();
 	}
 
 	//This catches left/right click events
