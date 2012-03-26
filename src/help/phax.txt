@@ -19,5 +19,5 @@ tools:
     onlyAllow: []
     stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
   phax:
-    onlyllow: []
+    onlyAllow: []
     stopOverwrite: []

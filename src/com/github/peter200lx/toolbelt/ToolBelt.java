@@ -161,7 +161,7 @@ public class ToolBelt extends JavaPlugin {
 		available.put(Paint.name, new Paint(cName,this.getServer(),debug,permissions,useEvent));
 		available.put(Leap.name, new Leap(cName,this.getServer(),debug,permissions,useEvent));
 		available.put(Pickhax.name, new Pickhax(cName,this.getServer(),debug,permissions,useEvent));
-		
+
 		List<ToolInterface> holdTool = new ArrayList<ToolInterface>();
 		for(Entry<String, Object> entry :sect.getValues(false).entrySet()) {
 			if(entry.getValue() instanceof Number) {
