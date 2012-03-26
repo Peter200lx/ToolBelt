@@ -54,10 +54,10 @@ public class Scroll extends Tool {
 				if(isDebug()) log.info("["+modName+"][scrollTool] "+p.getName()+
 						" clicked "+clicked.getState().getData());
 				if(p.getGameMode().equals(GameMode.CREATIVE)		&&
-						act.equals(Action.LEFT_CLICK_BLOCK)			&&
+						act.equals(Action.LEFT_CLICK_BLOCK)			&&(
 						clicked.getType().equals(Material.SIGN_POST)||
-						clicked.getType().equals(Material.WALL_SIGN)){
-						p.sendMessage("The sign is not erased on the server, "+
+						clicked.getType().equals(Material.WALL_SIGN))){
+					p.sendMessage("The sign is not erased on the server, "+
 								"it is just client side");
 				}
 
@@ -172,12 +172,15 @@ public class Scroll extends Tool {
 				newInfo.setData(data);
 				if(spawnBuild(clicked,event.getPlayer())) {
 					if(isUseEvent()) {
-						if(safeReplace(newInfo,clicked,event.getPlayer(),true))
+						if(safeReplace(newInfo,clicked,event.getPlayer(),true)) {
+							event.getPlayer().sendBlockChange(clicked.getLocation(), clicked.getType(), data);
 							event.getPlayer().sendMessage(ChatColor.GREEN + "Block is now " +
 									ChatColor.GOLD + clicked.getType() + ChatColor.WHITE + ":" +
 									ChatColor.BLUE + data2Str(clicked.getState().getData()));
+						}
 					}else {
-						clicked.setTypeIdAndData(newInfo.getItemTypeId(), newInfo.getData(), false);
+						clicked.setData(data, false);
+						event.getPlayer().sendBlockChange(clicked.getLocation(), clicked.getType(), data);
 						event.getPlayer().sendMessage(ChatColor.GREEN + "Block is now " +
 								ChatColor.GOLD + clicked.getType() + ChatColor.WHITE + ":" +
 								ChatColor.BLUE + data2Str(clicked.getState().getData()));

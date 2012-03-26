@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -167,14 +168,52 @@ public abstract class Tool implements ToolInterface {
 		return !canBreak.isCancelled();
 	}
 
+	@SuppressWarnings("deprecation") //Replace ContainerBlock with InventoryHolder once not
+	// supporting CB-1.1-R4
 	protected boolean safeReplace(MaterialData newInfo, Block old, Player subject, boolean canBuild) {
 		BlockState oldInfo = old.getState();
-		old.setTypeIdAndData(newInfo.getItemTypeId(), newInfo.getData(), false);
+		if(oldInfo.getType().equals(Material.SIGN_POST)         ||
+				oldInfo.getType().equals(Material.WALL_SIGN)    ||
+				newInfo.getItemType().equals(Material.SIGN_POST)||
+				newInfo.getItemType().equals(Material.WALL_SIGN)){
+			//LogBlock doesn't catch BlockPlaceEvent's having to do with signs
+			subject.sendMessage(ChatColor.RED + "Plugin doesn't support writing or overwriting "+
+					ChatColor.GOLD+"Signs");
+			return false;
+		}else if(oldInfo.getType().equals(newInfo.getItemType()))
+			old.setData(newInfo.getData(), false);
+		else if(oldInfo instanceof org.bukkit.block.ContainerBlock) {
+			subject.sendMessage(ChatColor.RED + "Plugin doesn't support overwriting "+
+					ChatColor.GOLD+"Container Blocks");
+			return false;
+		}else if(oldInfo.getType().equals(Material.SIGN_POST)||
+				oldInfo.getType().equals(Material.WALL_SIGN) ){
+			subject.sendMessage(ChatColor.RED + "Plugin doesn't support overwriting "+
+					ChatColor.GOLD+"Signs");
+			return false;
+		}else if(oldInfo.getType().equals(Material.NOTE_BLOCK)) {
+			subject.sendMessage(ChatColor.RED + "Plugin doesn't support overwriting "+
+					ChatColor.GOLD+"NoteBlocks");
+			return false;
+		}else if(oldInfo.getType().equals(Material.JUKEBOX)) {
+			subject.sendMessage(ChatColor.RED + "Plugin doesn't support overwriting "+
+					ChatColor.GOLD+"Jukeboxs");
+			return false;
+		}else if(oldInfo.getType().equals(Material.MOB_SPAWNER)) {
+			subject.sendMessage(ChatColor.RED + "Plugin doesn't support overwriting "+
+					ChatColor.GOLD+"CreatureSpawners");
+			return false;
+		}else
+			old.setTypeIdAndData(newInfo.getItemTypeId(), newInfo.getData(), false);
 		ItemStack type = newInfo.toItemStack();
 		BlockPlaceEvent canPlace = new BlockPlaceEvent(old,oldInfo,old,type,subject,canBuild);
 		server.getPluginManager().callEvent(canPlace);
-		if(canPlace.isCancelled())
-			old.setTypeIdAndData(oldInfo.getTypeId(), oldInfo.getData().getData(), false);
+		if(canPlace.isCancelled()) {
+			if(oldInfo.getType().equals(newInfo.getItemType()))
+				old.setData(oldInfo.getRawData(), false);
+			else
+				old.setTypeIdAndData(oldInfo.getTypeId(), oldInfo.getRawData(), false);
+		}
 		return !canPlace.isCancelled();
 	}
 
@@ -258,6 +297,7 @@ public abstract class Tool implements ToolInterface {
 		stop.add(Material.PISTON_EXTENSION);
 		stop.add(Material.PISTON_MOVING_PIECE);
 		stop.add(Material.FIRE);
+		stop.add(Material.CHEST);
 		stop.add(Material.WOODEN_DOOR);
 		stop.add(Material.IRON_DOOR_BLOCK);
 		return stop;

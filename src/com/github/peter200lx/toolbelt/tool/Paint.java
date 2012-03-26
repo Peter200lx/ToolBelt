@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
@@ -48,9 +49,15 @@ public class Paint extends Tool  {
 				event.getAction().equals(Action.LEFT_CLICK_BLOCK)	){
 			//Acquire paint
 			MaterialData target = null;
-			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK))
+			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 				target = event.getClickedBlock().getState().getData();
-			else
+				if(subject.getGameMode().equals(GameMode.CREATIVE)      &&(
+						target.getItemType().equals(Material.SIGN_POST) ||
+						target.getItemType().equals(Material.WALL_SIGN))){
+					subject.sendMessage("The sign is not erased on the server, "+
+								"it is just client side");
+				}
+			}else
 				target = subject.getTargetBlock(null, 200).getState().getData();
 			if(!stopCopy.contains(target.getItemType()) && ( onlyAllow.isEmpty() ||
 					onlyAllow.contains(target.getItemType()) ) ){
