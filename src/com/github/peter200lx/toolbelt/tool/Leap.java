@@ -114,7 +114,7 @@ public class Leap extends Tool {
 		if(hasPerm(sender)) {
 			sender.sendMessage("Right-Click with the "+getType()+
 					" to make magnificent leaps");
-			if(hasPerm(sender)&&leapTeleport)
+			if(hasTeleportPerm(sender)&&leapTeleport)
 				sender.sendMessage("Crouch while leaping to teleport");
 			return true;
 		}
