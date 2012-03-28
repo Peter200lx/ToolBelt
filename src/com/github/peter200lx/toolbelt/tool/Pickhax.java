@@ -3,6 +3,7 @@ package com.github.peter200lx.toolbelt.tool;
 import java.util.HashSet;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
@@ -45,6 +46,9 @@ public class Pickhax extends Tool  {
 					else
 						target.setTypeId(0,physics);
 				}
+			}else if(target != null) {
+				event.getPlayer().sendMessage(ChatColor.RED + "You can't insta-delete "+
+						ChatColor.GOLD+target.getType());
 			}
 		}
 	}
