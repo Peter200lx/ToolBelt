@@ -79,6 +79,7 @@ tools:
     scroll: 352 # BONE
     paint: 341  # SLIME_BALL
     leap: 288   # FEATHER
+    phax: 278   # DIAMOND_PICK
   global:
     onlyAllow: []
     stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
@@ -108,4 +109,7 @@ tools:
     thrust: 8
     cruise: 110
     teleport: false
+  phax:
+    onlyAllow: []
+    stopOverwrite: []
 
