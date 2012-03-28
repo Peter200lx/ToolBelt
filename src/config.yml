@@ -85,12 +85,13 @@ tools:
     stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
   dupe:
     replace:
-      7: 260    # BEDROCK to APPLE
+      7: 0      # BEDROCK to AIR (Disable duplication entirely)
       8: 326    # WATER to WATER_BUCKET
       9: 326    # STATIONARY_WATER to WATER_BUCKET
       10: 327   # LAVA to LAVA_BUCKET
       11: 327   # STATIONARY_LAVA to LAVA_BUCKET
       78: 332   # SNOW to SNOW_BALL
+      59: 295   # CROPS to SEEDS
       104: 361  # PUMPKIN_STEM to PUMPKIN_SEEDS
       105: 362  # MELON_STEM to MELON_SEEDS
     keepData: [6, 17, 18, 31, 35, 43, 44, 98, 263, 351, 373, 374]

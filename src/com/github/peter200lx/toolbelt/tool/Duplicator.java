@@ -51,8 +51,8 @@ public class Duplicator extends Tool {
 			if(toUse == null)
 				toUse = type;
 			if(toUse == Material.AIR) {
-				subject.sendMessage(ChatColor.GREEN + "Duplicating " + ChatColor.GOLD +
-						type.toString()+ ChatColor.GREEN + "is disabled");
+				subject.sendMessage(ChatColor.RED + "Duplicating " + ChatColor.GOLD +
+						type.toString()+ ChatColor.RED + " is disabled");
 				return;
 			}
 
@@ -108,7 +108,7 @@ public class Duplicator extends Tool {
 				int key = Integer.parseInt(entry.getKey());
 				if(entry.getValue() instanceof Number) {
 					int val = ((Number)entry.getValue()).intValue();
-					if((key > 0)&&(val > 0)) {
+					if((key > 0)&&(val >= 0)) {
 						Material keyType = Material.getMaterial(key);
 						Material valType = Material.getMaterial(val);
 						if((keyType != null)&&(valType != null)) {
@@ -150,7 +150,6 @@ public class Duplicator extends Tool {
 		dm.put(Material.BED_BLOCK, Material.BED);
 		dm.put(Material.PISTON_EXTENSION, Material.PISTON_BASE);
 		dm.put(Material.PISTON_MOVING_PIECE, Material.PISTON_BASE);
-		dm.put(Material.CROPS, Material.SEEDS);
 		//Material.DOUBLE_STEP This is fine for someone to have
 		//Can anyone even click on Material.FIRE ? No
 		//Do we want to block Material.MOB_SPAWNER ?
