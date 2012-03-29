@@ -133,11 +133,9 @@ public abstract class Tool implements ToolInterface {
 	//This is for printing use instructions for a player
 	public abstract boolean printUse(CommandSender sender);
 
-	public boolean loadConf(String tSet, FileConfiguration conf) {
-		//All tools should override this IF they have
-		//  configuration options they need to grab.
-		return false;
-	}
+	//All tools must override this, however they can just return true; if
+	//  they have no data to load.
+	public abstract boolean loadConf(String tSet, FileConfiguration conf);
 
 	public void saveHelp(JavaPlugin host) {
 		if(isDebug()) log.info("["+modName+"] Help saved for: "+getToolName());

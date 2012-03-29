@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.Tool;
 
-//Instructions for setting up a new tool
+//Instructions for setting up a new tool:
 
 //Add permission node(s) to plugin.yml
 
@@ -18,10 +18,10 @@ import com.github.peter200lx.toolbelt.Tool;
 //You will also need to add a line in ToolBelt.java in
 // the loadConf() function.
 //Put the following line (without the //) after the last similar line
-//available.put(Example.name, new Example(cName,debug,permissions));
+//available.put(Example.name, new Example(cName,this.getServer(),debug,permissions,useEvent));
 public class Example extends Tool  {
 
-	protected Example(String modName, Server server, boolean debug,
+	public Example(String modName, Server server, boolean debug,
 			boolean permissions, boolean useEvent) {
 		super(modName, server, debug, permissions, useEvent);
 		// You shouldn't need to add anything here. However if you have
@@ -40,7 +40,7 @@ public class Example extends Tool  {
 	@Override
 	public void handleInteract(PlayerInteractEvent event){
 		//Handle left and right clicks in here
-		// This is where the main logic of your program should go
+		// This is where the main logic of your tool should go
 	}
 
 	@Override
@@ -56,10 +56,10 @@ public class Example extends Tool  {
 
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
-		//This is only needed if you have some tool specific settings
-		//  you want to get from the config.yml file
-		//This file should return true if all data loaded successfully
+		//There only needs to be logic in here if you have tool specific
+		// data you want to load. This function should always be present.
+		//This function should return true if all data loaded successfully
 		//  and return false if it got unknown data from config.yml
-		return false;
+		return true;
 	}
 }
