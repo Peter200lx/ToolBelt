@@ -1,0 +1,9 @@
+# Here are the configuration descriptions for the ruler tool
+# 
+# The "tools: bind:" setting is specified in greater detail
+#  in the config.yml file
+
+
+tools:
+  bind:
+    ruler: 287  # STRING

@@ -28,6 +28,7 @@ permissions:
             toolbelt.tool.leap: true
             toolbelt.tool.leap.tel: true
             toolbelt.tool.phax: true
+            toolbelt.tool.ruler: true
     toolbelt.reload:
         description: Allows the player to reload toolbelt from configuration file.
     toolbelt.tool.dupe:
@@ -44,4 +45,6 @@ permissions:
         description: Allows the player to teleport by crouching while leaping.
     toolbelt.tool.phax:
         description: Allows the player to remove blocks in one click, with or without physics applied.
+    toolbelt.tool.ruler:
+        description: Allows the player to measure distances easily with the ruler.
 
