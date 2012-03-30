@@ -41,27 +41,33 @@ public class Ruler extends Tool  {
 		switch(event.getAction()) {
 		case LEFT_CLICK_BLOCK:
 			ptArray[0] = event.getClickedBlock().getLocation();
-			subject.sendMessage(ChatColor.GREEN+"Point 0 is now: "+ChatColor.GOLD+loc2Str(ptArray[0]));
+			subject.sendMessage(ChatColor.GREEN+"Point 0 is now: "+
+					ChatColor.GOLD+loc2Str(ptArray[0]));
 			break;
 		case RIGHT_CLICK_BLOCK:
 			ptArray[1] = event.getClickedBlock().getLocation();
-			subject.sendMessage(ChatColor.GREEN+"Point 1 is now: "+ChatColor.GOLD+loc2Str(ptArray[1]));
+			subject.sendMessage(ChatColor.GREEN+"Point 1 is now: "+
+					ChatColor.GOLD+loc2Str(ptArray[1]));
 			break;
 		case LEFT_CLICK_AIR:
 			if(subject.isSneaking()) {
 				ptArray[0] = subject.getTargetBlock(null, 0).getLocation();
-				subject.sendMessage(ChatColor.GREEN+"Point 0 is now: "+ChatColor.GOLD+loc2Str(ptArray[0]));
+				subject.sendMessage(ChatColor.GREEN+"Point 0 is now: "+
+						ChatColor.GOLD+loc2Str(ptArray[0]));
 			}else {
-				subject.sendMessage(ChatColor.RED +"Sorry, didn't catch that, try crouching for distance measurement");
+				subject.sendMessage(ChatColor.RED +"Sorry, didn't catch that,"+
+						" try crouching for distance measurement");
 				return;
 			}
 			break;
 		case RIGHT_CLICK_AIR:
 			if(subject.isSneaking()) {
 				ptArray[1] = subject.getTargetBlock(null, 0).getLocation();
-				subject.sendMessage(ChatColor.GREEN+"Point 1 is now: "+ChatColor.GOLD+loc2Str(ptArray[1]));
+				subject.sendMessage(ChatColor.GREEN+"Point 1 is now: "+
+						ChatColor.GOLD+loc2Str(ptArray[1]));
 			}else {
-				subject.sendMessage(ChatColor.RED +"Sorry, didn't catch that, try crouching for distance measurement");
+				subject.sendMessage(ChatColor.RED +"Sorry, didn't catch that,"+
+						" try crouching for distance measurement");
 				return;
 			}
 			break;
@@ -79,9 +85,11 @@ public class Ruler extends Tool  {
 			int vol = widthX * widthY * widthZ;
 			double dist = pt1.distance(pt2);
 			DecimalFormat df = new DecimalFormat("#.##");
-			subject.sendMessage("The width in (x,y,z) is: ("+widthX+","+widthY+","+widthZ+
-					") and the total distance: "+df.format(dist));
-			subject.sendMessage("The volume of the enclosed space is: "+vol);
+			subject.sendMessage(ChatColor.GREEN+"The width in (x,y,z) is: "+ChatColor.GOLD+
+					"("+widthX+","+widthY+","+widthZ+")"+ChatColor.GREEN+
+					" and the total distance: "+ChatColor.GOLD+df.format(dist));
+			subject.sendMessage(ChatColor.GREEN+"The volume of the enclosed space is: "+
+					ChatColor.GOLD+vol);
 		}else if((pt1 != null)&&(pt2 != null)) {
 			//tell user worlds are different
 			if(subject.getWorld().equals(pt1.getWorld()))
