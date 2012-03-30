@@ -29,6 +29,8 @@ permissions:
             toolbelt.tool.leap.tel: true
             toolbelt.tool.phax: true
             toolbelt.tool.ruler: true
+            toolbelt.tool.watch: true
+            toolbelt.tool.watch.nowait: true
     toolbelt.reload:
         description: Allows the player to reload toolbelt from configuration file.
     toolbelt.tool.dupe:
@@ -47,4 +49,8 @@ permissions:
         description: Allows the player to remove blocks in one click, with or without physics applied.
     toolbelt.tool.ruler:
         description: Allows the player to measure distances easily with the ruler.
+    toolbelt.tool.watch:
+        description: Allows the player to set the time to day or night with the watch tool.
+    toolbelt.tool.watch.nowait:
+        description: Allows the player to ignore the cooldown timer for the watch tool.
 

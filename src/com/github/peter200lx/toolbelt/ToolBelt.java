@@ -21,6 +21,7 @@ import com.github.peter200lx.toolbelt.tool.Paint;
 import com.github.peter200lx.toolbelt.tool.Pickhax;
 import com.github.peter200lx.toolbelt.tool.Ruler;
 import com.github.peter200lx.toolbelt.tool.Scroll;
+import com.github.peter200lx.toolbelt.tool.Watch;
 
 public class ToolBelt extends JavaPlugin {
 	private Logger log = Logger.getLogger("Minecraft");
@@ -163,6 +164,7 @@ public class ToolBelt extends JavaPlugin {
 		available.put(Leap.name, new Leap(cName,this.getServer(),debug,permissions,useEvent));
 		available.put(Pickhax.name, new Pickhax(cName,this.getServer(),debug,permissions,useEvent));
 		available.put(Ruler.name, new Ruler(cName,this.getServer(),debug,permissions,useEvent));
+		available.put(Watch.name, new Watch(cName,this.getServer(),debug,permissions,useEvent));
 
 		List<ToolInterface> holdTool = new ArrayList<ToolInterface>();
 		for(Entry<String, Object> entry :sect.getValues(false).entrySet()) {

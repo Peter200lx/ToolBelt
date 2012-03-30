@@ -81,6 +81,7 @@ tools:
     leap: 288   # FEATHER
     phax: 278   # DIAMOND_PICK
     ruler: 287  # STRING
+    watch: 347  # WATCH
   global:
     onlyAllow: []
     stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
@@ -113,4 +114,8 @@ tools:
   phax:
     onlyAllow: []
     stopOverwrite: []
+  watch:
+    cooldown: 5
+    timeDay: 1000
+    timeNight: 14000
 
