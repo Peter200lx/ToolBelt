@@ -45,61 +45,67 @@ public class Paint extends Tool  {
 		if(!pPalette.containsKey(subject.getName())) {
 			pPalette.put(subject.getName(), new HashMap<Integer,MaterialData>());
 		}
-		if(event.getAction().equals(Action.LEFT_CLICK_AIR)			||
-				event.getAction().equals(Action.LEFT_CLICK_BLOCK)	){
+
+		switch(event.getAction()) {
+		case LEFT_CLICK_BLOCK:
+		case LEFT_CLICK_AIR:
 			//Acquire paint
-			MaterialData target = null;
+			MaterialData mdTarget = null;
 			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-				target = event.getClickedBlock().getState().getData();
+				mdTarget = event.getClickedBlock().getState().getData();
 				if(subject.getGameMode().equals(GameMode.CREATIVE)      &&(
-						target.getItemType().equals(Material.SIGN_POST) ||
-						target.getItemType().equals(Material.WALL_SIGN))){
+						mdTarget.getItemType().equals(Material.SIGN_POST) ||
+						mdTarget.getItemType().equals(Material.WALL_SIGN))){
 					subject.sendMessage("The sign is not erased on the server, "+
 								"it is just client side");
 				}
 			}else
-				target = subject.getTargetBlock(null, 200).getState().getData();
-			if(!stopCopy.contains(target.getItemType()) && ( onlyAllow.isEmpty() ||
-					onlyAllow.contains(target.getItemType()) ) ){
+				mdTarget = subject.getTargetBlock(null, 200).getState().getData();
+			if(!stopCopy.contains(mdTarget.getItemType()) && ( onlyAllow.isEmpty() ||
+					onlyAllow.contains(mdTarget.getItemType()) ) ){
 				pPalette.get(subject.getName()).put(
-						subject.getInventory().getHeldItemSlot(), target );
-				paintPrint("Paint is now ",subject,target);
+						subject.getInventory().getHeldItemSlot(), mdTarget );
+				paintPrint("Paint is now ",subject,mdTarget);
 			} else {
 				subject.sendMessage(ChatColor.RED + "Was not able to grab a block to paint.");
 				MaterialData old = pPalette.get(subject.getName()).get(
 						subject.getInventory().getHeldItemSlot());
 				paintPrint("Paint is still ",subject,old);
 			}
-		} else if(event.getAction().equals(Action.RIGHT_CLICK_AIR)	||
-				event.getAction().equals(Action.RIGHT_CLICK_BLOCK)	){
+			break;
+		case RIGHT_CLICK_BLOCK:
+		case RIGHT_CLICK_AIR:
 			//Draw paint
 			MaterialData set = pPalette.get(subject.getName()).get(
 					subject.getInventory().getHeldItemSlot());
 			if(set != null) {
-				Block target = null;
+				Block bTarget = null;
 				if(hasRangePerm(subject) && event.getAction().equals(Action.RIGHT_CLICK_AIR) ){
 					if((rangeDef > 0) && !subject.isSneaking())
-						target = subject.getTargetBlock(null, rangeDef);
+						bTarget = subject.getTargetBlock(null, rangeDef);
 					else if((rangeCrouch > 0)&& subject.isSneaking())
-						target = subject.getTargetBlock(null, rangeCrouch);
+						bTarget = subject.getTargetBlock(null, rangeCrouch);
 				}else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-					target = event.getClickedBlock();
-				if(target != null && !stopOverwrite.contains(target.getType())       &&
-						(onlyAllow.isEmpty() || onlyAllow.contains(target.getType())) ){
-					if(spawnBuild(target,subject)) {
+					bTarget = event.getClickedBlock();
+				if(bTarget != null && !stopOverwrite.contains(bTarget.getType())       &&
+						(onlyAllow.isEmpty() || onlyAllow.contains(bTarget.getType())) ){
+					if(spawnBuild(bTarget,subject)) {
 						if(isUseEvent())
-							safeReplace(set,target,subject,true);
+							safeReplace(set,bTarget,subject,true);
 						else
-							target.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
+							bTarget.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
 					}
-				}else if(target != null) {
-					if(target.getType().equals(Material.AIR))
+				}else if(bTarget != null) {
+					if(bTarget.getType().equals(Material.AIR))
 						subject.sendMessage(ChatColor.RED + "Target is out of range");
 					else
 						subject.sendMessage(ChatColor.RED + "You can't overwrite "+
-								ChatColor.GOLD+target.getType());
+								ChatColor.GOLD+bTarget.getType());
 				}
 			}
+			break;
+		default:
+			return;
 		}
 	}
 

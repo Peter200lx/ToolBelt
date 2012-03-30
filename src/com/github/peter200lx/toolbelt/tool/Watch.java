@@ -8,7 +8,6 @@ import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.Tool;
@@ -37,11 +36,13 @@ public class Watch extends Tool  {
 
 	@Override
 	public void handleInteract(PlayerInteractEvent event){
-		Action act = event.getAction();
 		Player subject = event.getPlayer();
 		String name = subject.getName();
 		DecimalFormat df = new DecimalFormat("#.#");
-		if(act.equals(Action.LEFT_CLICK_AIR)||(act.equals(Action.LEFT_CLICK_BLOCK))) {
+
+		switch(event.getAction()) {
+		case LEFT_CLICK_BLOCK:
+		case LEFT_CLICK_AIR:
 			//Set time to day
 			if(hasNoWaitPerm(subject) || !pCooldown.containsKey(name) ||
 					(System.currentTimeMillis() >= (pCooldown.get(name)+cooldown))) {
@@ -56,7 +57,9 @@ public class Watch extends Tool  {
 				subject.sendMessage(ChatColor.RED+"You have to wait "+df.format(left)+
 						" seconds to change the time.");
 			}
-		}else if(act.equals(Action.RIGHT_CLICK_AIR)||act.equals(Action.RIGHT_CLICK_BLOCK)) {
+			break;
+		case RIGHT_CLICK_BLOCK:
+		case RIGHT_CLICK_AIR:
 			//Set time to night
 			if(hasNoWaitPerm(subject) || !pCooldown.containsKey(name) ||
 					(System.currentTimeMillis() >= (pCooldown.get(name)+cooldown))) {
@@ -71,6 +74,9 @@ public class Watch extends Tool  {
 				subject.sendMessage(ChatColor.RED+"You have to wait "+df.format(left)+
 						" seconds to change the time.");
 			}
+			break;
+		default:
+			return;
 		}
 	}
 
