@@ -1,0 +1,29 @@
+# Here are the configuration descriptions for the sledge tool
+# 
+# The "tools: bind:" and "tools: global: *:" settings are
+#  specified in greater detail in the config.yml file
+# 
+# tools: sledge: onlyAllow:  <[]|[ <id>, ...]>
+#    Read the tools.global.onlyAllow help in config.yml for details.
+#    If the value is non-zero, it overwrites the .global. setting.
+# 
+# tools: sledge: stopCopy:  [ <id>, ...]
+#    Read the tools.global.stopCopy help in config.yml for details.
+#    If the value is non-zero, it overwrites the .global. setting.
+# 
+# tools: sledge: stopOverwrite:  [ <id>, ...]
+#    Read the tools.global.stopOverwrite help in config.yml.
+#    If the value is non-zero, it overwrites the .global. setting.
+
+
+tools:
+  bind:
+    sledge: 285 # GOLD_PICKAXE
+  global:
+    onlyAllow: []
+    stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
+    stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
+  sledge:
+    onlyAllow: []
+    stopCopy: []
+    stopOverwrite: []

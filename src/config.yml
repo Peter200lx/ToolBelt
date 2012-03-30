@@ -82,6 +82,7 @@ tools:
     phax: 278   # DIAMOND_PICK
     ruler: 287  # STRING
     watch: 347  # WATCH
+    sledge: 285 # GOLD_PICKAXE
   global:
     onlyAllow: []
     stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
@@ -118,4 +119,8 @@ tools:
     cooldown: 5
     timeDay: 1000
     timeNight: 14000
+  sledge:
+    onlyAllow: []
+    stopCopy: []
+    stopOverwrite: []
 
