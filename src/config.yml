@@ -83,6 +83,7 @@ tools:
     ruler: 287  # STRING
     watch: 347  # WATCH
     sledge: 285 # GOLD_PICKAXE
+    pliers: 348 # GLOWSTONE_DUST
   global:
     onlyAllow: []
     stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
@@ -120,6 +121,10 @@ tools:
     timeDay: 1000
     timeNight: 14000
   sledge:
+    onlyAllow: []
+    stopCopy: []
+    stopOverwrite: []
+  pliers:
     onlyAllow: []
     stopCopy: []
     stopOverwrite: []

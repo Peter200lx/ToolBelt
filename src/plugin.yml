@@ -32,6 +32,7 @@ permissions:
             toolbelt.tool.watch: true
             toolbelt.tool.watch.nowait: true
             toolbelt.tool.sledge: true
+            toolbelt.tool.pliers: true
     toolbelt.reload:
         description: Allows the player to reload toolbelt from configuration file.
     toolbelt.tool.dupe:
@@ -56,4 +57,6 @@ permissions:
         description: Allows the player to ignore the cooldown timer for the watch tool.
     toolbelt.tool.sledge:
         description: Allows the player to push or pull blocks.
+    toolbelt.tool.pliers:
+        description: Allows the player to copy and push or pull blocks.
 
