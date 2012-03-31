@@ -3,6 +3,7 @@ package com.github.peter200lx.toolbelt;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -21,8 +22,8 @@ public class ToolListener implements Listener {
 	public void catchInteract(PlayerInteractEvent event) {
 		//Call tool listing
 		for(ToolInterface tool:master.tools) {
-			if(tool.getType().equals(event.getPlayer().getItemInHand().getType()) &&
-					tool.hasPerm(event.getPlayer())) {
+			if(!event.getAction().equals(Action.PHYSICAL) && tool.hasPerm(event.getPlayer()) &&
+					tool.getType().equals(event.getPlayer().getItemInHand().getType())       ){
 				event.setCancelled(true);
 				tool.handleInteract(event);
 			}
