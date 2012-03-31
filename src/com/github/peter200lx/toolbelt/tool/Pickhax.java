@@ -46,7 +46,7 @@ public class Pickhax extends Tool  {
 					else
 						target.setTypeId(0,physics);
 				}
-			}else if(target != null) {
+			}else if((target != null)&&!target.getType().equals(Material.AIR)) {
 				event.getPlayer().sendMessage(ChatColor.RED + "You can't insta-delete "+
 						ChatColor.GOLD+target.getType());
 			}
