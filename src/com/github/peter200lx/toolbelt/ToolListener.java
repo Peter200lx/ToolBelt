@@ -20,6 +20,8 @@ public class ToolListener implements Listener {
 
 	@EventHandler
 	public void catchInteract(PlayerInteractEvent event) {
+		if(master.tbDisabled.contains(event.getPlayer().getName()))
+			return;
 		//Call tool listing
 		for(ToolInterface tool:master.tools) {
 			if(!event.getAction().equals(Action.PHYSICAL) && tool.hasPerm(event.getPlayer()) &&
@@ -32,6 +34,8 @@ public class ToolListener implements Listener {
 
 	@EventHandler
 	public void catchItemChange(PlayerItemHeldEvent event) {
+		if(master.tbDisabled.contains(event.getPlayer().getName()))
+			return;
 		ItemStack cur = event.getPlayer().getInventory().getItem(event.getNewSlot());
 		if(cur != null) {
 			for(ToolInterface tool:master.tools) {
@@ -46,6 +50,8 @@ public class ToolListener implements Listener {
 	@EventHandler
 	public void catchDamage(EntityDamageEvent event) {
 		if(event.getEntity() instanceof Player) {
+			if(master.tbDisabled.contains(((Player)event.getEntity()).getName()))
+				return;
 			for(ToolInterface tool:master.tools) {
 				if(tool.getType().equals(((Player)event.getEntity()
 										 ).getItemInHand().getType()) &&

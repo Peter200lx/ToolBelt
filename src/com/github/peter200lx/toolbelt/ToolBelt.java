@@ -2,10 +2,12 @@ package com.github.peter200lx.toolbelt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -39,6 +41,8 @@ public class ToolBelt extends JavaPlugin {
 	private boolean useEvent;
 
 	public List<ToolInterface> tools;
+
+	public HashSet<String> tbDisabled;
 
 	@Override
 	public void onDisable() {
@@ -98,6 +102,11 @@ public class ToolBelt extends JavaPlugin {
 				if (console) {
 					sender.sendMessage("This command can only be run by a player");
 				} else {
+					if(tbDisabled.contains(sender.getName())){
+						sender.sendMessage("ToolBelt is disabled for you,"+
+								" type '/tb on' to enable it");
+						return true;
+					}
 					Boolean any = false;
 					for(ToolInterface tool: tools) {
 						if(tool.printUse(sender))
@@ -107,6 +116,31 @@ public class ToolBelt extends JavaPlugin {
 						sender.sendMessage("There are currently no tools " +
 								"that you can access");
 					}
+				}
+				return true;
+			} else if (args[0].contentEquals("off")) {
+				if (console) {
+					sender.sendMessage("This command can only be run by a player");
+				} else {
+					if(tbDisabled.contains(sender.getName()))
+						sender.sendMessage("You have already disabled ToolBelt for yourself");
+					else
+						sender.sendMessage(ChatColor.RED+
+								"ToolBelt tools are now disabled for you, type '/tb on' to fix");
+					tbDisabled.add(sender.getName());
+				}
+				return true;
+			} else if (args[0].contentEquals("on")) {
+				if (console) {
+					sender.sendMessage("This command can only be run by a player");
+				} else {
+					if(tbDisabled.contains(sender.getName()))
+						sender.sendMessage(ChatColor.GREEN+
+								"You have re-enabled ToolBelt for yourself,"+
+								" type '/tb tools' for more information");
+					else
+						sender.sendMessage("ToolBelt is already enabled.");
+					tbDisabled.remove(sender.getName());
 				}
 				return true;
 			}
@@ -131,6 +165,9 @@ public class ToolBelt extends JavaPlugin {
 			log.info( "["+cName+"][loadConf] config.yml copied from .jar (likely first run)" );
 			this.reloadConfig();
 		}
+
+		//Set up a list for any users who wish to disable toolbelt for themselves
+		tbDisabled = new HashSet<String>();
 
 		//Reload and hold config for this function
 		FileConfiguration conf = this.getConfig();
