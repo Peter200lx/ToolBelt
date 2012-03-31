@@ -79,7 +79,7 @@ tools:
     scroll: 352 # BONE
     paint: 341  # SLIME_BALL
     leap: 288   # FEATHER
-    phax: 278   # DIAMOND_PICK
+    phax: 278   # DIAMOND_PICKAXE
     ruler: 287  # STRING
     watch: 347  # WATCH
     sledge: 285 # GOLD_PICKAXE

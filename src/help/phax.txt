@@ -21,7 +21,7 @@
 
 tools:
   bind:
-    phax: 278   # DIAMOND_PICK
+    phax: 278   # DIAMOND_PICKAXE
   global:
     onlyAllow: []
     stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
