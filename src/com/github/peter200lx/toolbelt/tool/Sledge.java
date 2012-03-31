@@ -61,6 +61,12 @@ public class Sledge extends Tool  {
 		default:
 			return;
 		}
+		if(!target.getType().equals(Material.AIR) && !(!stopOverwrite.contains(target.getType()) &&
+				(onlyAllow.isEmpty() || onlyAllow.contains(target.getType()))) ){
+			subject.sendMessage(ChatColor.RED+"Sorry, you can't overwrite "+
+					ChatColor.GOLD+target.getType());
+			return;
+		}
 		if(!subject.isSneaking()&&!target.getType().equals(Material.AIR)){
 			subject.sendMessage(ChatColor.RED+
 					"Can't move into a non-air block without crouching.");
@@ -70,12 +76,6 @@ public class Sledge extends Tool  {
 				onlyAllow.contains(clicked.getType()) ) ){
 			subject.sendMessage(ChatColor.RED+"Sorry, you can't move "+
 				ChatColor.GOLD+clicked.getType());
-			return;
-		}
-		if(!target.getType().equals(Material.AIR) && !(!stopOverwrite.contains(target.getType()) &&
-				(onlyAllow.isEmpty() || onlyAllow.contains(target.getType()))) ){
-			subject.sendMessage(ChatColor.RED+"Sorry, you can't overwrite "+
-					ChatColor.GOLD+target.getType());
 			return;
 		}
 		if(spawnBuild(clicked,subject)&&spawnBuild(target,subject)) {
