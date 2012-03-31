@@ -3,6 +3,13 @@
 # The "tools: bind:" and "tools: global: *:" settings are
 #  specified in greater detail in the config.yml file
 # 
+# tools: phax: range: <Number of blocks>
+#    Setting this to a non-zero value allows users of the PickHax
+#    to break a block from a distance. After a certain distance, it
+#    is hard to be accurate. In order to use the PickHax at
+#    range, if permissions are enabled, as user must have:
+#        toolbelt.tool.phax.range
+# 
 # tools: phax: onlyAllow:  <[]|[ <id>, ...]>
 #    Read the tools.global.onlyAllow help in config.yml for details.
 #    If the value is non-zero, it overwrites the .global. setting.
@@ -19,5 +26,6 @@ tools:
     onlyAllow: []
     stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
   phax:
+    range: 25
     onlyAllow: []
     stopOverwrite: []

@@ -29,6 +29,7 @@ permissions:
             toolbelt.tool.leap: true
             toolbelt.tool.leap.tel: true
             toolbelt.tool.phax: true
+            toolbelt.tool.phax.range: true
             toolbelt.tool.ruler: true
             toolbelt.tool.watch: true
             toolbelt.tool.watch.server: true
@@ -50,6 +51,8 @@ permissions:
         description: Allows the player to teleport by crouching while leaping.
     toolbelt.tool.phax:
         description: Allows the player to remove blocks in one click, with or without physics applied.
+    toolbelt.tool.phax.range:
+        description: Allows the player to use the PickHax tool at a distance.
     toolbelt.tool.ruler:
         description: Allows the player to measure distances easily with the ruler.
     toolbelt.tool.watch:

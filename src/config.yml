@@ -114,6 +114,7 @@ tools:
     cruise: 110
     teleport: false
   phax:
+    range: 25
     onlyAllow: []
     stopOverwrite: []
   watch:
