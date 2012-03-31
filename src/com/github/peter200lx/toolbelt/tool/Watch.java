@@ -90,8 +90,8 @@ public class Watch extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Left click with the "+getType()+
-					" to to set time to day, right-click for night");
+			sender.sendMessage("Left click with the "+ChatColor.GOLD+getType()+
+					ChatColor.WHITE+" to set time to day, right for night");
 			return true;
 		}
 		return false;

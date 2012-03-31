@@ -1,5 +1,6 @@
 package com.github.peter200lx.toolbelt.tool;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -46,8 +47,8 @@ public class Example extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("(Right-,Left-,)Click with the "+getType()+
-					" to (description of tool action)");
+			sender.sendMessage("(Right-,Left-,)Click with the "+ChatColor.GOLD+getType()+
+					ChatColor.WHITE+" to (description of tool action)");
 			//Also add any special case messages here
 			return true;
 		}

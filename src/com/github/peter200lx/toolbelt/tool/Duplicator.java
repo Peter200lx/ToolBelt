@@ -86,8 +86,8 @@ public class Duplicator extends Tool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Right-click with the "+getType()+
-					" to duplicate the item selected");
+			sender.sendMessage("Right-click with the "+ChatColor.GOLD+getType()+
+					ChatColor.WHITE+" to duplicate the item selected");
 			return true;
 		}
 		return false;

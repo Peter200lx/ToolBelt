@@ -141,10 +141,10 @@ public class Paint extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Left-click with the "+getType()+
-					" to load a block into your paintbrush");
-			sender.sendMessage("Right-click with the "+getType()+
-					" to paint that block");
+			sender.sendMessage("Left-click with the "+ChatColor.GOLD+getType()+
+					ChatColor.WHITE+" to load a block");
+			sender.sendMessage("Right-click with the "+ChatColor.GOLD+getType()+
+					ChatColor.WHITE+" to paint the loaded block");
 			if(hasRangePerm(sender)) {
 				if(rangeDef > 0)
 					sender.sendMessage("Be careful, you can paint at a range of up to "+

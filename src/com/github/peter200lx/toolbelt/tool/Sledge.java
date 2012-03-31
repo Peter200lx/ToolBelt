@@ -100,9 +100,9 @@ public class Sledge extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("left/right click with the "+getType()+
-					" to push or pull blocks");
-			sender.sendMessage("Crouch to push or pull into more then just air");
+			sender.sendMessage("left/right click with the "+ChatColor.GOLD+getType()+
+					ChatColor.WHITE+" to push or pull blocks");
+			//sender.sendMessage("Crouch to push or pull into more then just air");
 			return true;
 		}
 		return false;

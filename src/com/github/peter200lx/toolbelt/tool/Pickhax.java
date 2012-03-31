@@ -56,8 +56,8 @@ public class Pickhax extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Click with the "+getType()+
-					" to delete a block (Right-click for no-physics)");
+			sender.sendMessage("Click with the "+ChatColor.GOLD+getType()+
+					ChatColor.WHITE+" to delete a block (Right-click for no-physics)");
 			return true;
 		}
 		return false;

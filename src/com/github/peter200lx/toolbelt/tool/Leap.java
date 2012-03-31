@@ -1,5 +1,6 @@
 package com.github.peter200lx.toolbelt.tool;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -112,8 +113,8 @@ public class Leap extends Tool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Right-Click with the "+getType()+
-					" to make magnificent leaps");
+			sender.sendMessage("Right-Click with the "+ChatColor.GOLD+getType()+
+					ChatColor.WHITE+" to make magnificent leaps");
 			if(hasTeleportPerm(sender)&&leapTeleport)
 				sender.sendMessage("Crouch while leaping to teleport");
 			return true;

@@ -211,8 +211,8 @@ public class Scroll extends Tool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Click with the "+getType()+
-					" to change a block's data value");
+			sender.sendMessage("Click with the "+ChatColor.GOLD+getType()+
+					ChatColor.WHITE+" to change a block's data value");
 			return true;
 		}
 		return false;

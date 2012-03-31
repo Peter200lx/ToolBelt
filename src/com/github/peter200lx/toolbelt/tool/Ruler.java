@@ -114,8 +114,8 @@ public class Ruler extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Left and right click with the "+getType()+
-					" to get distance information (crouch for range)");
+			sender.sendMessage("Left and right click with the "+ChatColor.GOLD+getType()+
+					ChatColor.WHITE+" to get distance information (crouch for range)");
 			return true;
 		}
 		return false;
