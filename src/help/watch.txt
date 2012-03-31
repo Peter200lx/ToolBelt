@@ -3,12 +3,6 @@
 # The "tools: bind:" setting is specified in greater detail
 #  in the config.yml file
 # 
-# tools: watch: cooldown: <Number of seconds>
-#    This changes how often a user can change the time. This
-#    is to prevent someone bugging everyone by constantly
-#    cycling the time on the server. This can be overridden
-#    by: toolbelt.tool.watch.nowait
-# 
 # tools: watch: timeDay: <Number for server time>
 #    What time should left-clicking with the watch take the
 #    server to? Set the world time. Number is an integer
@@ -24,6 +18,5 @@ tools:
   bind:
     watch: 347  # WATCH
   watch:
-    cooldown: 5
     timeDay: 1000
     timeNight: 14000

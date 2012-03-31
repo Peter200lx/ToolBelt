@@ -1,7 +1,6 @@
 package com.github.peter200lx.toolbelt.tool;
 
-import java.text.DecimalFormat;
-import java.util.HashMap;
+import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -19,13 +18,11 @@ public class Watch extends Tool  {
 		super(modName, server, debug, permissions, useEvent);
 	}
 
-	private long cooldown;
-
 	private int timeDay;
 
 	private int timeNight;
 
-	private HashMap<String, Long> pCooldown = new HashMap<String, Long>();
+	private HashSet<String> pNotSync = new HashSet<String>();
 
 	public static String name = "watch";
 
@@ -37,42 +34,50 @@ public class Watch extends Tool  {
 	@Override
 	public void handleInteract(PlayerInteractEvent event){
 		Player subject = event.getPlayer();
-		String name = subject.getName();
-		DecimalFormat df = new DecimalFormat("#.#");
 
 		switch(event.getAction()) {
 		case LEFT_CLICK_BLOCK:
 		case LEFT_CLICK_AIR:
 			//Set time to day
-			if(hasNoWaitPerm(subject) || !pCooldown.containsKey(name) ||
-					(System.currentTimeMillis() >= (pCooldown.get(name)+cooldown))) {
-				//Set time to day
-				subject.getWorld().setTime(timeDay);
-				subject.sendMessage(ChatColor.GREEN+"Time has been set to "+
-						ChatColor.GOLD+timeDay);
-				pCooldown.put(name, System.currentTimeMillis());
+			if(!subject.isSneaking()) {
+				subject.setPlayerTime(timeDay-subject.getWorld().getTime(), true);
+				subject.sendMessage(ChatColor.GREEN+"Your time has been set to "+
+						ChatColor.GOLD+timeDay+ChatColor.GREEN+" (Crouch and click to reset)");
+				pNotSync.add(subject.getName());
 			}else {
-				double left = 1.0 +
-						(cooldown - (System.currentTimeMillis()-pCooldown.get(name)))/1000.0;
-				subject.sendMessage(ChatColor.RED+"You have to wait "+df.format(left)+
-						" seconds to change the time.");
+				if(pNotSync.contains(subject.getName())) {
+					subject.resetPlayerTime();
+					subject.sendMessage(ChatColor.GREEN+
+							"Your time is now synced with the server at "+
+							ChatColor.GOLD+subject.getWorld().getTime());
+					pNotSync.remove(subject.getName());
+				}else if(hasServerPerm(subject)) {
+					subject.getWorld().setTime(timeDay);
+					subject.sendMessage(ChatColor.DARK_GREEN+"Server time has been set to "+
+							ChatColor.GOLD+timeDay);
+				}
 			}
 			break;
 		case RIGHT_CLICK_BLOCK:
 		case RIGHT_CLICK_AIR:
 			//Set time to night
-			if(hasNoWaitPerm(subject) || !pCooldown.containsKey(name) ||
-					(System.currentTimeMillis() >= (pCooldown.get(name)+cooldown))) {
-				//Set time to night
-				subject.getWorld().setTime(timeNight);
-				subject.sendMessage(ChatColor.GREEN+"Time has been set to "+
-						ChatColor.GOLD+timeNight);
-				pCooldown.put(name, System.currentTimeMillis());
+			if(!subject.isSneaking()) {
+				subject.setPlayerTime(timeNight-subject.getWorld().getTime(), true);
+				subject.sendMessage(ChatColor.GREEN+"Your time has been set to "+
+						ChatColor.GOLD+timeNight+ChatColor.GREEN+" (Crouch and click to reset)");
+				pNotSync.add(subject.getName());
 			}else {
-				double left = 1.0 +
-						(cooldown - (System.currentTimeMillis()-pCooldown.get(name)))/1000.0;
-				subject.sendMessage(ChatColor.RED+"You have to wait "+df.format(left)+
-						" seconds to change the time.");
+				if(pNotSync.contains(subject.getName())) {
+					subject.resetPlayerTime();
+					subject.sendMessage(ChatColor.GREEN+
+							"Your time is now synced with the server at "+
+							ChatColor.GOLD+subject.getWorld().getTime());
+					pNotSync.remove(subject.getName());
+				}else if(hasServerPerm(subject)) {
+					subject.getWorld().setTime(timeNight);
+					subject.sendMessage(ChatColor.DARK_GREEN+"Server time has been set to "+
+							ChatColor.GOLD+timeNight);
+				}
 			}
 			break;
 		default:
@@ -80,9 +85,9 @@ public class Watch extends Tool  {
 		}
 	}
 
-	private boolean hasNoWaitPerm(CommandSender subject) {
+	private boolean hasServerPerm(CommandSender subject) {
 		if(isPermissions())
-			return subject.hasPermission(getPermStr()+".noWait");
+			return subject.hasPermission(getPermStr()+".server");
 		else
 			return true;
 	}
@@ -99,12 +104,9 @@ public class Watch extends Tool  {
 
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
-		cooldown = conf.getInt(tSet+"."+name+".cooldown", 5)*1000;
 		timeDay = conf.getInt(tSet+"."+name+".timeDay", 1000);
 		timeNight = conf.getInt(tSet+"."+name+".timeNight", 14000);
 		if(isDebug()) {
-			log.info("["+modName+"][loadConf] Cooldown between watch time change is set to "+
-					cooldown);
 			log.info("["+modName+"][loadConf] Day time is defined as " + timeDay);
 			log.info("["+modName+"][loadConf] Night time is defined as " + timeNight);
 		}
