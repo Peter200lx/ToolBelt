@@ -159,7 +159,7 @@ public abstract class Tool implements ToolInterface {
 
 	//This is only needed if breaking a block and not replacing it with a new block
 	protected boolean safeBreak(Block target, Player subject, boolean applyPhysics) {
-		BlockBreakEvent canBreak = new BlockBreakEvent(target.getState().getBlock(),subject);
+		BlockBreakEvent canBreak = new BlockBreakEvent(target,subject);
 		server.getPluginManager().callEvent(canBreak);
 		if(!canBreak.isCancelled())
 			target.setTypeId(0, applyPhysics);
