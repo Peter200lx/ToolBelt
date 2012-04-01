@@ -85,6 +85,7 @@ tools:
     sledge: 285 # GOLD_PICKAXE
     pliers: 348 # GLOWSTONE_DUST
     shovel: 284 # GOLD_SPADE
+    saw: 286    # GOLD_AXE
   global:
     onlyAllow: []
     stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
@@ -135,4 +136,8 @@ tools:
     radiusSphere: 2.5
     onlyAllow: [1,2,3,12,13]
     stopOverwrite: []
-
+  saw:
+    widthCube: 3
+    radiusSphere: 2.5
+    onlyAllow: [17,18, 106]
+    stopOverwrite: []

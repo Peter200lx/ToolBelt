@@ -36,6 +36,7 @@ permissions:
             toolbelt.tool.sledge: true
             toolbelt.tool.pliers: true
             toolbelt.tool.shovel: true
+            toolbelt.tool.saw: true
     toolbelt.reload:
         description: Allows the player to reload toolbelt from configuration file.
     toolbelt.tool.dupe:
@@ -65,5 +66,7 @@ permissions:
     toolbelt.tool.pliers:
         description: Allows the player to copy and push or pull blocks.
     toolbelt.tool.shovel:
-        description: Allows the player to clear large amounts of the specified materials.
+        description: Allows the player to clear large amounts of (by default) stone, dirt, grass, sand and gravel.
+    toolbelt.tool.saw:
+        description: Allows the player to clear large amounts of (by default) logs, leaves and vines.
 

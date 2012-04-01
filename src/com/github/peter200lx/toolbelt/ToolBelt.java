@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.peter200lx.toolbelt.tool.Chainsaw;
 import com.github.peter200lx.toolbelt.tool.Duplicator;
 import com.github.peter200lx.toolbelt.tool.Leap;
 import com.github.peter200lx.toolbelt.tool.Paint;
@@ -208,6 +209,7 @@ public class ToolBelt extends JavaPlugin {
 		available.put(Sledge.name, new Sledge(cName,this.getServer(),debug,permissions,useEvent));
 		available.put(Pliers.name, new Pliers(cName,this.getServer(),debug,permissions,useEvent));
 		available.put(Shovel.name, new Shovel(cName,this.getServer(),debug,permissions,useEvent));
+		available.put(Chainsaw.name, new Chainsaw(cName,this.getServer(),debug,permissions,useEvent));
 
 		List<ToolInterface> holdTool = new ArrayList<ToolInterface>();
 		for(Entry<String, Object> entry :sect.getValues(false).entrySet()) {

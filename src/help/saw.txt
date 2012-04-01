@@ -1,0 +1,35 @@
+# Here are the configuration descriptions for the Chainsaw tool
+# 
+# The "tools: bind:" and "tools: global: *:" settings are
+#  specified in greater detail in the config.yml file
+# 
+# tools: saw: widthCube: <Number for width of cube>
+#    This number should be odd as it is centered around the clicked
+#    block. Even numbers will be rounded down one.
+# 
+# tools: saw: radiusSphere: <Number for radius of sphere>
+#    This number can have fractional components, this will alter
+#    the type of disk produced. Note that this specifies the radius
+#    and not diameter of the disk.
+# 
+# tools: saw: onlyAllow:  <[]|[ <id>, ...]>
+#    Read the tools.global.onlyAllow help in config.yml for details.
+#    If the value is non-zero, it overwrites the .global. setting.
+#    For the saw we default to logs, leaves and vines.
+# 
+# tools: saw: stopOverwrite:  [ <id>, ...]
+#    Read the tools.global.stopOverwrite help in config.yml.
+#    If the value is non-zero, it overwrites the .global. setting.
+
+
+tools:
+  bind:
+    saw: 286    # GOLD_AXE
+  global:
+    onlyAllow: []
+    stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
+  saw:
+    widthCube: 3
+    radiusSphere: 2.5
+    onlyAllow: [17,18, 106]
+    stopOverwrite: []
