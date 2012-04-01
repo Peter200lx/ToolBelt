@@ -70,10 +70,10 @@ public class Pickhax extends Tool  {
 		if(target != null && !stopOverwrite.contains(target.getType())       &&
 				(onlyAllow.isEmpty() || onlyAllow.contains(target.getType())) ){
 			if(spawnBuild(target,event.getPlayer())) {
-				if(isUseEvent())
+				if(isUseEvent()) {
 					if(safeBreak(target,event.getPlayer(),physics))
 						subject.sendBlockChange(target.getLocation(), 0, (byte)0);
-				else {
+				}else {
 					target.setTypeId(0,physics);
 					subject.sendBlockChange(target.getLocation(), 0, (byte)0);
 				}
