@@ -67,10 +67,10 @@ public class Shovel extends Tool  {
 		for(Block cur: toChange) {
 			if(spawnBuild(cur,event.getPlayer())) {
 				if(isUseEvent()) {
-					if(safeBreak(cur,event.getPlayer(),false))
+					if(safeBreak(cur,event.getPlayer(),true))
 						subject.sendBlockChange(cur.getLocation(), 0, (byte)0);
 				}else {
-					cur.setTypeId(0,false);
+					cur.setTypeId(0,true);
 					subject.sendBlockChange(cur.getLocation(), 0, (byte)0);
 				}
 			}
