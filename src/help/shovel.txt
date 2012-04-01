@@ -1,0 +1,40 @@
+# Here are the configuration descriptions for the Shovel tool
+# 
+# The "tools: bind:" and "tools: global: *:" settings are
+#  specified in greater detail in the config.yml file
+# 
+# tools: shovel: widthCube: <Number for width of cube>
+#    This number should be odd as it is centered around the clicked
+#    block. Even numbers will be rounded down one.
+# 
+# tools: shovel: radiusDisk: <Number for radius of disk>
+#    This number can have fractional components, this will alter
+#    the type of disk produced. This only changes the x and z
+#    components, as the disk is always one block high. Note that
+#    this specifies the radius and not diameter of the disk.
+# 
+# tools: shovel: radiusSphere: <Number for radius of sphere>
+#    Same as for the disk, except also has a y component.
+# 
+# tools: shovel: onlyAllow:  <[]|[ <id>, ...]>
+#    Read the tools.global.onlyAllow help in config.yml for details.
+#    If the value is non-zero, it overwrites the .global. setting.
+#    For the shovel we default to stone, dirt, grass, sand and gravel.
+# 
+# tools: shovel: stopOverwrite:  [ <id>, ...]
+#    Read the tools.global.stopOverwrite help in config.yml.
+#    If the value is non-zero, it overwrites the .global. setting.
+
+
+tools:
+  bind:
+    shovel: 284   # GOLD_SPADE
+  global:
+    onlyAllow: []
+    stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
+  shovel:
+    widthCube: 3
+    radiusDisk: 2.5
+    radiusSphere: 2.5
+    onlyAllow: [1,2,3,12,13]
+    stopOverwrite: []

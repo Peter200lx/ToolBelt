@@ -84,6 +84,7 @@ tools:
     watch: 347  # WATCH
     sledge: 285 # GOLD_PICKAXE
     pliers: 348 # GLOWSTONE_DUST
+    shovel: 284   # GOLD_SPADE
   global:
     onlyAllow: []
     stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
@@ -127,5 +128,11 @@ tools:
   pliers:
     onlyAllow: []
     stopCopy: []
+    stopOverwrite: []
+  shovel:
+    widthCube: 3
+    radiusDisk: 2.5
+    radiusSphere: 2.5
+    onlyAllow: [1,2,3,12,13]
     stopOverwrite: []
 

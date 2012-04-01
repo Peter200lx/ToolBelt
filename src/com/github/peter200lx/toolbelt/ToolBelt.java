@@ -24,6 +24,7 @@ import com.github.peter200lx.toolbelt.tool.Pickhax;
 import com.github.peter200lx.toolbelt.tool.Pliers;
 import com.github.peter200lx.toolbelt.tool.Ruler;
 import com.github.peter200lx.toolbelt.tool.Scroll;
+import com.github.peter200lx.toolbelt.tool.Shovel;
 import com.github.peter200lx.toolbelt.tool.Sledge;
 import com.github.peter200lx.toolbelt.tool.Watch;
 
@@ -206,6 +207,7 @@ public class ToolBelt extends JavaPlugin {
 		available.put(Watch.name, new Watch(cName,this.getServer(),debug,permissions,useEvent));
 		available.put(Sledge.name, new Sledge(cName,this.getServer(),debug,permissions,useEvent));
 		available.put(Pliers.name, new Pliers(cName,this.getServer(),debug,permissions,useEvent));
+		available.put(Shovel.name, new Shovel(cName,this.getServer(),debug,permissions,useEvent));
 
 		List<ToolInterface> holdTool = new ArrayList<ToolInterface>();
 		for(Entry<String, Object> entry :sect.getValues(false).entrySet()) {

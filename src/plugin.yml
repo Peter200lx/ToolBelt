@@ -35,6 +35,7 @@ permissions:
             toolbelt.tool.watch.server: true
             toolbelt.tool.sledge: true
             toolbelt.tool.pliers: true
+            toolbelt.tool.shovel: true
     toolbelt.reload:
         description: Allows the player to reload toolbelt from configuration file.
     toolbelt.tool.dupe:
@@ -63,4 +64,6 @@ permissions:
         description: Allows the player to push or pull blocks.
     toolbelt.tool.pliers:
         description: Allows the player to copy and push or pull blocks.
+    toolbelt.tool.shovel:
+        description: Allows the player to clear large amounts of the specified materials.
 
