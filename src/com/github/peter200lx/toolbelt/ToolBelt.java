@@ -1,9 +1,13 @@
 package com.github.peter200lx.toolbelt;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
@@ -14,6 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -248,6 +253,61 @@ public class ToolBelt extends JavaPlugin {
 			if(!tool.loadConf(tSet, conf))
 				return false;
 			tool.saveHelp(this);
+		}
+
+		//Create a help/Permissions.txt file listing all permissions from plugin.yml
+		List<Permission> perms = this.getDescription().getPermissions();
+		File outFile = new File(this.getDataFolder(), "help/Permissions.txt");
+		try {
+			if(!outFile.getParentFile().exists())
+				outFile.getParentFile().mkdirs();
+
+			PrintWriter out = new PrintWriter(outFile);
+
+			for(Permission perm : perms) {
+				out.write(perm.getName()+"\n\t"+perm.getDescription()+"\n");
+				switch(perm.getDefault()) {
+				case TRUE:
+					out.write("\t\tBy default this is given to everyone\n");
+					break;
+				case NOT_OP:
+					out.write("\t\tBy default this is given to all who are not server OPs\n");
+					break;
+				default:
+				}
+				Map<String, Boolean> children = perm.getChildren();
+				if(!children.isEmpty()) {
+					out.write("\t\tHas Children:\n");
+					for(Entry<String, Boolean> child : children.entrySet()) {
+						out.write("\t\t\t"+child.getKey()+"\t: "+
+								child.getValue()+"\n");
+					}
+				}
+			}
+			out.close();
+		} catch (IOException e) {
+			log.warning("["+cName+"] Was not able to save help/Permissions.txt");
+		}
+
+		//Create a help/Commands.txt file listing all commands from plugin.yml
+		Map<String, Map<String, Object>> commands = this.getDescription().getCommands();
+		outFile = new File(this.getDataFolder(), "help/Commands.txt");
+		try {
+			if(!outFile.getParentFile().exists())
+				outFile.getParentFile().mkdirs();
+
+			PrintWriter out = new PrintWriter(outFile);
+
+			for(Entry<String, Map<String, Object>> entry : commands.entrySet()) {
+				out.write(entry.getKey()+":\n");
+				for(Entry<String, Object> com : entry.getValue().entrySet()) {
+					out.write("\t"+com.getKey()+":\n"+com.getValue()+"\n");
+				}
+				out.write("############\n");
+			}
+			out.close();
+		} catch (IOException e) {
+			log.warning("["+cName+"] Was not able to save help/Commands.txt");
 		}
 
 		return true;
