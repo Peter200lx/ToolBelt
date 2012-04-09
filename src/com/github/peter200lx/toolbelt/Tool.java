@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -159,6 +160,11 @@ public abstract class Tool implements ToolInterface {
 
 	//This is only needed if breaking a block and not replacing it with a new block
 	protected boolean safeBreak(Block target, Player subject, boolean applyPhysics) {
+		ItemStack hand = subject.getItemInHand();
+		BlockDamageEvent canDamage = new BlockDamageEvent(subject, target, hand, true);
+		server.getPluginManager().callEvent(canDamage);
+		if(canDamage.isCancelled())
+			return false;
 		BlockBreakEvent canBreak = new BlockBreakEvent(target,subject);
 		server.getPluginManager().callEvent(canBreak);
 		if(!canBreak.isCancelled())
