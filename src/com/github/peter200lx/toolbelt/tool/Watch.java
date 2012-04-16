@@ -34,54 +34,38 @@ public class Watch extends Tool  {
 	@Override
 	public void handleInteract(PlayerInteractEvent event){
 		Player subject = event.getPlayer();
+		int time;
 
 		switch(event.getAction()) {
 		case LEFT_CLICK_BLOCK:
 		case LEFT_CLICK_AIR:
-			//Set time to day
-			if(!subject.isSneaking()) {
-				subject.setPlayerTime(timeDay-subject.getWorld().getTime(), true);
-				subject.sendMessage(ChatColor.GREEN+"Your time has been set to "+
-						ChatColor.GOLD+timeDay+ChatColor.GREEN+" (Crouch and click to reset)");
-				pNotSync.add(subject.getName());
-			}else {
-				if(pNotSync.contains(subject.getName())) {
-					subject.resetPlayerTime();
-					subject.sendMessage(ChatColor.GREEN+
-							"Your time is now synced with the server at "+
-							ChatColor.GOLD+subject.getWorld().getTime());
-					pNotSync.remove(subject.getName());
-				}else if(hasServerPerm(subject)) {
-					subject.getWorld().setTime(timeDay);
-					subject.sendMessage(ChatColor.DARK_GREEN+"Server time has been set to "+
-							ChatColor.GOLD+timeDay);
-				}
-			}
+			time = timeDay;
 			break;
 		case RIGHT_CLICK_BLOCK:
 		case RIGHT_CLICK_AIR:
-			//Set time to night
-			if(!subject.isSneaking()) {
-				subject.setPlayerTime(timeNight-subject.getWorld().getTime(), true);
-				subject.sendMessage(ChatColor.GREEN+"Your time has been set to "+
-						ChatColor.GOLD+timeNight+ChatColor.GREEN+" (Crouch and click to reset)");
-				pNotSync.add(subject.getName());
-			}else {
-				if(pNotSync.contains(subject.getName())) {
-					subject.resetPlayerTime();
-					subject.sendMessage(ChatColor.GREEN+
-							"Your time is now synced with the server at "+
-							ChatColor.GOLD+subject.getWorld().getTime());
-					pNotSync.remove(subject.getName());
-				}else if(hasServerPerm(subject)) {
-					subject.getWorld().setTime(timeNight);
-					subject.sendMessage(ChatColor.DARK_GREEN+"Server time has been set to "+
-							ChatColor.GOLD+timeNight);
-				}
-			}
+			time = timeNight;
 			break;
 		default:
 			return;
+		}
+
+		if(!subject.isSneaking()) {
+			subject.setPlayerTime(time-subject.getWorld().getTime(), true);
+			subject.sendMessage(ChatColor.GREEN+"Your time has been set to "+
+					ChatColor.GOLD+time+ChatColor.GREEN+" (Crouch and click to reset)");
+			pNotSync.add(subject.getName());
+		}else {
+			if(pNotSync.contains(subject.getName())) {
+				subject.resetPlayerTime();
+				subject.sendMessage(ChatColor.GREEN+
+						"Your time is now synced with the server at "+
+						ChatColor.GOLD+subject.getWorld().getTime());
+				pNotSync.remove(subject.getName());
+			}else if(hasServerPerm(subject)) {
+				subject.getWorld().setTime(time);
+				subject.sendMessage(ChatColor.DARK_GREEN+"Server time has been set to "+
+						ChatColor.GOLD+time);
+			}
 		}
 	}
 
