@@ -89,6 +89,10 @@ public class Paint extends Tool  {
 					bTarget = event.getClickedBlock();
 				if(bTarget != null && !stopOverwrite.contains(bTarget.getType())       &&
 						(onlyAllow.isEmpty() || onlyAllow.contains(bTarget.getType())) ){
+					if((bTarget.getType()==set.getItemType())&&(bTarget.getData()==set.getData())) {
+						//Don't replace blocks with the same type and data
+						return;
+					}
 					if(spawnBuild(bTarget,subject)) {
 						if(isUseEvent())
 							safeReplace(set,bTarget,subject,true);
