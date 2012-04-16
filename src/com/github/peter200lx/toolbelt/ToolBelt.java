@@ -256,8 +256,20 @@ public class ToolBelt extends JavaPlugin {
 		}
 
 		//Create a help/Permissions.txt file listing all permissions from plugin.yml
+		printPerm("help/Permissions.txt");
+
+		//Create a help/Commands.txt file listing all commands from plugin.yml
+		printCommands("help/Commands.txt");
+
+		//The return value for the above two commands is not checked as we don't need
+		// to disable the plugin if they don't succeed.
+
+		return true;
+	}
+
+	private boolean printPerm(String outName) {
 		List<Permission> perms = this.getDescription().getPermissions();
-		File outFile = new File(this.getDataFolder(), "help/Permissions.txt");
+		File outFile = new File(this.getDataFolder(), outName);
 		try {
 			if(!outFile.getParentFile().exists())
 				outFile.getParentFile().mkdirs();
@@ -287,11 +299,14 @@ public class ToolBelt extends JavaPlugin {
 			out.close();
 		} catch (IOException e) {
 			log.warning("["+cName+"] Was not able to save help/Permissions.txt");
+			return false;
 		}
+		return true;
+	}
 
-		//Create a help/Commands.txt file listing all commands from plugin.yml
+	private boolean printCommands(String outName) {
 		Map<String, Map<String, Object>> commands = this.getDescription().getCommands();
-		outFile = new File(this.getDataFolder(), "help/Commands.txt");
+		File outFile = new File(this.getDataFolder(), outName);
 		try {
 			if(!outFile.getParentFile().exists())
 				outFile.getParentFile().mkdirs();
@@ -299,17 +314,29 @@ public class ToolBelt extends JavaPlugin {
 			PrintWriter out = new PrintWriter(outFile);
 
 			for(Entry<String, Map<String, Object>> entry : commands.entrySet()) {
-				out.write(entry.getKey()+":\n");
-				for(Entry<String, Object> com : entry.getValue().entrySet()) {
-					out.write("\t"+com.getKey()+":\n"+com.getValue()+"\n");
+				out.write("\nCommand: "+entry.getKey()+"\n");
+				if(entry.getValue().containsKey("description")) {
+					out.write("\ndescription:\n"+entry.getValue().get("description")+"\n");
 				}
-				out.write("############\n");
+				if(entry.getValue().containsKey("usage")) {
+					String use = (String) entry.getValue().get("usage");
+					out.write("\nusage:\n");
+					if (use.length() > 0) {
+						for (String line : use.replace("<command>", entry.getKey()).split("\n")) {
+							out.write(line+"\n");
+						}
+					}
+				}
+				if(entry.getValue().containsKey("aliases")) {
+					out.write("\ncommand alias(es):\n"+entry.getValue().get("aliases")+"\n");
+				}
+				out.write("\n####################################\n");
 			}
 			out.close();
 		} catch (IOException e) {
 			log.warning("["+cName+"] Was not able to save help/Commands.txt");
+			return false;
 		}
-
 		return true;
 	}
 
