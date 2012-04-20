@@ -126,6 +126,7 @@ tools:
     thrust: 8
     cruise: 110
     teleport: false
+    invuln: -1
   phax:
     range: 25
     onlyAllow: []

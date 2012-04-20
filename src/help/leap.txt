@@ -19,6 +19,18 @@
 #    the possibility to get through obstacles the user should
 #    be blocked by, it has a separate permission node:
 #    toolbelt.tool.leap.tel
+# 
+# tools: leap: invuln: <Number of seconds>
+#    This controls how long the user of the leap tool is
+#    protected from fall damage after using the leap tool. By
+#    default, as long as the user has permission to use the
+#    leap tool and is holding it, they don't have fall damage
+#    at all. This is defined by having a negative value (-1).
+#    Setting this to zero will remove all protection from fall
+#    damage, and setting it to any other positive number will
+#    protect them from fall damage for that length of time.
+#    (Suggested value is 10 seconds if you want limited
+#    invulnerability)
 
 
 tools:
@@ -28,3 +40,4 @@ tools:
     thrust: 8
     cruise: 110
     teleport: false
+    invuln: -1

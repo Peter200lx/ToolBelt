@@ -1,5 +1,7 @@
 package com.github.peter200lx.toolbelt.tool;
 
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -27,6 +29,10 @@ public class Leap extends Tool {
 	private int leapThrust;
 
 	private int leapCruise;
+
+	private double leapInvuln;
+
+	private HashMap<String, Long> pInvuln = new HashMap<String, Long>();
 
 	@Override
 	public String getToolName() {
@@ -95,6 +101,8 @@ public class Leap extends Tool {
 						subject.getLocation().getYaw(), subject.getLocation().getPitch()));
 			else
 				subject.setVelocity(new Vector(pX, pY / 2.5D, pZ));
+			if(leapInvuln > 0)
+				pInvuln.put(name, System.currentTimeMillis());
 		}
 	}
 
@@ -108,7 +116,9 @@ public class Leap extends Tool {
 	@Override
 	public void handleDamage(EntityDamageEvent event) {
 		if(event.getCause().equals(EntityDamageEvent.DamageCause.FALL)){
-			event.setCancelled(true);
+			if((leapInvuln < 0) || pInvuln.containsKey(name) &&
+					(System.currentTimeMillis() <= (pInvuln.get(name)+leapInvuln*1000)))
+				event.setCancelled(true);
 		}
 	}
 
@@ -140,6 +150,14 @@ public class Leap extends Tool {
 		leapCruise = conf.getInt("tools.leap.cruise", 110);
 		if(isDebug())
 			log.info("["+modName+"][loadConf] Cruising altitude is set to "+leapCruise);
+		leapInvuln = conf.getDouble("tools.leap.invuln", -1);
+		if(isDebug()) {
+			if(leapInvuln < 0)
+				log.info("["+modName+"][loadConf] Fall damage is disabled");
+			else
+				log.info("["+modName+"][loadConf] Fall damage is disabled for "+
+						leapInvuln+" seconds after using leap tool");
+		}
 		return true;
 	}
 
