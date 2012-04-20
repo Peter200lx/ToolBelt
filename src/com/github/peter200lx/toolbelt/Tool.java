@@ -1,5 +1,6 @@
 package com.github.peter200lx.toolbelt;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
@@ -75,6 +76,10 @@ public abstract class Tool implements ToolInterface {
 	private boolean permissions;
 
 	private boolean useEvent;
+
+	protected int repeatDelay;
+
+	protected HashMap<String, Long> pCooldown = new HashMap<String, Long>();
 
 	protected HashSet<Material> onlyAllow;
 
@@ -219,6 +224,53 @@ public abstract class Tool implements ToolInterface {
 				old.setTypeIdAndData(oldInfo.getTypeId(), oldInfo.getRawData(), false);
 		}
 		return !canPlace.isCancelled();
+	}
+
+	protected boolean delayElapsed(String name) {
+		if(repeatDelay == 0)
+			return true; //Don't bother filling pCooldown with data when not used
+		if(pCooldown.containsKey(name) &&
+				(System.currentTimeMillis() < (pCooldown.get(name)+repeatDelay)))
+			return false;
+		pCooldown.put(name, System.currentTimeMillis());
+		return true;
+	}
+
+	protected boolean loadRepeatDelay(String tSet, FileConfiguration conf, int def) {
+		String globalName = "global";
+
+		int localDelay = conf.getInt(tSet+"."+getToolName()+".repeatDelay", def);
+
+		if(localDelay == -1) {
+			//If the local value is -1, we want to grab the global setting
+			repeatDelay = conf.getInt(tSet+"."+globalName+".repeatDelay", 125);
+			if(repeatDelay < 0) {
+				log.warning("["+modName+"] "+tSet+"."+globalName+".repeatDelay has an "+
+						"invalid value of "+repeatDelay);
+				log.warning("["+modName+"] (The global delay must be greater than or "+
+						"equal to zero)");
+				return false;
+			}
+			if(isDebug()) {
+				log.info("["+modName+"][loadConf] Using global tool reuse delay for "+
+						getToolName());
+			}
+		}else if(localDelay < 0) {
+			//If we are any negative number that isn't -1
+			log.warning("["+modName+"] "+tSet+"."+getToolName()+".repeatDelay has an "+
+					"invalid value of "+repeatDelay);
+			log.warning("["+modName+"] (The tool specific delay must be -1,0,"+
+					" or a positive number)");
+			return false;
+		}else {
+			//We want to go with what the local value is
+			repeatDelay = localDelay;
+		}
+		if(isDebug()) {
+			log.info("["+modName+"][loadConf] "+getToolName()+" tool use repeat delay is "+
+					repeatDelay);
+		}
+		return true;
 	}
 
 	protected boolean loadGlobalRestrictions(String tSet, FileConfiguration conf) {

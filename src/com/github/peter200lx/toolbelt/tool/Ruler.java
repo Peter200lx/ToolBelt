@@ -32,6 +32,8 @@ public class Ruler extends Tool  {
 	public void handleInteract(PlayerInteractEvent event){
 		Player subject = event.getPlayer();
 		String name = subject.getName();
+		if(!delayElapsed(subject.getName()))
+			return;
 		//Prep HashMap
 		if(!pCube.containsKey(name)) {
 			pCube.put(name, new Location[2]);
@@ -122,6 +124,11 @@ public class Ruler extends Tool  {
 	}
 
 	public boolean loadConf(String tSet, FileConfiguration conf) {
+
+		//Load the repeat delay
+		if(!loadRepeatDelay(tSet,conf,0))
+			return false;
+
 		return true;
 	}
 }

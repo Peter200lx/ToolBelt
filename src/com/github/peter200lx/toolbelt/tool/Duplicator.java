@@ -39,8 +39,10 @@ public class Duplicator extends Tool {
 	@Override
 	@SuppressWarnings("deprecation")	//TODO Investigate replacement .updateInventory()
 	public void handleInteract(PlayerInteractEvent event){
+		Player subject = event.getPlayer();
+		if(!delayElapsed(subject.getName()))
+			return;
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-			Player subject = event.getPlayer();
 			Block clicked = event.getClickedBlock();
 			Material type = clicked.getType();
 
@@ -95,6 +97,11 @@ public class Duplicator extends Tool {
 
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
+
+		//Load the repeat delay
+		if(!loadRepeatDelay(tSet,conf,0))
+			return false;
+
 		ConfigurationSection sect = conf.getConfigurationSection(tSet+"."+name+".replace");
 
 		if(sect == null) {

@@ -68,6 +68,16 @@
 #    Item IDs set in here will not be overwritten when the user
 #    paints. Other then that the message is the same as for
 #    the above stopCopy
+# 
+# tools: global: repeatDelay: <# of milliseconds>
+#    Clicking on grass and such breaks through and throws another
+#    event for the the block behind it. To prevent such issues,
+#    and for rate limiting the usage of dangerous tools, you can
+#    set this value. 125 = 1/8 sec, 250 = 1/4 sec, 1000 = 1 sec,
+#    0 = no delay. The repeatDelay option can be used on individual
+#    tools, but that is more advanced. Summary for tool specific
+#    use: -1 = use global value, 0 = no delay, positive # = delay
+#    amount.
 
 
 debug: false
@@ -90,6 +100,7 @@ tools:
     onlyAllow: []
     stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
     stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
+    repeatDelay: 125
   dupe:
     replace:
       7: 0      # BEDROCK to AIR (Disable duplication entirely)

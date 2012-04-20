@@ -1,6 +1,5 @@
 package com.github.peter200lx.toolbelt.tool;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -24,8 +23,6 @@ public class Pickhax extends Tool  {
 
 	public static String name = "phax";
 
-	private HashMap<String, Long> pCooldown = new HashMap<String, Long>();
-
 	private Integer range;
 
 	@Override
@@ -36,10 +33,8 @@ public class Pickhax extends Tool  {
 	@Override
 	public void handleInteract(PlayerInteractEvent event){
 		Player subject = event.getPlayer();
-		if(pCooldown.containsKey(subject.getName()) &&
-				(System.currentTimeMillis() < (pCooldown.get(subject.getName())+500)))
+		if(!delayElapsed(subject.getName()))
 			return;
-		pCooldown.put(subject.getName(), System.currentTimeMillis());
 		Boolean physics = false;
 		Block target;
 		switch(event.getAction()) {
@@ -106,6 +101,10 @@ public class Pickhax extends Tool  {
 
 		//Load the default restriction configuration
 		if(!loadGlobalRestrictions(tSet,conf))
+			return false;
+
+		//Load the repeat delay
+		if(!loadRepeatDelay(tSet,conf,-1))
 			return false;
 
 		range = conf.getInt(tSet+"."+name+".range", 25);

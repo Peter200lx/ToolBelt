@@ -35,6 +35,8 @@ public class Watch extends Tool  {
 	public void handleInteract(PlayerInteractEvent event){
 		Player subject = event.getPlayer();
 		int time;
+		if(!delayElapsed(subject.getName()))
+			return;
 
 		switch(event.getAction()) {
 		case LEFT_CLICK_BLOCK:
@@ -88,6 +90,11 @@ public class Watch extends Tool  {
 
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
+
+		//Load the repeat delay
+		if(!loadRepeatDelay(tSet,conf,-1))
+			return false;
+
 		timeDay = conf.getInt(tSet+"."+name+".timeDay", 1000);
 		timeNight = conf.getInt(tSet+"."+name+".timeNight", 14000);
 		if(isDebug()) {

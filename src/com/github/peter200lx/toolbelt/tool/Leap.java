@@ -37,6 +37,8 @@ public class Leap extends Tool {
 	public void handleInteract(PlayerInteractEvent event){
 		Action act = event.getAction();
 		Player subject = event.getPlayer();
+		if(!delayElapsed(subject.getName()))
+			return;
 		if(isDebug()) log.info("["+modName+"][leapTool] "+subject.getName()+
 				" " + act.toString()+" with the leap tool");
 		if(act.equals(Action.RIGHT_CLICK_AIR)||act.equals(Action.RIGHT_CLICK_BLOCK)) {
@@ -124,6 +126,11 @@ public class Leap extends Tool {
 
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
+
+		//Load the repeat delay
+		if(!loadRepeatDelay(tSet,conf,0))
+			return false;
+
 		leapTeleport = conf.getBoolean("tools.leap.teleport", false);
 		if(isDebug())
 			log.info("["+modName+"][loadConf] Teleport leaping is set to "+leapTeleport);

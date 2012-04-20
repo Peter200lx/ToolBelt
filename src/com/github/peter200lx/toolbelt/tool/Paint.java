@@ -42,6 +42,8 @@ public class Paint extends Tool  {
 	@Override
 	public void handleInteract(PlayerInteractEvent event){
 		Player subject = event.getPlayer();
+		if(!delayElapsed(subject.getName()))
+			return;
 		if(!pPalette.containsKey(subject.getName())) {
 			pPalette.put(subject.getName(), new HashMap<Integer,MaterialData>());
 		}
@@ -167,6 +169,10 @@ public class Paint extends Tool  {
 
 		//Load the default restriction configuration
 		if(!loadGlobalRestrictions(tSet,conf))
+			return false;
+
+		//Load the repeat delay
+		if(!loadRepeatDelay(tSet,conf,0))
 			return false;
 
 		rangeDef = conf.getInt(tSet+"."+name+".rangeDefault", 0);

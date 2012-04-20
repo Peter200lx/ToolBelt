@@ -45,18 +45,21 @@ public class Scroll extends Tool {
 
 	@Override
 	public void handleInteract(PlayerInteractEvent event){
+		Player subject = event.getPlayer();
+		if(!delayElapsed(subject.getName()))
+			return;
+
 		Action act = event.getAction();
 		if(act.equals(Action.LEFT_CLICK_BLOCK)||(act.equals(Action.RIGHT_CLICK_BLOCK))) {
 			if(dataMap.containsKey(event.getClickedBlock().getType())) {
 				Block clicked = event.getClickedBlock();
-				Player p = event.getPlayer();
-				if(isDebug()) log.info("["+modName+"][scrollTool] "+p.getName()+
+				if(isDebug()) log.info("["+modName+"][scrollTool] "+subject.getName()+
 						" clicked "+clicked.getState().getData());
-				if(p.getGameMode().equals(GameMode.CREATIVE)		&&
+				if(subject.getGameMode().equals(GameMode.CREATIVE)		&&
 						act.equals(Action.LEFT_CLICK_BLOCK)			&&(
 						clicked.getType().equals(Material.SIGN_POST)||
 						clicked.getType().equals(Material.WALL_SIGN))){
-					p.sendMessage("The sign is not erased on the server, "+
+					subject.sendMessage("The sign is not erased on the server, "+
 								"it is just client side");
 				}
 
@@ -69,10 +72,10 @@ public class Scroll extends Tool {
 					MaterialData b = clicked.getState().getData();
 					switch (clicked.getType()) {
 					case JUKEBOX:
-						p.sendMessage("Data value indicates contained record, can't scroll");
+						subject.sendMessage("Data value indicates contained record, can't scroll");
 						return;
 					case SOIL:
-						p.sendMessage("Data value indicates dampness level, can't scroll");
+						subject.sendMessage("Data value indicates dampness level, can't scroll");
 						return;
 					case TORCH:
 					case REDSTONE_TORCH_OFF:
@@ -97,14 +100,14 @@ public class Scroll extends Tool {
 					case WOODEN_DOOR:
 					case IRON_DOOR_BLOCK:
 						if(((Door)b).isTopHalf()) {
-							p.sendMessage("Clicking the top half of a door "+
+							subject.sendMessage("Clicking the top half of a door "+
 									"can't scroll the rotation corner.");
 							return;
 						}
 						data = simpScroll(event,(byte)(data&0x07),4);
 						if(((Door)b).isOpen())
 							data |= 0x04;
-						p.sendMessage("Top door half now looks funny, open/close door to fix");
+						subject.sendMessage("Top door half now looks funny, open/close door to fix");
 						break;
 					case STONE_BUTTON:
 						data = simpScroll(event, (byte)(data&0x07), 1, 5);
@@ -117,15 +120,15 @@ public class Scroll extends Tool {
 						break;
 					case CHEST:
 						//CHEST can not be safely scrolled because of double chests.
-						p.sendMessage(clicked.getType()+" is not scrollable");
+						subject.sendMessage(clicked.getType()+" is not scrollable");
 						return;
 					case STONE_PLATE:
 					case WOOD_PLATE:
-						p.sendMessage("There is no useful data to scroll");
+						subject.sendMessage("There is no useful data to scroll");
 						return;
 					case BED_BLOCK:
 						//TODO More research into modifying foot and head of bed at once
-						p.sendMessage(clicked.getType()+" is not yet scrollable");
+						subject.sendMessage(clicked.getType()+" is not yet scrollable");
 						return;
 					case DIODE_BLOCK_OFF:
 					case DIODE_BLOCK_ON:
@@ -134,7 +137,7 @@ public class Scroll extends Tool {
 						data |= tick;
 						break;
 					case REDSTONE_WIRE:
-						p.sendMessage("There is no useful data to scroll");
+						subject.sendMessage("There is no useful data to scroll");
 						return;
 					case TRAP_DOOR:
 						data = simpScroll(event, (byte)(data&0x03), 4);
@@ -144,13 +147,13 @@ public class Scroll extends Tool {
 					case PISTON_BASE:
 					case PISTON_STICKY_BASE:
 						if(((PistonBaseMaterial)b).isPowered()) {
-							p.sendMessage("The piston will not be scrolled while extended");
+							subject.sendMessage("The piston will not be scrolled while extended");
 							return;
 						}
 						data = simpScroll(event, (byte)(data&0x07), 6);
 						break;
 					case PISTON_EXTENSION:
-						p.sendMessage("The piston extension should not be scrolled");
+						subject.sendMessage("The piston extension should not be scrolled");
 						return;
 					case FENCE_GATE:
 						data = simpScroll(event, (byte)(data&0x03), 4);
@@ -158,29 +161,29 @@ public class Scroll extends Tool {
 							data |= 0x04;
 						break;
 					case BREWING_STAND:
-						p.sendMessage("Stand data just is for visual indication"+
+						subject.sendMessage("Stand data just is for visual indication"+
 								" of placed glass bottles");
 						return;
 					default:
-						p.sendMessage(clicked.getType()+" is not yet scrollable");
+						subject.sendMessage(clicked.getType()+" is not yet scrollable");
 						return;
 					}
 				}
 
 				MaterialData newInfo = clicked.getState().getData();
 				newInfo.setData(data);
-				if(spawnBuild(clicked,event.getPlayer())) {
+				if(spawnBuild(clicked,subject)) {
 					if(isUseEvent()) {
-						if(safeReplace(newInfo,clicked,event.getPlayer(),true)) {
-							event.getPlayer().sendBlockChange(clicked.getLocation(), clicked.getType(), data);
-							event.getPlayer().sendMessage(ChatColor.GREEN + "Block is now " +
+						if(safeReplace(newInfo,clicked,subject,true)) {
+							subject.sendBlockChange(clicked.getLocation(), clicked.getType(), data);
+							subject.sendMessage(ChatColor.GREEN + "Block is now " +
 									ChatColor.GOLD + clicked.getType() + ChatColor.WHITE + ":" +
 									ChatColor.BLUE + data2Str(clicked.getState().getData()));
 						}
 					}else {
 						clicked.setData(data, false);
-						event.getPlayer().sendBlockChange(clicked.getLocation(), clicked.getType(), data);
-						event.getPlayer().sendMessage(ChatColor.GREEN + "Block is now " +
+						subject.sendBlockChange(clicked.getLocation(), clicked.getType(), data);
+						subject.sendMessage(ChatColor.GREEN + "Block is now " +
 								ChatColor.GOLD + clicked.getType() + ChatColor.WHITE + ":" +
 								ChatColor.BLUE + data2Str(clicked.getState().getData()));
 					}
@@ -220,6 +223,11 @@ public class Scroll extends Tool {
 
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
+
+		//Load the repeat delay
+		if(!loadRepeatDelay(tSet,conf,-1))
+			return false;
+
 		HashMap<Material, Integer> supported = defDataMap();
 		if(conf.getBoolean(tSet+"."+name+".override",false)) {
 			HashMap<Material, Integer> holdDataMap = new HashMap<Material, Integer>();

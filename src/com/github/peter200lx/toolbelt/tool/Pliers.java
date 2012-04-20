@@ -1,6 +1,5 @@
 package com.github.peter200lx.toolbelt.tool;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -25,8 +24,6 @@ public class Pliers extends Tool  {
 
 	public static String name = "pliers";
 
-	private HashMap<String, Long> pCooldown = new HashMap<String, Long>();
-
 	@Override
 	public String getToolName() {
 		return name;
@@ -36,10 +33,8 @@ public class Pliers extends Tool  {
 	public void handleInteract(PlayerInteractEvent event){
 		Player subject = event.getPlayer();
 		Block clicked, target;
-		if(pCooldown.containsKey(subject.getName()) &&
-				(System.currentTimeMillis() < (pCooldown.get(subject.getName())+500)))
+		if(!delayElapsed(subject.getName()))
 			return;
-		pCooldown.put(subject.getName(), System.currentTimeMillis());
 		switch (event.getAction()) {
 		case LEFT_CLICK_BLOCK:
 			clicked = event.getClickedBlock();
@@ -102,6 +97,10 @@ public class Pliers extends Tool  {
 
 		//Load the default restriction configuration
 		if(!loadGlobalRestrictions(tSet,conf))
+			return false;
+
+		//Load the repeat delay
+		if(!loadRepeatDelay(tSet,conf,-1))
 			return false;
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".onlyAllow");

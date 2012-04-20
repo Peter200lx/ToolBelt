@@ -1,7 +1,6 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -27,8 +26,6 @@ public class Chainsaw extends Tool  {
 	private int widthCube;
 	private double radiusSphere;
 
-	private HashMap<String, Long> pCooldown = new HashMap<String, Long>();
-
 	@Override
 	public String getToolName() {
 		return name;
@@ -38,10 +35,8 @@ public class Chainsaw extends Tool  {
 	public void handleInteract(PlayerInteractEvent event){
 		List<Block> toChange;
 		Player subject = event.getPlayer();
-		if(pCooldown.containsKey(subject.getName()) &&
-				(System.currentTimeMillis() < (pCooldown.get(subject.getName())+500)))
+		if(!delayElapsed(subject.getName()))
 			return;
-		pCooldown.put(subject.getName(), System.currentTimeMillis());
 		Block target;
 		switch(event.getAction()) {
 		case LEFT_CLICK_BLOCK:
@@ -125,6 +120,10 @@ public class Chainsaw extends Tool  {
 
 		//Load the default restriction configuration
 		if(!loadGlobalRestrictions(tSet,conf))
+			return false;
+
+		//Load the repeat delay
+		if(!loadRepeatDelay(tSet,conf,-1))
 			return false;
 
 		widthCube = conf.getInt(tSet+"."+name+".widthCube", 3);
