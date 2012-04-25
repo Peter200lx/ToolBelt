@@ -96,10 +96,14 @@ public class Paint extends Tool  {
 						return;
 					}
 					if(spawnBuild(bTarget,subject)) {
-						if(isUseEvent())
-							safeReplace(set,bTarget,subject,true);
-						else
+						if(isUseEvent()) {
+							if(safeReplace(set,bTarget,subject,true)) {
+								subject.sendBlockChange(bTarget.getLocation(), set.getItemType(),set.getData());
+							}
+						}else {
 							bTarget.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
+							subject.sendBlockChange(bTarget.getLocation(), set.getItemType(), set.getData());
+						}
 					}
 				}else if(bTarget != null) {
 					if(bTarget.getType().equals(Material.AIR))
