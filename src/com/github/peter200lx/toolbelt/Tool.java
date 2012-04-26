@@ -41,7 +41,6 @@ import org.bukkit.material.Pumpkin;
 import org.bukkit.material.Rails;
 import org.bukkit.material.RedstoneTorch;
 import org.bukkit.material.Sign;
-import org.bukkit.material.Stairs;
 import org.bukkit.material.Step;
 import org.bukkit.material.Torch;
 import org.bukkit.material.TrapDoor;
@@ -364,10 +363,7 @@ public abstract class Tool implements ToolInterface {
 		//if(isDebug()) log.info("["+modName+"][data2str] Block "+b.toString());
 		switch(b.getItemType()) {
 		case LOG:
-			if(((Tree)b).getSpecies() != null)
-				return ((Tree)b).getSpecies().toString();
-			else
-				return ""+data;
+		case WOOD:
 		case LEAVES:
 		case SAPLING:
 			if(((Tree)b).getSpecies() != null)
@@ -410,25 +406,30 @@ public abstract class Tool implements ToolInterface {
 					(((DetectorRail)b).isOnSlope() ? " on a slope" : "");
 		case WOOD_STAIRS:
 		case COBBLESTONE_STAIRS:
-			return ((Stairs)b).getFacing().toString();
 		case NETHER_BRICK_STAIRS:
 		case BRICK_STAIRS:
 		case SMOOTH_STAIRS:
+			String append = "";
+			if((data&0x4) == 0x4)
+				append = " and UPSIDE-DOWN";
 			if((data&0x3) == 0x0) {
-				return "NORTH";
+				return "NORTH"+append;
 			} else if((data&0x3) == 0x1) {
-				return "SOUTH";
+				return "SOUTH"+append;
 			} else if((data&0x3) == 0x2) {
-				return "EAST";
+				return "EAST"+append;
 			} else if((data&0x3) == 0x3) {
-				return "WEST";
+				return "WEST"+append;
 			}
 			return "" + data;
 		case LEVER:
 			return ((Lever)b).getAttachedFace().toString();
 		case WOODEN_DOOR:
 		case IRON_DOOR_BLOCK:
-			return ((Door)b).getHingeCorner().toString() + " is " +
+			if(((Door)b).isTopHalf())
+				return "TOP half,"+" hinge "+(((data&0x1)==0x1)?"LEFT":"RIGHT");
+			else
+				return "BOTTOM half, "+((Door)b).getHingeCorner().toString() + " is " +
 					(((Door)b).isOpen()?"OPEN":"CLOSED");
 		case STONE_BUTTON:
 			return ((Button)b).getAttachedFace().toString();
@@ -451,6 +452,23 @@ public abstract class Tool implements ToolInterface {
 		case COAL:
 			return ((Coal)b).getType().toString();
 		case STEP:
+			append = " BOTTOM-HALF";
+			if((data&0x8) == 0x8)
+				append = " TOP-HALF";
+			if((data&0x7) == 0x0) {
+				return Material.STONE.toString()+append;
+			} else if((data&0x7) == 0x1) {
+				return Material.SANDSTONE.toString()+append;
+			} else if((data&0x7) == 0x2) {
+				return Material.WOOD.toString()+append;
+			} else if((data&0x7) == 0x3) {
+				return Material.COBBLESTONE.toString()+append;
+			} else if((data&0x7) == 0x4) {
+				return Material.BRICK.toString()+append;
+			} else if((data&0x7) == 0x5) {
+				return Material.SMOOTH_BRICK.toString()+append;
+			}
+			return "" + data;
 		case DOUBLE_STEP:
 			return ((Step)b).getMaterial().toString();
 		case SNOW:
@@ -477,10 +495,16 @@ public abstract class Tool implements ToolInterface {
 		case PISTON_BASE:
 		case PISTON_STICKY_BASE:
 			return ((PistonBaseMaterial)b).getFacing().toString();
+		case SANDSTONE:
+			if(data == 0x0)			return "CRACKED";
+			else if(data == 0x1)	return "GLYPHED";
+			else if(data == 0x2)	return "SMOOTH";
+			else					return ""+data;
 		case SMOOTH_BRICK:
 			if(data == 0x0)			return "NORMAL";
 			else if(data == 0x1)	return "MOSSY";
 			else if(data == 0x2)	return "CRACKED";
+			else if(data == 0x3)	return "CIRCLE";
 			else					return ""+data;
 		case HUGE_MUSHROOM_1:
 		case HUGE_MUSHROOM_2:
@@ -514,7 +538,7 @@ public abstract class Tool implements ToolInterface {
 				ret += "TOP";
 			return ret;
 		case FENCE_GATE:
-			String append = " is Closed";
+			append = " is Closed";
 			if((data&0x4) == 0x4)
 				append = " is OPEN";
 			if((data&0x3) == 0x0) {
@@ -527,7 +551,7 @@ public abstract class Tool implements ToolInterface {
 				return "EAST"+append;
 			}
 			return ""+data;
-		case MONSTER_EGGS:
+		case MONSTER_EGGS:	//Hidden Silverfish
 			if(data == 0x0)			return Material.STONE.toString();
 			else if(data == 0x1)	return Material.COBBLESTONE.toString();
 			else if(data == 0x2)	return Material.SMOOTH_BRICK.toString();
@@ -565,6 +589,7 @@ public abstract class Tool implements ToolInterface {
 
 	private static void setPrintData() {
 		printData.add(Material.LOG);
+		printData.add(Material.WOOD);
 		printData.add(Material.LEAVES);
 		printData.add(Material.SAPLING);
 		printData.add(Material.JUKEBOX);
@@ -606,6 +631,7 @@ public abstract class Tool implements ToolInterface {
 		printData.add(Material.TRAP_DOOR);
 		printData.add(Material.PISTON_BASE);
 		printData.add(Material.PISTON_STICKY_BASE);
+		printData.add(Material.SANDSTONE);
 		printData.add(Material.SMOOTH_BRICK);
 		printData.add(Material.HUGE_MUSHROOM_1);
 		printData.add(Material.HUGE_MUSHROOM_2);
