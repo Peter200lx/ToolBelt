@@ -353,8 +353,6 @@ public abstract class Tool implements ToolInterface {
 		stop.add(Material.PISTON_MOVING_PIECE);
 		stop.add(Material.FIRE);
 		stop.add(Material.CHEST);
-		stop.add(Material.WOODEN_DOOR);
-		stop.add(Material.IRON_DOOR_BLOCK);
 		return stop;
 	}
 
