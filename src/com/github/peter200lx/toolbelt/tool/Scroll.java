@@ -126,6 +126,28 @@ public class Scroll extends Tool {
 					case WOOD_PLATE:
 						subject.sendMessage("There is no useful data to scroll");
 						return;
+					case STEP:
+						boolean inverted = (data&0x8) == 0x8;
+						int stepMax = 7;
+						data = (byte) (data & 0x7);
+						if(act.equals(Action.LEFT_CLICK_BLOCK)){
+							if(!inverted) {
+								if ((data - 1) < 0)
+									data = (byte) (stepMax - 1);
+								else
+									data = (byte) ((data - 1) % stepMax);
+							}
+							inverted = !inverted;
+						} else if(act.equals(Action.RIGHT_CLICK_BLOCK)){
+							if(inverted)
+								data = (byte) ((data + 1) % stepMax);
+							inverted = !inverted;
+						}
+						if(inverted)
+							data |= 0x8;
+						else
+							data &= 0x7;
+						break;
 					case BED_BLOCK:
 						//TODO More research into modifying foot and head of bed at once
 						subject.sendMessage(clicked.getType()+" is not yet scrollable");
@@ -271,7 +293,8 @@ public class Scroll extends Tool {
 		HashMap<Material, Integer> dm = new HashMap<Material, Integer>();
 		//If the integer is 0, that means that a simple numerical shift won't work
 		dm.put(Material.LOG, TreeSpecies.values().length);
-		dm.put(Material.LEAVES, 4);
+		dm.put(Material.WOOD, TreeSpecies.values().length);
+		dm.put(Material.LEAVES, TreeSpecies.values().length);
 		dm.put(Material.JUKEBOX, 0);
 		dm.put(Material.SAPLING, TreeSpecies.values().length);
 		dm.put(Material.CACTUS, 16);
@@ -290,11 +313,11 @@ public class Scroll extends Tool {
 		dm.put(Material.RAILS, 10);
 		dm.put(Material.POWERED_RAIL, 0);
 		dm.put(Material.DETECTOR_RAIL, 0);
-		dm.put(Material.WOOD_STAIRS, 4);
-		dm.put(Material.COBBLESTONE_STAIRS, 4);
-		dm.put(Material.BRICK_STAIRS, 4);
-		dm.put(Material.SMOOTH_STAIRS, 4);
-		dm.put(Material.NETHER_BRICK_STAIRS, 4);
+		dm.put(Material.WOOD_STAIRS, 8);
+		dm.put(Material.COBBLESTONE_STAIRS, 8);
+		dm.put(Material.BRICK_STAIRS, 8);
+		dm.put(Material.SMOOTH_STAIRS, 8);
+		dm.put(Material.NETHER_BRICK_STAIRS, 8);
 		dm.put(Material.LEVER, 0);
 		dm.put(Material.WOODEN_DOOR, 0);
 		dm.put(Material.IRON_DOOR_BLOCK, 0);
@@ -311,7 +334,7 @@ public class Scroll extends Tool {
 		dm.put(Material.WOOD_PLATE, 0);
 		//Add Coal? No block to click
 		//Add Tools & Armor? No block to click
-		dm.put(Material.STEP, 7);
+		dm.put(Material.STEP, 0);
 		dm.put(Material.DOUBLE_STEP, 7);
 		dm.put(Material.SNOW, 8);
 		dm.put(Material.CAKE_BLOCK, 6);
@@ -324,7 +347,8 @@ public class Scroll extends Tool {
 		dm.put(Material.PISTON_BASE, 0);
 		dm.put(Material.PISTON_STICKY_BASE, 0);
 		dm.put(Material.PISTON_EXTENSION, 0);
-		dm.put(Material.SMOOTH_BRICK, 3);
+		dm.put(Material.SANDSTONE, 3);
+		dm.put(Material.SMOOTH_BRICK, 4);
 		dm.put(Material.HUGE_MUSHROOM_1, 11);
 		dm.put(Material.HUGE_MUSHROOM_2, 11);
 		dm.put(Material.VINE, 16);
