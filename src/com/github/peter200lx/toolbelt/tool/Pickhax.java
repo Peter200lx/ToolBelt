@@ -1,5 +1,6 @@
 package com.github.peter200lx.toolbelt.tool;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class Pickhax extends Tool  {
 	}
 
 	public static String name = "phax";
+
+	private HashMap<String, Long> pWarned = new HashMap<String, Long>();
 
 	private Integer range;
 
@@ -48,6 +51,8 @@ public class Pickhax extends Tool  {
 		case RIGHT_CLICK_AIR:
 			if(subject.isSneaking()&&hasRangePerm(subject)&&(range > 0))
 				target = subject.getTargetBlock(null, range);
+			else if(!warningElapsed(subject.getName()))
+				return;
 			else if(range <= 0){
 				subject.sendMessage(ChatColor.RED+"Ranged block removal isn't enabled");
 				return;
@@ -55,7 +60,8 @@ public class Pickhax extends Tool  {
 				subject.sendMessage(ChatColor.RED+"You don't have ranged delete permission");
 				return;
 			}else {
-				subject.sendMessage(ChatColor.RED+"Sorry, didn't catch that, try crouching");
+				subject.sendMessage(ChatColor.RED+"Sorry, you clicked on air,"+
+						" try crouching for ranged removal");
 				return;
 			}
 			break;
@@ -77,6 +83,14 @@ public class Pickhax extends Tool  {
 			event.getPlayer().sendMessage(ChatColor.RED + "You can't insta-delete "+
 					ChatColor.GOLD+target.getType());
 		}
+	}
+
+	protected boolean warningElapsed(String name) {
+		if(pWarned.containsKey(name) &&
+				(System.currentTimeMillis() < (pWarned.get(name)+10*1000)))
+			return false;
+		pWarned.put(name, System.currentTimeMillis());
+		return true;
 	}
 
 	private boolean hasRangePerm(CommandSender subject) {
