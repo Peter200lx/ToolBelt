@@ -27,9 +27,9 @@ public class Duplicator extends Tool {
 
 	public static String name = "dupe";
 
-	private static HashMap<Material, Material> dupeMap;
+	private HashMap<Material, Material> dupeMap;
 
-	private static HashSet<Material> keepData;
+	private SetMat keepData;
 
 	@Override
 	public String getToolName() {
