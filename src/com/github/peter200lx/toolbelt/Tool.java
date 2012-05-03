@@ -2,7 +2,6 @@ package com.github.peter200lx.toolbelt;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -69,11 +68,11 @@ public abstract class Tool implements ToolInterface {
 
 	private HashMap<String, Long> pCooldown = new HashMap<String, Long>();
 
-	protected HashSet<Material> onlyAllow;
+	protected SetMat onlyAllow;
 
-	protected HashSet<Material> stopCopy;
+	protected SetMat stopCopy;
 
-	protected HashSet<Material> stopOverwrite;
+	protected SetMat stopOverwrite;
 
 	protected static HashSet<Material> printData = new HashSet<Material>();
 
@@ -247,37 +246,6 @@ public abstract class Tool implements ToolInterface {
 					repeatDelay);
 		}
 		return true;
-	}
-
-	protected HashSet<Material> loadMatList(List<Integer> input,
-			HashSet<Material> def, String warnMessage) {
-		if(input == null) {
-			log.warning("["+gc.modName+"] "+warnMessage+" is returning null");
-			return null;
-		}else if(def == null) {
-			log.warning("["+gc.modName+"]*** Warn tool developer that their call"+
-					" to loadMatList() is bad "+warnMessage);
-			return null;
-		}
-		for(Integer entry : input) {
-			if(entry > 0) {
-				Material type = Material.getMaterial(entry);
-				if(type != null) {
-					def.add(type);
-					continue;
-				}
-			}
-			log.warning("["+gc.modName+"] "+warnMessage + ": '" + entry +
-					"' is not a Material type" );
-			return null;
-		}
-		return def;
-	}
-
-	protected void logMatSet(HashSet<Material> set, String function, String summary) {
-		for(Material mat: set) {
-			log.info("["+gc.modName+"]["+function+"] "+summary+" "+mat.toString());
-		}
 	}
 
 	protected String data2Str(MaterialData b) {

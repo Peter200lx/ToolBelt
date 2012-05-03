@@ -207,19 +207,17 @@ public class ToolBelt extends JavaPlugin {
 		}
 
 		//Load global protection lists
-		HashSet<Material> onlyAllow;
-		HashSet<Material> stopCopy;
-		HashSet<Material> stopOverwrite;
+		SetMat onlyAllow = new SetMat(log, cName);
+		SetMat stopCopy = new SetMat(log, cName);
+		SetMat stopOverwrite = new SetMat(log, cName);
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+globalName+".onlyAllow");
 
-		onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+
-				globalName+".onlyAllow");
-		if(onlyAllow == null)
+		if(!onlyAllow.loadMatList(intL,false,tSet+"."+globalName+".onlyAllow"))
 			return false;
 
 		if(debug) {
-			logMatSet(onlyAllow,"loadConf",globalName+".onlyAllow:");
+			onlyAllow.logMatSet("loadConf",globalName+".onlyAllow:");
 			if(onlyAllow.isEmpty())
 				log.info( "["+cName+"][loadConf] As onlyAllow"+
 						" is empty, all non-restricted materials are allowed");
@@ -230,26 +228,24 @@ public class ToolBelt extends JavaPlugin {
 
 		intL = conf.getIntegerList(tSet+"."+globalName+".stopCopy");
 
-		stopCopy = loadMatList(intL,defStop(),tSet+"."+globalName+".stopCopy");
-		if(stopCopy == null)
+		if(!stopCopy.loadMatList(intL,true,tSet+"."+globalName+".stopCopy"))
 			return false;
 
-		if(debug) logMatSet(stopCopy,"loadGlobalRestrictions",globalName+
+		if(debug) stopCopy.logMatSet("loadConf",globalName+
 				".stopCopy:");
 
 		intL = conf.getIntegerList(tSet+"."+globalName+".stopOverwrite");
 
-		stopOverwrite = loadMatList(intL,defStop(),tSet+"."+globalName+
-				".stopOverwrite");
-		if(stopOverwrite == null)
+		if(!stopOverwrite.loadMatList(intL,true,tSet+"."+globalName+
+				".stopOverwrite"))
 			return false;
 
-		if(debug) logMatSet(stopOverwrite,"loadGlobalRestrictions",
+		if(debug) stopOverwrite.logMatSet("loadConf",
 				globalName+".stopOverwrite:");
 
 		//Store settings into global config for use outside of loadConf()
 		gc = new GlobalConf(cName,this.getServer(),debug,permissions,useEvent,
-				repeatDelay,defStop(),onlyAllow,stopCopy,stopOverwrite);
+				repeatDelay,onlyAllow,stopCopy,stopOverwrite);
 
 		HashMap<String,Tool> available = new HashMap<String,Tool>();
 		available.put(Duplicator.name, new Duplicator(gc));
@@ -321,48 +317,6 @@ public class ToolBelt extends JavaPlugin {
 		// to disable the plugin if they don't succeed.
 
 		return true;
-	}
-
-	protected HashSet<Material> defStop() {
-		HashSet<Material> stop = new HashSet<Material>();
-		stop.add(Material.AIR);
-		stop.add(Material.BED_BLOCK);
-		stop.add(Material.PISTON_EXTENSION);
-		stop.add(Material.PISTON_MOVING_PIECE);
-		stop.add(Material.FIRE);
-		stop.add(Material.CHEST);
-		return stop;
-	}
-
-	protected HashSet<Material> loadMatList(List<Integer> input,
-			HashSet<Material> def, String warnMessage) {
-		if(input == null) {
-			log.warning("["+cName+"] "+warnMessage+" is returning null");
-			return null;
-		}else if(def == null) {
-			log.warning("["+cName+"]*** Warn tool developer that their call"+
-					" to loadMatList() is bad "+warnMessage);
-			return null;
-		}
-		for(Integer entry : input) {
-			if(entry > 0) {
-				Material type = Material.getMaterial(entry);
-				if(type != null) {
-					def.add(type);
-					continue;
-				}
-			}
-			log.warning("["+cName+"] "+warnMessage + ": '" + entry +
-					"' is not a Material type" );
-			return null;
-		}
-		return def;
-	}
-
-	protected void logMatSet(HashSet<Material> set, String function, String summary) {
-		for(Material mat: set) {
-			log.info("["+cName+"]["+function+"] "+summary+" "+mat.toString());
-		}
 	}
 
 	private boolean printPerm(String outName) {

@@ -1,7 +1,6 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -17,6 +16,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
+import com.github.peter200lx.toolbelt.SetMat;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Duplicator extends Tool {
@@ -29,7 +29,7 @@ public class Duplicator extends Tool {
 
 	private HashMap<Material, Material> dupeMap;
 
-	private SetMat keepData;
+	private SetMat keepData = new SetMat(log,gc.modName);
 
 	@Override
 	public String getToolName() {
@@ -139,11 +139,10 @@ public class Duplicator extends Tool {
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".keepData");
 
-		keepData = loadMatList(intL,new HashSet<Material>(),tSet+"."+name+".keepData");
-		if(keepData == null)
+		if(!keepData.loadMatList(intL,false,tSet+"."+name+".keepData"))
 			return false;
 
-		if(isDebug()) logMatSet(keepData,"loadConf",name+".keepData:");
+		if(isDebug()) keepData.logMatSet("loadConf",name+".keepData:");
 
 		return true;
 	}

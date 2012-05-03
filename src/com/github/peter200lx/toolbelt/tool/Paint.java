@@ -1,7 +1,6 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -191,12 +190,11 @@ public class Paint extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" it overwrites the global");
 
-			onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+name+".onlyAllow");
-			if(onlyAllow == null)
+			if(!onlyAllow.loadMatList(intL,false,tSet+"."+name+".onlyAllow"))
 				return false;
 
 			if(isDebug()) {
-				logMatSet(onlyAllow,"loadGlobalRestrictions",name+".onlyAllow:");
+				onlyAllow.logMatSet("loadConf",name+".onlyAllow:");
 				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" only those materials are usable");
 			}
@@ -213,11 +211,10 @@ public class Paint extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".stopCopy has items,"+
 						" it overwrites the global");
 
-			stopCopy = loadMatList(intL,gc.defStop,tSet+"."+name+".stopCopy");
-			if(stopCopy == null)
+			if(!stopCopy.loadMatList(intL,true,tSet+"."+name+".stopCopy"))
 				return false;
 
-			if(isDebug()) logMatSet(stopCopy,"loadConf",name+".stopCopy:");
+			if(isDebug()) stopCopy.logMatSet("loadConf",name+".stopCopy:");
 		}
 
 		intL = conf.getIntegerList(tSet+"."+name+".stopOverwrite");
@@ -228,11 +225,10 @@ public class Paint extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".stopOverwrite has items,"+
 						" it overwrites the global");
 
-			stopOverwrite = loadMatList(intL,gc.defStop,tSet+"."+name+".stopOverwrite");
-			if(stopOverwrite == null)
+			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+name+".stopOverwrite"))
 				return false;
 
-			if(isDebug()) logMatSet(stopOverwrite,"loadGlobalRestrictions",
+			if(isDebug()) stopOverwrite.logMatSet("loadConf",
 					name+".stopOverwrite:");
 		}
 		return true;

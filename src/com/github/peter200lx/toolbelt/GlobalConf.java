@@ -1,16 +1,12 @@
 package com.github.peter200lx.toolbelt;
 
-import java.util.HashSet;
-
-import org.bukkit.Material;
 import org.bukkit.Server;
 
 public class GlobalConf {
 
 	public GlobalConf(String modName, Server server, boolean debug,
 			boolean perm, boolean useEvent, int repeatDelay,
-			HashSet<Material> defStop, HashSet<Material> onlyAllow,
-			HashSet<Material> stopCopy, HashSet<Material> stopOverwrite) {
+			SetMat onlyAllow, SetMat stopCopy, SetMat stopOverwrite) {
 		super();
 		this.modName = modName;
 		this.server = server;
@@ -18,7 +14,6 @@ public class GlobalConf {
 		this.perm = perm;
 		this.useEvent = useEvent;
 		this.repeatDelay = repeatDelay;
-		this.defStop = defStop;
 		this.onlyAllow = onlyAllow;
 		this.stopCopy = stopCopy;
 		this.stopOverwrite = stopOverwrite;
@@ -36,12 +31,10 @@ public class GlobalConf {
 
 	public final int repeatDelay;
 
-	public final HashSet<Material> defStop;
+	public final SetMat onlyAllow;
 
-	public final HashSet<Material> onlyAllow;
+	public final SetMat stopCopy;
 
-	public final HashSet<Material> stopCopy;
-
-	public final HashSet<Material> stopOverwrite;
+	public final SetMat stopOverwrite;
 
 }

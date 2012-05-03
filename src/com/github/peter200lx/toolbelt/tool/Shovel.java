@@ -1,11 +1,9 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -161,12 +159,11 @@ public class Shovel extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" it overwrites the global");
 
-			onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+name+".onlyAllow");
-			if(onlyAllow == null)
+			if(!onlyAllow.loadMatList(intL,false,tSet+"."+name+".onlyAllow"))
 				return false;
 
 			if(isDebug()) {
-				logMatSet(onlyAllow,"loadGlobalRestrictions",name+".onlyAllow:");
+				onlyAllow.logMatSet("loadConf",name+".onlyAllow:");
 				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" only those materials are usable");
 			}
@@ -183,11 +180,10 @@ public class Shovel extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".stopOverwrite has items,"+
 						" it overwrites the global");
 
-			stopOverwrite = loadMatList(intL,gc.defStop,tSet+"."+name+".stopOverwrite");
-			if(stopOverwrite == null)
+			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+name+".stopOverwrite"))
 				return false;
 
-			if(isDebug()) logMatSet(stopOverwrite,"loadGlobalRestrictions",
+			if(isDebug()) stopOverwrite.logMatSet("loadConf",
 					name+".stopOverwrite:");
 		}
 		return true;
