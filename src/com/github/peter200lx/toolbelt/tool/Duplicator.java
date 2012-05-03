@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,12 +16,13 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Duplicator extends Tool {
 
-	public Duplicator(String modName, Server server, boolean debug, boolean permissions, boolean useEvent) {
-		super(modName, server, debug, permissions, useEvent);
+	public Duplicator(GlobalConf gc) {
+		super(gc);
 	}
 
 	public static String name = "dupe";
@@ -46,7 +46,7 @@ public class Duplicator extends Tool {
 			Block clicked = event.getClickedBlock();
 			Material type = clicked.getType();
 
-			if(isDebug()) log.info("["+modName+"][dupeTool] "+subject.getName()+
+			if(isDebug()) log.info("["+gc.modName+"][dupeTool] "+subject.getName()+
 					" clicked "+clicked.getState().getData());
 
 			Material toUse = dupeMap.get(type);
@@ -105,7 +105,7 @@ public class Duplicator extends Tool {
 		ConfigurationSection sect = conf.getConfigurationSection(tSet+"."+name+".replace");
 
 		if(sect == null) {
-			log.warning("["+modName+"] "+tSet+"."+name+".replace is returning null");
+			log.warning("["+gc.modName+"] "+tSet+"."+name+".replace is returning null");
 			return false;
 		}
 
@@ -120,17 +120,17 @@ public class Duplicator extends Tool {
 						Material valType = Material.getMaterial(val);
 						if((keyType != null)&&(valType != null)) {
 							holdDupeMap.put(keyType,valType);
-							if(isDebug()) log.info( "["+modName+"][loadConf] added to dupeMap: " +
+							if(isDebug()) log.info( "["+gc.modName+"][loadConf] added to dupeMap: " +
 									keyType + " to " + valType);
 							continue;
 						}
 					}
 				}
-				log.warning("["+modName+"] "+tSet+"."+name+".replace: '"+entry.getKey()+
+				log.warning("["+gc.modName+"] "+tSet+"."+name+".replace: '"+entry.getKey()+
 						"': '"+entry.getValue() + "' is not a Material type" );
 				return false;
 			} catch(NumberFormatException e) {
-				log.warning("["+modName+"] "+tSet+"."+name+".replace: '"+entry.getKey()+
+				log.warning("["+gc.modName+"] "+tSet+"."+name+".replace: '"+entry.getKey()+
 						"': is not an integer" );
 				return false;
 			}

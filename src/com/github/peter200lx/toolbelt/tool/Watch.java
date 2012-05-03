@@ -3,19 +3,18 @@ package com.github.peter200lx.toolbelt.tool;
 import java.util.HashSet;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Watch extends Tool  {
 
-	public Watch(String modName, Server server, boolean debug,
-			boolean permissions, boolean useEvent) {
-		super(modName, server, debug, permissions, useEvent);
+	public Watch(GlobalConf gc) {
+		super(gc);
 	}
 
 	private int timeDay;
@@ -72,7 +71,7 @@ public class Watch extends Tool  {
 	}
 
 	private boolean hasServerPerm(CommandSender subject) {
-		if(isPermissions())
+		if(gc.perm)
 			return subject.hasPermission(getPermStr()+".server");
 		else
 			return true;
@@ -98,8 +97,8 @@ public class Watch extends Tool  {
 		timeDay = conf.getInt(tSet+"."+name+".timeDay", 1000);
 		timeNight = conf.getInt(tSet+"."+name+".timeNight", 14000);
 		if(isDebug()) {
-			log.info("["+modName+"][loadConf] Day time is defined as " + timeDay);
-			log.info("["+modName+"][loadConf] Night time is defined as " + timeNight);
+			log.info("["+gc.modName+"][loadConf] Day time is defined as " + timeDay);
+			log.info("["+gc.modName+"][loadConf] Night time is defined as " + timeNight);
 		}
 		return true;
 	}

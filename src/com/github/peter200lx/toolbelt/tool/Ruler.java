@@ -5,18 +5,18 @@ import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Ruler extends Tool  {
 
-	public Ruler(String modName, Server server, boolean debug,
-			boolean permissions, boolean useEvent) {
-		super(modName, server, debug, permissions, useEvent);
+	public Ruler(GlobalConf gc) {
+		super(gc);
 	}
 
 	private HashMap<String,Location[]> pCube = new HashMap<String,Location[]>();

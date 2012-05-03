@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
@@ -50,35 +49,25 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class Tool implements ToolInterface {
 
-	protected Tool(String modName, Server server, boolean debug,
-			boolean permissions, boolean useEvent) {
-		this.modName = modName;
-		this.server = server;
-		this.debug = debug;
-		this.permissions = permissions;
-		this.useEvent = useEvent;
+	public Tool(GlobalConf gc) {
+		this.gc = gc;
+		onlyAllow = gc.onlyAllow;
+		stopCopy = gc.stopCopy;
+		stopOverwrite = gc.stopOverwrite;
 		setPrintData();
 	}
 
 	protected final Logger log = Logger.getLogger("Minecraft");
 
-	protected String modName;
+	protected GlobalConf gc;
 
 	public static String name;
 
 	private Material type;
 
-	protected Server server;
+	private int repeatDelay;
 
-	private boolean debug;
-
-	private boolean permissions;
-
-	private boolean useEvent;
-
-	protected int repeatDelay;
-
-	protected HashMap<String, Long> pCooldown = new HashMap<String, Long>();
+	private HashMap<String, Long> pCooldown = new HashMap<String, Long>();
 
 	protected HashSet<Material> onlyAllow;
 
@@ -100,19 +89,15 @@ public abstract class Tool implements ToolInterface {
 	public abstract String getToolName();
 
 	protected boolean isDebug() {
-		return debug;
-	}
-
-	protected boolean isPermissions() {
-		return permissions;
+		return gc.debug;
 	}
 
 	protected boolean isUseEvent() {
-		return useEvent;
+		return gc.useEvent;
 	}
 
 	protected String getPermStr() {
-		return modName.toLowerCase()+".tool."+getToolName();
+		return gc.modName.toLowerCase()+".tool."+getToolName();
 	}
 
 	//This catches left/right click events
@@ -129,7 +114,7 @@ public abstract class Tool implements ToolInterface {
 	}
 
 	public boolean hasPerm(CommandSender sender) {
-		if(isPermissions())
+		if(gc.perm)
 			return sender.hasPermission(getPermStr());
 		else
 			return true;
@@ -143,12 +128,12 @@ public abstract class Tool implements ToolInterface {
 	public abstract boolean loadConf(String tSet, FileConfiguration conf);
 
 	public void saveHelp(JavaPlugin host) {
-		if(isDebug()) log.info("["+modName+"] Help saved for: "+getToolName());
+		if(isDebug()) log.info("["+gc.modName+"] Help saved for: "+getToolName());
 		host.saveResource("help/"+getToolName()+".txt", true);
 	}
 
 	protected boolean spawnBuild(Block target, Player subject) {
-		int spawnSize = server.getSpawnRadius();
+		int spawnSize = gc.server.getSpawnRadius();
 		if (subject.isOp())
 			return true;
 		else if(spawnSize <= 0)
@@ -166,11 +151,11 @@ public abstract class Tool implements ToolInterface {
 	protected boolean safeBreak(Block target, Player subject, boolean applyPhysics) {
 		ItemStack hand = subject.getItemInHand();
 		BlockDamageEvent canDamage = new BlockDamageEvent(subject, target, hand, true);
-		server.getPluginManager().callEvent(canDamage);
+		gc.server.getPluginManager().callEvent(canDamage);
 		if(canDamage.isCancelled())
 			return false;
 		BlockBreakEvent canBreak = new BlockBreakEvent(target,subject);
-		server.getPluginManager().callEvent(canBreak);
+		gc.server.getPluginManager().callEvent(canBreak);
 		if(!canBreak.isCancelled())
 			target.setTypeId(0, applyPhysics);
 		return !canBreak.isCancelled();
@@ -215,7 +200,7 @@ public abstract class Tool implements ToolInterface {
 			old.setTypeIdAndData(newInfo.getItemTypeId(), newInfo.getData(), false);
 		ItemStack type = newInfo.toItemStack();
 		BlockPlaceEvent canPlace = new BlockPlaceEvent(old,oldInfo,old,type,subject,canBuild);
-		server.getPluginManager().callEvent(canPlace);
+		gc.server.getPluginManager().callEvent(canPlace);
 		if(canPlace.isCancelled()) {
 			if(oldInfo.getType().equals(newInfo.getItemType()))
 				old.setData(oldInfo.getRawData(), false);
@@ -236,29 +221,21 @@ public abstract class Tool implements ToolInterface {
 	}
 
 	protected boolean loadRepeatDelay(String tSet, FileConfiguration conf, int def) {
-		String globalName = "global";
 
 		int localDelay = conf.getInt(tSet+"."+getToolName()+".repeatDelay", def);
 
 		if(localDelay == -1) {
 			//If the local value is -1, we want to grab the global setting
-			repeatDelay = conf.getInt(tSet+"."+globalName+".repeatDelay", 125);
-			if(repeatDelay < 0) {
-				log.warning("["+modName+"] "+tSet+"."+globalName+".repeatDelay has an "+
-						"invalid value of "+repeatDelay);
-				log.warning("["+modName+"] (The global delay must be greater than or "+
-						"equal to zero)");
-				return false;
-			}
+			repeatDelay = gc.repeatDelay;
 			if(isDebug()) {
-				log.info("["+modName+"][loadConf] Using global tool reuse delay for "+
+				log.info("["+gc.modName+"][loadConf] Using global tool reuse delay for "+
 						getToolName());
 			}
 		}else if(localDelay < 0) {
 			//If we are any negative number that isn't -1
-			log.warning("["+modName+"] "+tSet+"."+getToolName()+".repeatDelay has an "+
+			log.warning("["+gc.modName+"] "+tSet+"."+getToolName()+".repeatDelay has an "+
 					"invalid value of "+repeatDelay);
-			log.warning("["+modName+"] (The tool specific delay must be -1,0,"+
+			log.warning("["+gc.modName+"] (The tool specific delay must be -1,0,"+
 					" or a positive number)");
 			return false;
 		}else {
@@ -266,61 +243,19 @@ public abstract class Tool implements ToolInterface {
 			repeatDelay = localDelay;
 		}
 		if(isDebug()) {
-			log.info("["+modName+"][loadConf] "+getToolName()+" tool use repeat delay is "+
+			log.info("["+gc.modName+"][loadConf] "+getToolName()+" tool use repeat delay is "+
 					repeatDelay);
 		}
-		return true;
-	}
-
-	protected boolean loadGlobalRestrictions(String tSet, FileConfiguration conf) {
-		String globalName = "global";
-
-		List<Integer> intL = conf.getIntegerList(tSet+"."+globalName+".onlyAllow");
-
-		onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+
-				globalName+".onlyAllow");
-		if(onlyAllow == null)
-			return false;
-
-		if(isDebug()) {
-			logMatSet(onlyAllow,"loadGlobalRestrictions",globalName+".onlyAllow:");
-			if(onlyAllow.isEmpty())
-				log.info( "["+modName+"][loadGlobalRestrictions] As onlyAllow"+
-						" is empty, all non-restricted materials are allowed");
-			else
-				log.info( "["+modName+"][loadGlobalRestrictions] As onlyAllow "+
-						"has items, only those materials can be painted");
-		}
-
-		intL = conf.getIntegerList(tSet+"."+globalName+".stopCopy");
-
-		stopCopy = loadMatList(intL,defStop(),tSet+"."+globalName+".stopCopy");
-		if(stopCopy == null)
-			return false;
-
-		if(isDebug()) logMatSet(stopCopy,"loadGlobalRestrictions",globalName+
-				".stopCopy:");
-
-		intL = conf.getIntegerList(tSet+"."+globalName+".stopOverwrite");
-
-		stopOverwrite = loadMatList(intL,defStop(),tSet+"."+globalName+
-				".stopOverwrite");
-		if(stopOverwrite == null)
-			return false;
-
-		if(isDebug()) logMatSet(stopOverwrite,"loadGlobalRestrictions",
-				globalName+".stopOverwrite:");
-
 		return true;
 	}
 
 	protected HashSet<Material> loadMatList(List<Integer> input,
 			HashSet<Material> def, String warnMessage) {
 		if(input == null) {
-			log.warning("["+modName+"] "+warnMessage+" is returning null");
+			log.warning("["+gc.modName+"] "+warnMessage+" is returning null");
 			return null;
 		}else if(def == null) {
-			log.warning("["+modName+"]*** Warn tool developer that their call"+
+			log.warning("["+gc.modName+"]*** Warn tool developer that their call"+
 					" to loadMatList() is bad "+warnMessage);
 			return null;
 		}
@@ -332,7 +267,7 @@ public abstract class Tool implements ToolInterface {
 					continue;
 				}
 			}
-			log.warning("["+modName+"] "+warnMessage + ": '" + entry +
+			log.warning("["+gc.modName+"] "+warnMessage + ": '" + entry +
 					"' is not a Material type" );
 			return null;
 		}
@@ -341,24 +276,13 @@ public abstract class Tool implements ToolInterface {
 
 	protected void logMatSet(HashSet<Material> set, String function, String summary) {
 		for(Material mat: set) {
-			log.info("["+modName+"]["+function+"] "+summary+" "+mat.toString());
+			log.info("["+gc.modName+"]["+function+"] "+summary+" "+mat.toString());
 		}
-	}
-
-	protected HashSet<Material> defStop() {
-		HashSet<Material> stop = new HashSet<Material>();
-		stop.add(Material.AIR);
-		stop.add(Material.BED_BLOCK);
-		stop.add(Material.PISTON_EXTENSION);
-		stop.add(Material.PISTON_MOVING_PIECE);
-		stop.add(Material.FIRE);
-		stop.add(Material.CHEST);
-		return stop;
 	}
 
 	protected String data2Str(MaterialData b) {
 		byte data = b.getData();
-		//if(isDebug()) log.info("["+modName+"][data2str] Block "+b.toString());
+		//if(gc.debug) log.info("["+gc.modName+"][data2str] Block "+b.toString());
 		switch(b.getItemType()) {
 		case LOG:
 		case WOOD:

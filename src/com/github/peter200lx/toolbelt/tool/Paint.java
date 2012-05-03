@@ -7,7 +7,6 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,13 +16,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.material.MaterialData;
 
+import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Paint extends Tool  {
 
-	public Paint(String modName, Server server, boolean debug,
-			boolean permissions, boolean useEvent) {
-		super(modName, server, debug, permissions, useEvent);
+	public Paint(GlobalConf gc) {
+		super(gc);
 	}
 
 	public static String name = "paint";
@@ -132,7 +131,7 @@ public class Paint extends Tool  {
 	}
 
 	private boolean hasRangePerm(CommandSender subject) {
-		if(isPermissions())
+		if(gc.perm)
 			return subject.hasPermission(getPermStr()+".range");
 		else
 			return true;
@@ -171,10 +170,6 @@ public class Paint extends Tool  {
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
 
-		//Load the default restriction configuration
-		if(!loadGlobalRestrictions(tSet,conf))
-			return false;
-
 		//Load the repeat delay
 		if(!loadRepeatDelay(tSet,conf,0))
 			return false;
@@ -182,9 +177,9 @@ public class Paint extends Tool  {
 		rangeDef = conf.getInt(tSet+"."+name+".rangeDefault", 0);
 		rangeCrouch = conf.getInt(tSet+"."+name+".rangeCrouch", 25);
 		if(isDebug()) {
-			log.info("["+modName+"][loadConf] Default painting range distance is set to "+
+			log.info("["+gc.modName+"][loadConf] Default painting range distance is set to "+
 					rangeDef);
-			log.info("["+modName+"][loadConf] Crouched painting range distance is set to "+
+			log.info("["+gc.modName+"][loadConf] Crouched painting range distance is set to "+
 					rangeCrouch);
 		}
 
@@ -193,7 +188,7 @@ public class Paint extends Tool  {
 		if(!intL.isEmpty())
 		{
 			if(isDebug())
-				log.info( "["+modName+"][loadConf] As "+name+".onlyAllow has items,"+
+				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" it overwrites the global");
 
 			onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+name+".onlyAllow");
@@ -202,11 +197,11 @@ public class Paint extends Tool  {
 
 			if(isDebug()) {
 				logMatSet(onlyAllow,"loadGlobalRestrictions",name+".onlyAllow:");
-				log.info( "["+modName+"][loadConf] As "+name+".onlyAllow has items,"+
+				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" only those materials are usable");
 			}
 		} else if(isDebug()&& !onlyAllow.isEmpty()) {
-			log.info( "["+modName+"][loadConf] As global.onlyAllow has items,"+
+			log.info( "["+gc.modName+"][loadConf] As global.onlyAllow has items,"+
 					" only those materials are usable");
 		}
 
@@ -215,10 +210,10 @@ public class Paint extends Tool  {
 		if(!intL.isEmpty())
 		{
 			if(isDebug())
-				log.info( "["+modName+"][loadConf] As "+name+".stopCopy has items,"+
+				log.info( "["+gc.modName+"][loadConf] As "+name+".stopCopy has items,"+
 						" it overwrites the global");
 
-			stopCopy = loadMatList(intL,defStop(),tSet+"."+name+".stopCopy");
+			stopCopy = loadMatList(intL,gc.defStop,tSet+"."+name+".stopCopy");
 			if(stopCopy == null)
 				return false;
 
@@ -230,10 +225,10 @@ public class Paint extends Tool  {
 		if(!intL.isEmpty())
 		{
 			if(isDebug())
-				log.info( "["+modName+"][loadConf] As "+name+".stopOverwrite has items,"+
+				log.info( "["+gc.modName+"][loadConf] As "+name+".stopOverwrite has items,"+
 						" it overwrites the global");
 
-			stopOverwrite = loadMatList(intL,defStop(),tSet+"."+name+".stopOverwrite");
+			stopOverwrite = loadMatList(intL,gc.defStop,tSet+"."+name+".stopOverwrite");
 			if(stopOverwrite == null)
 				return false;
 

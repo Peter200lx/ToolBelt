@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -13,13 +12,13 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
+import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Leap extends Tool {
 
-	public Leap(String modName, Server server, boolean debug,
-			boolean permissions, boolean useEvent) {
-		super(modName, server, debug, permissions, useEvent);
+	public Leap(GlobalConf gc) {
+		super(gc);
 	}
 
 	public static String name = "leap";
@@ -45,7 +44,7 @@ public class Leap extends Tool {
 		Player subject = event.getPlayer();
 		if(!delayElapsed(subject.getName()))
 			return;
-		if(isDebug()) log.info("["+modName+"][leapTool] "+subject.getName()+
+		if(isDebug()) log.info("["+gc.modName+"][leapTool] "+subject.getName()+
 				" " + act.toString()+" with the leap tool");
 		if(act.equals(Action.RIGHT_CLICK_AIR)||act.equals(Action.RIGHT_CLICK_BLOCK)) {
 			//This code block is copied from VoxelAir from FlyRidgeFly
@@ -107,7 +106,7 @@ public class Leap extends Tool {
 	}
 
 	private boolean hasTeleportPerm (CommandSender subject) {
-		if(isPermissions())
+		if(gc.perm)
 			return subject.hasPermission(getPermStr()+".tel");
 		else
 			return true;
@@ -143,19 +142,19 @@ public class Leap extends Tool {
 
 		leapTeleport = conf.getBoolean("tools.leap.teleport", false);
 		if(isDebug())
-			log.info("["+modName+"][loadConf] Teleport leaping is set to "+leapTeleport);
+			log.info("["+gc.modName+"][loadConf] Teleport leaping is set to "+leapTeleport);
 		leapThrust = conf.getInt("tools.leap.thrust", 8);
 		if(isDebug())
-			log.info("["+modName+"][loadConf] Flap thrust is set to "+leapThrust);
+			log.info("["+gc.modName+"][loadConf] Flap thrust is set to "+leapThrust);
 		leapCruise = conf.getInt("tools.leap.cruise", 110);
 		if(isDebug())
-			log.info("["+modName+"][loadConf] Cruising altitude is set to "+leapCruise);
+			log.info("["+gc.modName+"][loadConf] Cruising altitude is set to "+leapCruise);
 		leapInvuln = conf.getDouble("tools.leap.invuln", -1);
 		if(isDebug()) {
 			if(leapInvuln < 0)
-				log.info("["+modName+"][loadConf] Fall damage is disabled");
+				log.info("["+gc.modName+"][loadConf] Fall damage is disabled");
 			else
-				log.info("["+modName+"][loadConf] Fall damage is disabled for "+
+				log.info("["+gc.modName+"][loadConf] Fall damage is disabled for "+
 						leapInvuln+" seconds after using leap tool");
 		}
 		return true;

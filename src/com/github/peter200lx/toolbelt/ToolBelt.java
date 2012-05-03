@@ -39,13 +39,7 @@ public class ToolBelt extends JavaPlugin {
 
 	private String cName = "ToolBelt";
 
-	private String lowName = cName.toLowerCase();
-
-	private boolean debug = false;
-
-	private boolean permissions;
-
-	private boolean useEvent;
+	private GlobalConf gc;
 
 	public List<ToolInterface> tools;
 
@@ -64,7 +58,7 @@ public class ToolBelt extends JavaPlugin {
 					new ToolListener(this), this);
 
 			//Print yadp loaded message
-			if(debug) {
+			if(gc.debug) {
 				PluginDescriptionFile pdfFile = this.getDescription();
 				log.info( "["+cName + "] version " + pdfFile.getVersion() +
 						" is now loaded with debug enabled" );
@@ -86,7 +80,7 @@ public class ToolBelt extends JavaPlugin {
 		if((cmd.getName().equalsIgnoreCase("ToolBelt") ||
 				cmd.getName().equalsIgnoreCase("tb")   ) &&(args.length == 1)){
 			if(args[0].contentEquals("reload")) {
-				if(hasAdminPerm(sender,lowName+".reload")) {
+				if(hasAdminPerm(sender,cName.toLowerCase()+".reload")) {
 					if(!console) log.info("["+cName+"] "+sender.getName()+
 							" Just ran /toolbelt reload");
 					this.reloadConfig();
@@ -156,7 +150,7 @@ public class ToolBelt extends JavaPlugin {
 	}
 
 	private Boolean hasAdminPerm(CommandSender p, String what) {
-		if(permissions)
+		if(gc.perm)
 			return p.hasPermission(what);
 		else if(p.isOp())
 			return true;
@@ -180,20 +174,96 @@ public class ToolBelt extends JavaPlugin {
 		FileConfiguration conf = this.getConfig();
 
 		//Check and set the debug printout flag
-		Boolean old = debug;
-		debug = conf.getBoolean("debug", false);
+		boolean debug = conf.getBoolean("debug", false);
 		if(debug) log.info( "["+cName+"][loadConf] Debugging is enabled");
-		if(old && (!debug))
+		if(((gc == null)?false:gc.debug) && (!debug))
 			log.info("["+cName+"][loadConf] Debugging has been disabled");
 		// TODO Auto-generated method stub
 
 		//Check and set the permissions flag
-		permissions = conf.getBoolean("permissions", true);
+		boolean permissions = conf.getBoolean("permissions", true);
 		if(debug) log.info( "["+cName+"][loadConf] permmissions are "+permissions);
 
 		//Check and set the useEvent flag
-		useEvent = conf.getBoolean("useEvent", true);
+		boolean useEvent = conf.getBoolean("useEvent", true);
 		if(debug) log.info( "["+cName+"][loadConf] The plugin will use Block Events: "+useEvent);
+
+
+		String globalName = "global";
+
+		//Load Global repeat delay
+		int repeatDelay;
+		repeatDelay = conf.getInt(tSet+"."+globalName+".repeatDelay", 125);
+		if(repeatDelay < 0) {
+			log.warning("["+cName+"] "+tSet+"."+globalName+".repeatDelay has an "+
+					"invalid value of "+repeatDelay);
+			log.warning("["+cName+"] (The global delay must be greater than or "+
+					"equal to zero)");
+			return false;
+		}
+		if(debug) {
+			log.info("["+cName+"][loadConf] Global tool use repeat delay is "+
+					repeatDelay);
+		}
+
+		//Load global protection lists
+		HashSet<Material> onlyAllow;
+		HashSet<Material> stopCopy;
+		HashSet<Material> stopOverwrite;
+
+		List<Integer> intL = conf.getIntegerList(tSet+"."+globalName+".onlyAllow");
+
+		onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+
+				globalName+".onlyAllow");
+		if(onlyAllow == null)
+			return false;
+
+		if(debug) {
+			logMatSet(onlyAllow,"loadConf",globalName+".onlyAllow:");
+			if(onlyAllow.isEmpty())
+				log.info( "["+cName+"][loadConf] As onlyAllow"+
+						" is empty, all non-restricted materials are allowed");
+			else
+				log.info( "["+cName+"][loadConf] As onlyAllow "+
+						"has items, only those materials can be painted");
+		}
+
+		intL = conf.getIntegerList(tSet+"."+globalName+".stopCopy");
+
+		stopCopy = loadMatList(intL,defStop(),tSet+"."+globalName+".stopCopy");
+		if(stopCopy == null)
+			return false;
+
+		if(debug) logMatSet(stopCopy,"loadGlobalRestrictions",globalName+
+				".stopCopy:");
+
+		intL = conf.getIntegerList(tSet+"."+globalName+".stopOverwrite");
+
+		stopOverwrite = loadMatList(intL,defStop(),tSet+"."+globalName+
+				".stopOverwrite");
+		if(stopOverwrite == null)
+			return false;
+
+		if(debug) logMatSet(stopOverwrite,"loadGlobalRestrictions",
+				globalName+".stopOverwrite:");
+
+		//Store settings into global config for use outside of loadConf()
+		gc = new GlobalConf(cName,this.getServer(),debug,permissions,useEvent,
+				repeatDelay,defStop(),onlyAllow,stopCopy,stopOverwrite);
+
+		HashMap<String,Tool> available = new HashMap<String,Tool>();
+		available.put(Duplicator.name, new Duplicator(gc));
+		available.put(Scroll.name, new Scroll(gc));
+		available.put(Paint.name, new Paint(gc));
+		available.put(Leap.name, new Leap(gc));
+		available.put(Pickhax.name, new Pickhax(gc));
+		available.put(Ruler.name, new Ruler(gc));
+		available.put(Watch.name, new Watch(gc));
+		available.put(Sledge.name, new Sledge(gc));
+		available.put(Pliers.name, new Pliers(gc));
+		available.put(Shovel.name, new Shovel(gc));
+		available.put(Chainsaw.name, new Chainsaw(gc));
+
 
 		ConfigurationSection sect = conf.getConfigurationSection(tSet+".bind");
 
@@ -201,20 +271,6 @@ public class ToolBelt extends JavaPlugin {
 			log.warning("["+cName+"] "+tSet+".bind is returning null");
 			return false;
 		}
-
-		HashMap<String,Tool> available = new HashMap<String,Tool>();
-		available.put(Duplicator.name, new Duplicator(cName,this.getServer(),
-				debug,permissions,useEvent));
-		available.put(Scroll.name, new Scroll(cName,this.getServer(),debug,permissions,useEvent));
-		available.put(Paint.name, new Paint(cName,this.getServer(),debug,permissions,useEvent));
-		available.put(Leap.name, new Leap(cName,this.getServer(),debug,permissions,useEvent));
-		available.put(Pickhax.name, new Pickhax(cName,this.getServer(),debug,permissions,useEvent));
-		available.put(Ruler.name, new Ruler(cName,this.getServer(),debug,permissions,useEvent));
-		available.put(Watch.name, new Watch(cName,this.getServer(),debug,permissions,useEvent));
-		available.put(Sledge.name, new Sledge(cName,this.getServer(),debug,permissions,useEvent));
-		available.put(Pliers.name, new Pliers(cName,this.getServer(),debug,permissions,useEvent));
-		available.put(Shovel.name, new Shovel(cName,this.getServer(),debug,permissions,useEvent));
-		available.put(Chainsaw.name, new Chainsaw(cName,this.getServer(),debug,permissions,useEvent));
 
 		List<ToolInterface> holdTool = new ArrayList<ToolInterface>();
 		for(Entry<String, Object> entry :sect.getValues(false).entrySet()) {
@@ -265,6 +321,48 @@ public class ToolBelt extends JavaPlugin {
 		// to disable the plugin if they don't succeed.
 
 		return true;
+	}
+
+	protected HashSet<Material> defStop() {
+		HashSet<Material> stop = new HashSet<Material>();
+		stop.add(Material.AIR);
+		stop.add(Material.BED_BLOCK);
+		stop.add(Material.PISTON_EXTENSION);
+		stop.add(Material.PISTON_MOVING_PIECE);
+		stop.add(Material.FIRE);
+		stop.add(Material.CHEST);
+		return stop;
+	}
+
+	protected HashSet<Material> loadMatList(List<Integer> input,
+			HashSet<Material> def, String warnMessage) {
+		if(input == null) {
+			log.warning("["+cName+"] "+warnMessage+" is returning null");
+			return null;
+		}else if(def == null) {
+			log.warning("["+cName+"]*** Warn tool developer that their call"+
+					" to loadMatList() is bad "+warnMessage);
+			return null;
+		}
+		for(Integer entry : input) {
+			if(entry > 0) {
+				Material type = Material.getMaterial(entry);
+				if(type != null) {
+					def.add(type);
+					continue;
+				}
+			}
+			log.warning("["+cName+"] "+warnMessage + ": '" + entry +
+					"' is not a Material type" );
+			return null;
+		}
+		return def;
+	}
+
+	protected void logMatSet(HashSet<Material> set, String function, String summary) {
+		for(Material mat: set) {
+			log.info("["+cName+"]["+function+"] "+summary+" "+mat.toString());
+		}
 	}
 
 	private boolean printPerm(String outName) {

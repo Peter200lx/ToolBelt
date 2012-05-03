@@ -9,7 +9,6 @@ import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.TreeSpecies;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -25,13 +24,13 @@ import org.bukkit.material.PistonBaseMaterial;
 import org.bukkit.material.PoweredRail;
 import org.bukkit.material.TrapDoor;
 
+import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Scroll extends Tool {
 
-	public Scroll(String modName, Server server, boolean debug,
-			boolean permissions, boolean useEvent) {
-		super(modName, server, debug, permissions, useEvent);
+	public Scroll(GlobalConf gc) {
+		super(gc);
 	}
 
 	public static String name = "scroll";
@@ -53,7 +52,7 @@ public class Scroll extends Tool {
 		if(act.equals(Action.LEFT_CLICK_BLOCK)||(act.equals(Action.RIGHT_CLICK_BLOCK))) {
 			if(dataMap.containsKey(event.getClickedBlock().getType())) {
 				Block clicked = event.getClickedBlock();
-				if(isDebug()) log.info("["+modName+"][scrollTool] "+subject.getName()+
+				if(isDebug()) log.info("["+gc.modName+"][scrollTool] "+subject.getName()+
 						" clicked "+clicked.getState().getData());
 				if(subject.getGameMode().equals(GameMode.CREATIVE)		&&
 						act.equals(Action.LEFT_CLICK_BLOCK)			&&(
@@ -256,7 +255,7 @@ public class Scroll extends Tool {
 			List<Integer> intL = conf.getIntegerList(tSet+"."+name+".allow");
 
 			if(intL == null) {
-				log.warning("["+modName+"] "+tSet+"."+name+".allow is returning null");
+				log.warning("["+gc.modName+"] "+tSet+"."+name+".allow is returning null");
 				return false;
 			}
 
@@ -266,23 +265,23 @@ public class Scroll extends Tool {
 					if(type != null) {
 						if(supported.containsKey(type)) {
 							holdDataMap.put(type, supported.get(type));
-							if(isDebug()) log.info( "["+modName+"][loadConf] "+
+							if(isDebug()) log.info( "["+gc.modName+"][loadConf] "+
 									name+" allow: "+type);
 						} else {
-							log.warning("["+modName+"] "+tSet+"."+name+".allow: '" + entry +
+							log.warning("["+gc.modName+"] "+tSet+"."+name+".allow: '" + entry +
 										"' is not supported for scrolling" );
 							return false;
 						}
 						continue;
 					}
 				}
-				log.warning("["+modName+"] "+tSet+"."+name+".allow: '" + entry +
+				log.warning("["+gc.modName+"] "+tSet+"."+name+".allow: '" + entry +
 						"' is not a Material type" );
 				return false;
 			}
 			dataMap = holdDataMap;
 		} else {
-			if(isDebug()) log.info( "["+modName+"][loadConf] "+name+
+			if(isDebug()) log.info( "["+gc.modName+"][loadConf] "+name+
 					" loadout set to all plugin supported materials");
 			dataMap = supported;
 		}

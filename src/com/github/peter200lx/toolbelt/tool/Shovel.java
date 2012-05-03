@@ -6,19 +6,19 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Shovel extends Tool  {
 
-	public Shovel(String modName, Server server, boolean debug,
-			boolean permissions, boolean useEvent) {
-		super(modName, server, debug, permissions, permissions);
+	public Shovel(GlobalConf gc) {
+		super(gc);
 	}
 
 	public static String name = "shovel";
@@ -140,10 +140,6 @@ public class Shovel extends Tool  {
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
 
-		//Load the default restriction configuration
-		if(!loadGlobalRestrictions(tSet,conf))
-			return false;
-
 		//Load the repeat delay
 		if(!loadRepeatDelay(tSet,conf,-1))
 			return false;
@@ -152,9 +148,9 @@ public class Shovel extends Tool  {
 		radiusDisk = conf.getDouble(tSet+"."+name+".radiusDisk", 2.5);
 		radiusSphere = conf.getDouble(tSet+"."+name+".radiusSphere", 2.5);
 		if(isDebug()) {
-			log.info("["+modName+"][loadConf] Shovel Cube size set to "+widthCube);
-			log.info("["+modName+"][loadConf] Shovel Disk radius set to "+radiusDisk);
-			log.info("["+modName+"][loadConf] Shovel Sphere radius set to "+radiusSphere);
+			log.info("["+gc.modName+"][loadConf] Shovel Cube size set to "+widthCube);
+			log.info("["+gc.modName+"][loadConf] Shovel Disk radius set to "+radiusDisk);
+			log.info("["+gc.modName+"][loadConf] Shovel Sphere radius set to "+radiusSphere);
 		}
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".onlyAllow");
@@ -162,7 +158,7 @@ public class Shovel extends Tool  {
 		if(!intL.isEmpty())
 		{
 			if(isDebug())
-				log.info( "["+modName+"][loadConf] As "+name+".onlyAllow has items,"+
+				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" it overwrites the global");
 
 			onlyAllow = loadMatList(intL,new HashSet<Material>(),tSet+"."+name+".onlyAllow");
@@ -171,11 +167,11 @@ public class Shovel extends Tool  {
 
 			if(isDebug()) {
 				logMatSet(onlyAllow,"loadGlobalRestrictions",name+".onlyAllow:");
-				log.info( "["+modName+"][loadConf] As "+name+".onlyAllow has items,"+
+				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" only those materials are usable");
 			}
 		} else if(isDebug()&& !onlyAllow.isEmpty()) {
-			log.info( "["+modName+"][loadConf] As global.onlyAllow has items,"+
+			log.info( "["+gc.modName+"][loadConf] As global.onlyAllow has items,"+
 					" only those materials are usable");
 		}
 
@@ -184,10 +180,10 @@ public class Shovel extends Tool  {
 		if(!intL.isEmpty())
 		{
 			if(isDebug())
-				log.info( "["+modName+"][loadConf] As "+name+".stopOverwrite has items,"+
+				log.info( "["+gc.modName+"][loadConf] As "+name+".stopOverwrite has items,"+
 						" it overwrites the global");
 
-			stopOverwrite = loadMatList(intL,defStop(),tSet+"."+name+".stopOverwrite");
+			stopOverwrite = loadMatList(intL,gc.defStop,tSet+"."+name+".stopOverwrite");
 			if(stopOverwrite == null)
 				return false;
 

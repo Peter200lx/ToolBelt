@@ -1,11 +1,11 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.Tool;
 
 //Instructions for setting up a new tool:
@@ -19,12 +19,11 @@ import com.github.peter200lx.toolbelt.Tool;
 //You will also need to add a line in ToolBelt.java in
 // the loadConf() function.
 //Put the following line (without the //) after the last similar line
-//available.put(Example.name, new Example(cName,this.getServer(),debug,permissions,useEvent));
+//available.put(Example.name, new Example(gc));
 public class Example extends Tool  {
 
-	public Example(String modName, Server server, boolean debug,
-			boolean permissions, boolean useEvent) {
-		super(modName, server, debug, permissions, useEvent);
+	public Example(GlobalConf gc) {
+		super(gc);
 		// You shouldn't need to add anything here. However if you have
 		//  something you want to setup when the tool is loaded/reloaded
 		//  you can put that logic here.
