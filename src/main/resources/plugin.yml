@@ -1,6 +1,6 @@
 name: ToolBelt
 main: com.github.peter200lx.toolbelt.ToolBelt
-version: 0.4
+version: maven-version-number
 website: https://github.com/Peter200lx/ToolBelt
 author: peter200lx
 description: >
