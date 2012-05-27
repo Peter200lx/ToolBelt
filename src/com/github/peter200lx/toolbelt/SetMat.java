@@ -74,4 +74,15 @@ public class SetMat {
 			log.info("["+modName+"]["+func+"] "+summary+" "+mat.toString());
 		}
 	}
+
+	public void SetList(HashSet<Material> newList) {
+		this.list = newList;
+	}
+
+	public SetMat copy() {
+		SetMat newVersion = new SetMat(log,modName);
+		if(list != null)
+			newVersion.SetList(new HashSet<Material>(list));
+		return newVersion;
+	}
 }

@@ -50,9 +50,9 @@ public abstract class Tool implements ToolInterface {
 
 	public Tool(GlobalConf gc) {
 		this.gc = gc;
-		onlyAllow = gc.onlyAllow;
-		stopCopy = gc.stopCopy;
-		stopOverwrite = gc.stopOverwrite;
+		onlyAllow = gc.onlyAllow.copy();
+		stopCopy = gc.stopCopy.copy();
+		stopOverwrite = gc.stopOverwrite.copy();
 		setPrintData();
 	}
 
