@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -54,8 +55,10 @@ public class Sledge extends Tool  {
 		default:
 			return;
 		}
-		if(!target.getType().equals(Material.AIR) && !(!stopOverwrite.contains(target.getType()) &&
-				(onlyAllow.isEmpty() || onlyAllow.contains(target.getType()))) ){
+		List<String> subRanks = gc.ranks.getUserRank(subject);
+		if(!target.getType().equals(Material.AIR) &&
+				!(!stopOverwrite.contains(subRanks, target.getType()) &&
+				(onlyAllow.isEmpty(subRanks) || onlyAllow.contains(subRanks,target.getType()))) ){
 			subject.sendMessage(ChatColor.RED+"Sorry, you can't overwrite "+
 					ChatColor.GOLD+target.getType());
 			return;
@@ -65,8 +68,8 @@ public class Sledge extends Tool  {
 					"Can't move into a non-air block without crouching.");
 			return;
 		}
-		if(stopCopy.contains(clicked.getType()) || !( onlyAllow.isEmpty() ||
-				onlyAllow.contains(clicked.getType()) ) ){
+		if(stopCopy.contains(subRanks, clicked.getType()) || !( onlyAllow.isEmpty(subRanks) ||
+				onlyAllow.contains(subRanks, clicked.getType()) ) ){
 			subject.sendMessage(ChatColor.RED+"Sorry, you can't move "+
 				ChatColor.GOLD+clicked.getType());
 			return;
@@ -116,11 +119,11 @@ public class Sledge extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" it overwrites the global");
 
-			if(!onlyAllow.loadMatList(intL,false,tSet+"."+name+".onlyAllow"))
+			if(!onlyAllow.loadMatList(intL,false,tSet+"."+name))
 				return false;
 
 			if(isDebug()) {
-				onlyAllow.logMatSet("loadConf",name+".onlyAllow:");
+				onlyAllow.logMatSet("loadConf",name);
 				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" only those materials are usable");
 			}
@@ -128,6 +131,14 @@ public class Sledge extends Tool  {
 			log.info( "["+gc.modName+"][loadConf] As global.onlyAllow has items,"+
 					" only those materials are usable");
 		}
+
+		String rankName = "ranks";
+		ConfigurationSection rankConf = conf.getConfigurationSection(tSet+"."+
+				getToolName()+"."+rankName);
+
+		if(!onlyAllow.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
+			return false;
+		if(gc.debug) onlyAllow.logRankedMatSet("loadConf", getToolName()+"."+rankName);
 
 		intL = conf.getIntegerList(tSet+"."+name+".stopCopy");
 
@@ -137,11 +148,15 @@ public class Sledge extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".stopCopy has items,"+
 						" it overwrites the global");
 
-			if(!stopCopy.loadMatList(intL,true,tSet+"."+name+".stopCopy"))
+			if(!stopCopy.loadMatList(intL,true,tSet+"."+name))
 				return false;
 
-			if(isDebug()) stopCopy.logMatSet("loadConf",name+".stopCopy:");
+			if(isDebug()) stopCopy.logMatSet("loadConf",name);
 		}
+
+		if(!stopCopy.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
+			return false;
+		if(gc.debug) stopCopy.logRankedMatSet("loadConf", getToolName()+"."+rankName);
 
 		intL = conf.getIntegerList(tSet+"."+name+".stopOverwrite");
 
@@ -151,12 +166,15 @@ public class Sledge extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".stopOverwrite has items,"+
 						" it overwrites the global");
 
-			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+name+".stopOverwrite"))
+			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+name))
 				return false;
 
-			if(isDebug()) stopOverwrite.logMatSet("loadConf",
-					name+".stopOverwrite:");
+			if(isDebug()) stopOverwrite.logMatSet("loadConf",name);
 		}
+
+		if(!stopOverwrite.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
+			return false;
+		if(gc.debug) stopOverwrite.logRankedMatSet("loadConf", getToolName()+"."+rankName);
 		return true;
 	}
 }

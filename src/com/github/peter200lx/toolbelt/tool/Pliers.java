@@ -105,11 +105,11 @@ public class Pliers extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" it overwrites the global");
 
-			if(!onlyAllow.loadMatList(intL,false,tSet+"."+name+".onlyAllow"))
+			if(!onlyAllow.loadMatList(intL,false,tSet+"."+name))
 				return false;
 
 			if(isDebug()) {
-				onlyAllow.logMatSet("loadConf",name+".onlyAllow:");
+				onlyAllow.logMatSet("loadConf",name);
 				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
 						" only those materials are usable");
 			}
@@ -126,10 +126,10 @@ public class Pliers extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".stopCopy has items,"+
 						" it overwrites the global");
 
-			if(!stopCopy.loadMatList(intL,true,tSet+"."+name+".stopCopy"))
+			if(!stopCopy.loadMatList(intL,true,tSet+"."+name))
 				return false;
 
-			if(isDebug()) stopCopy.logMatSet("loadConf",name+".stopCopy:");
+			if(isDebug()) stopCopy.logMatSet("loadConf",name);
 		}
 
 		intL = conf.getIntegerList(tSet+"."+name+".stopOverwrite");
@@ -140,11 +140,10 @@ public class Pliers extends Tool  {
 				log.info( "["+gc.modName+"][loadConf] As "+name+".stopOverwrite has items,"+
 						" it overwrites the global");
 
-			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+name+".stopOverwrite"))
+			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+name))
 				return false;
 
-			if(isDebug()) stopOverwrite.logMatSet("loadConf",
-					name+".stopOverwrite:");
+			if(isDebug()) stopOverwrite.logMatSet("loadConf",name);
 		}
 		return true;
 	}

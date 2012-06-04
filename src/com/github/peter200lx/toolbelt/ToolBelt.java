@@ -188,6 +188,18 @@ public class ToolBelt extends JavaPlugin {
 		boolean useEvent = conf.getBoolean("useEvent", true);
 		if(debug) log.info( "["+cName+"][loadConf] The plugin will use Block Events: "+useEvent);
 
+		//Check and load the Ranks object
+		Ranks ranks = null;
+		try {
+			ranks = new Ranks(permissions?conf.getConfigurationSection("ranksDef"):null);
+		}catch (RuntimeException e) {
+			log.warning(e.getMessage());
+			return false;
+		}
+		if(debug) {
+			log.info( "["+cName+"][loadConf] Below is a listing of the defined ranks");
+			ranks.printRanks(log);
+		}
 
 		String globalName = "global";
 
@@ -207,17 +219,17 @@ public class ToolBelt extends JavaPlugin {
 		}
 
 		//Load global protection lists
-		SetMat onlyAllow = new SetMat(log, cName);
-		SetMat stopCopy = new SetMat(log, cName);
-		SetMat stopOverwrite = new SetMat(log, cName);
+		SetMat onlyAllow = new SetMat(log, cName,"onlyAllow");
+		SetMat stopCopy = new SetMat(log, cName,"stopCopy");
+		SetMat stopOverwrite = new SetMat(log, cName,"stopOverwrite");
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+globalName+".onlyAllow");
 
-		if(!onlyAllow.loadMatList(intL,false,tSet+"."+globalName+".onlyAllow"))
+		if(!onlyAllow.loadMatList(intL,false,tSet+"."+globalName))
 			return false;
 
 		if(debug) {
-			onlyAllow.logMatSet("loadConf",globalName+".onlyAllow:");
+			onlyAllow.logMatSet("loadConf",globalName);
 			if(onlyAllow.isEmpty())
 				log.info( "["+cName+"][loadConf] As onlyAllow"+
 						" is empty, all non-restricted materials are allowed");
@@ -226,26 +238,39 @@ public class ToolBelt extends JavaPlugin {
 						"has items, only those materials can be painted");
 		}
 
+		String rankName = "ranks";
+		ConfigurationSection rankConf = conf.getConfigurationSection(tSet+"."+
+				globalName+"."+rankName);
+
+		if(!onlyAllow.loadRankedMatLists(rankConf, ranks, globalName+"."+rankName))
+			return false;
+		if(debug) onlyAllow.logRankedMatSet("loadConf", globalName+"."+rankName);
+
 		intL = conf.getIntegerList(tSet+"."+globalName+".stopCopy");
 
-		if(!stopCopy.loadMatList(intL,true,tSet+"."+globalName+".stopCopy"))
+		if(!stopCopy.loadMatList(intL,true,tSet+"."+globalName))
 			return false;
 
-		if(debug) stopCopy.logMatSet("loadConf",globalName+
-				".stopCopy:");
+		if(debug) stopCopy.logMatSet("loadConf",globalName);
+
+		if(!stopCopy.loadRankedMatLists(rankConf, ranks, globalName+"."+rankName))
+			return false;
+		if(debug) stopCopy.logRankedMatSet("loadConf", globalName+"."+rankName);
 
 		intL = conf.getIntegerList(tSet+"."+globalName+".stopOverwrite");
 
-		if(!stopOverwrite.loadMatList(intL,true,tSet+"."+globalName+
-				".stopOverwrite"))
+		if(!stopOverwrite.loadMatList(intL,true,tSet+"."+globalName))
 			return false;
 
-		if(debug) stopOverwrite.logMatSet("loadConf",
-				globalName+".stopOverwrite:");
+		if(debug) stopOverwrite.logMatSet("loadConf",globalName);
+
+		if(!stopOverwrite.loadRankedMatLists(rankConf, ranks, globalName+"."+rankName))
+			return false;
+		if(debug) stopOverwrite.logRankedMatSet("loadConf", globalName+"."+rankName);
 
 		//Store settings into global config for use outside of loadConf()
 		gc = new GlobalConf(cName,this.getServer(),debug,permissions,useEvent,
-				repeatDelay,onlyAllow,stopCopy,stopOverwrite);
+				repeatDelay,onlyAllow,stopCopy,stopOverwrite,ranks);
 
 		HashMap<String,Tool> available = new HashMap<String,Tool>();
 		available.put(Duplicator.name, new Duplicator(gc));
@@ -313,7 +338,9 @@ public class ToolBelt extends JavaPlugin {
 		//Create a help/Commands.txt file listing all commands from plugin.yml
 		printCommands("help/Commands.txt");
 
-		//The return value for the above two commands is not checked as we don't need
+		this.saveResource("help/Ranks.txt", true);
+
+		//The return value for the above commands is not checked as we don't need
 		// to disable the plugin if they don't succeed.
 
 		return true;

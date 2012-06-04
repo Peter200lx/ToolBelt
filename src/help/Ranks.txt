@@ -1,0 +1,236 @@
+#**************************************************
+#* NOTICE: This is purely optional functionality! *
+#**************************************************
+#
+#NONE of the ranks functionality is required to use ToolBelt. It is NOT needed
+# to use ToolBelt with permissions. All that is to follow is instructions on
+# some powerful but complicated additional features that ToolBelt supports.
+# Configuration files with no mention of ranks will continue to work as they
+# always have, with no loss. These features have to be explicitly added to the
+# config.yml file to provide any change. Feel free to ignore this file and its
+# headaches, and still use ToolBelt with full use of the rest of its features.
+# 
+# If you have a server with users that have different groups / permissions,
+# you can use ranks to provide different material restriction lists for
+# each group.
+
+#Having ranks allows you to define different restriction lists for different
+# users. This requires 'permissions: true', as the only way to tell some users
+# from others is to check for permissions. Any user that does not have a rank
+# permission (toolbelt.rank.rank_name) will default to the unranked list.
+# (NOTE: as permissions are enabled, users will still have to have the
+# toolbelt.tool.tool_name permission to use any given tool)
+# 
+#Ranks are defined in "ranksDef:" as a lowercase string. A rank can have any
+# name other then "unranked", which is reserved for the final fallback.
+# 
+#Currently, the onlyAllow, stopCopy and stopOverwrite lists support the use
+# of ranks.
+# 
+#The ranks configuration options need to be inserted into the already present
+# config.yml file. In the examples below I have included the indentation level
+# needed for adding to config.yml. For instance, ranksDef: is a root
+# configuration block, where as the tools.global.ranks: needs to be added
+# under the "tools:" then "global:" section of the config.yml file. Same goes
+# for the tool specific ranks options (tools.sledge.ranks:).
+
+
+#**************************
+#* basic example of ranks *
+#**************************
+# 
+#Here is a basic representation of the inheritances of the ranks defined below.
+# This is read top->bottom.
+# 
+#  admin
+#   mod
+# builder
+# unranked
+#
+#The paths between different ranks are defined with the "fallback:" keyword.
+# This allows some ranks to inherit the lists from other ranks. Note that
+# there is no rank defined as "unranked", even though builder falls back to it.
+# This is because unranked is a pre-defined keyword.
+# 
+#In the example below, a guest (someone without any toolbelt.rank.rank_name
+# permission) will not be able to use any of the tools that rely on onlyAllow,
+# stopCopy and stopOverwrite. This is because onlyAllow bocks all tool use on
+# materials other then adminium, but both stopCopy and stopOverwrite block the
+# use of adminium. This is a way to disallow those tools on any materials.
+# 
+#The builder.onlyAllow list is empty, thus overwriting unranked onlyAllow, and
+# freeing users from the (only act on adminium) restriction. (an empty
+# onlyAllow list does not limit the use of tools on any materials.)
+# 
+#Because of fallback instructions, if a user has toolbelt.rank.mod, the tools
+# will search for lists in the mod list, the builder list, and finally the
+# unranked list. [mod, builder, unranked]. Thus, even though there isn't a
+# mod.onlyAllow list to remove the unranked onlyAllow [7] restriction, a
+# player with the toolbelt.rank.mod permission will inherit the
+# builder.onlyAllow [] list.
+# 
+# 
+#List of user ranks and lists they get (and from where)
+# 
+# guest (no toolbelt.rank.* permission)
+#   unranked onlyAllow: [7]
+#   unranked stopCopy: [7, 8, 9, 10, 11, 46, 64, 71, 75, 90, 92, 93, 94, 95, 119]
+#   unranked stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119]
+# 
+# builder (toolbelt.rank.builder)
+#   builder.onlyAllow: []
+#   unranked stopCopy: [7, 8, 9, 10, 11, 46, 64, 71, 75, 90, 92, 93, 94, 95, 119]
+#   unranked stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119]
+# 
+# mod (toolbelt.rank.mod)
+#   builder.onlyAllow: []
+#   mod.stopCopy: [8, 9, 10, 11, 75, 90, 93, 94, 95, 119]
+#   mod.stopOverwrite: []
+# 
+# admin (toolbelt.rank.admin)
+#   builder.onlyAllow: []
+#   admin.stopCopy: []
+#   mod.stopOverwrite: []
+
+ranksDef:
+  admin:
+    fallback: mod
+  mod:
+    fallback: builder
+  builder:
+    fallback: unranked
+tools:
+  global:
+    repeatDelay: 125
+    onlyAllow: [7]
+    stopCopy: [7, 8, 9, 10, 11, 46, 64, 71, 75, 90, 92, 93, 94, 95, 119]
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119]
+    ranks:
+      mod:
+        stopCopy: [8, 9, 10, 11, 75, 90, 93, 94, 95, 119]
+        stopOverwrite: []
+      builder:
+        onlyAllow: []
+      admin:
+        stopCopy: []
+
+
+#*************************************************************
+#* basic example extended to demonstrate tool specific lists *
+#*************************************************************
+# 
+#The ranks and lists are set up the same as the above example, except that now
+# there are now tool specific lists. A list defined under a tool specific
+# (sledge.ranks.mod.stopCopy) heading will overwrite the global list for the
+# same rank (global.ranks.mod.onlyAllow).
+# 
+#The unranked tool specific lists only overwrite the unranked global lists if
+# the tool specific list is not empty "[]". The ranked lists are different, if
+# a tool specific ranked list is defined, even if empty, it will overwrite the
+# global list of the same rank. This allows to still use tool specific lists
+# in a global setting.
+# 
+# 
+#Here is a diagram of what happens when you have two of the same list:
+# 
+#Unranked lists:
+#  global.onlyAllow [1,2,3] \
+#                           += onlyAllow [4,5,6] for the sledge tool
+#  sledge.onlyAllow [4,5,6] /
+# 
+#  global.onlyAllow [1,2,3] \
+#                           += onlyAllow [1,2,3] for the sledge tool
+#  sledge.onlyAllow []      /
+# 
+#Ranked lists:
+#  global.ranks.mod.onlyAllow [1,2,3] \
+#                                     += onlyAllow [4,5,6] for the sledge tool
+#  sledge.ranks.mod.onlyAllow [4,5,6] /
+# 
+#  global.ranks.mod.onlyAllow [1,2,3] \
+#                                     += onlyAllow [] for the sledge tool
+#  sledge.ranks.mod.onlyAllow []      /
+
+ranksDef:
+  admin:
+    fallback: mod
+  mod:
+    fallback: builder
+  builder:
+    fallback: unranked
+tools:
+  global:
+    repeatDelay: 125
+    onlyAllow: [7]
+    stopCopy: [7, 8, 9, 10, 11, 46, 64, 71, 75, 90, 92, 93, 94, 95, 119]
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119]
+    ranks:
+      mod:
+        stopCopy: [8, 9, 10, 11, 75, 90, 93, 94, 95, 119]
+        stopOverwrite: []
+      builder:
+        onlyAllow: []
+      admin:
+        stopCopy: []
+  sledge:
+    onlyAllow: []
+    stopCopy: []
+    stopOverwrite: []
+    ranks:
+      mod:
+        stopCopy: []
+      builder:
+
+#**************************************************************
+#* advanced example of ranks with multiple inheritance groups *
+#**************************************************************
+# 
+#Here is a (semi)graphical representation of the inheritances of the ranks
+# defined below. This is read top->bottom, left->right.
+# 
+# noinherit  ->  admin  ->  evip
+#  unranked       vip      builder
+#               builder    unranked
+#               unranked
+# 
+#If a user has both toolbelt.rank.admin and toolbelt.rank.noinherit, they will
+# get the [noinherit,unranked] lists, as noinherit is defined before admin. This
+# is useful if you want to temporarily give a user a more restricted toolset,
+# say for a game of spleef.
+# 
+#If a user has both toolbelt.rank.evip and toolbelt.rank.builder, they will
+# get [builder,unranked] lists as builder comes before evip in the defined
+# scanning method. It is suggested that you only give a user one rank at a
+# time, however as suggested for spleef above you can use this behavior to
+# your advantage depending upon the order and fallback paths you define.
+
+ranksDef:
+  noinherit:
+    fallback: unranked
+  vip:
+    fallback: builder
+  builder:
+    fallback: unranked
+  admin:
+    fallback: vip
+  evip:
+    fallback: builder
+tools:
+  global:
+    repeatDelay: 125
+    onlyAllow: [7]
+    stopCopy: [7, 8, 9, 10, 11, 46, 64, 71, 75, 90, 92, 93, 94, 95, 119]
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119]
+    ranks:
+      vip:
+        stopCopy: [8, 9, 10, 11, 75, 90, 93, 94, 95, 119]
+        stopOverwrite: []
+      builder:
+        onlyAllow: []
+      evip:
+        stopCopy: [8, 9, 10, 11, 90, 95, 119]
+        stopOverwrite: [8, 9, 10, 11, 90, 119]
+      admin:
+        stopCopy: []
+      noinherit:
+        onlyAllow: [3, 12, 35, 78]

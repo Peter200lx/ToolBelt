@@ -29,7 +29,7 @@ public class Duplicator extends Tool {
 
 	private HashMap<Material, Material> dupeMap;
 
-	private SetMat keepData = new SetMat(log,gc.modName);
+	private SetMat keepData = new SetMat(log,gc.modName,"keepData");
 
 	@Override
 	public String getToolName() {
@@ -139,10 +139,10 @@ public class Duplicator extends Tool {
 
 		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".keepData");
 
-		if(!keepData.loadMatList(intL,false,tSet+"."+name+".keepData"))
+		if(!keepData.loadMatList(intL,false,tSet+"."+name))
 			return false;
 
-		if(isDebug()) keepData.logMatSet("loadConf",name+".keepData:");
+		if(isDebug()) keepData.logMatSet("loadConf",name);
 
 		return true;
 	}
