@@ -50,26 +50,32 @@ public class Scroll extends Tool {
 
 		Action act = event.getAction();
 		if(act.equals(Action.LEFT_CLICK_BLOCK)||(act.equals(Action.RIGHT_CLICK_BLOCK))) {
-			if(dataMap.containsKey(event.getClickedBlock().getType())) {
-				Block clicked = event.getClickedBlock();
+			Block clicked = event.getClickedBlock();
+			Material type = clicked.getType();
+			if(!dataMap.containsKey(type)) {
+				//?Warn about not a supported scroll type?
+			}else if(!(onlyAllow.isEmpty() || onlyAllow.contains(type)) ||
+					stopOverwrite.contains(type)) {
+				//?Warn about material being blocked?
+			}else {
 				if(isDebug()) log.info("["+gc.modName+"][scrollTool] "+subject.getName()+
 						" clicked "+clicked.getState().getData());
-				if(subject.getGameMode().equals(GameMode.CREATIVE)		&&
+				if(subject.getGameMode().equals(GameMode.CREATIVE)	&&
 						act.equals(Action.LEFT_CLICK_BLOCK)			&&(
-						clicked.getType().equals(Material.SIGN_POST)||
-						clicked.getType().equals(Material.WALL_SIGN))){
+						type.equals(Material.SIGN_POST)				||
+						type.equals(Material.WALL_SIGN)			)	){
 					subject.sendMessage("The sign is not erased on the server, "+
 								"it is just client side");
 				}
 
-				int max = dataMap.get(clicked.getType());
+				int max = dataMap.get(type);
 				byte data = clicked.getData();
 
 				if(max != 0) {
 					data = simpScroll(event, data, max);
 				} else {
 					MaterialData b = clicked.getState().getData();
-					switch (clicked.getType()) {
+					switch (type) {
 					case JUKEBOX:
 						subject.sendMessage("Data value indicates contained record, can't scroll");
 						return;
@@ -119,7 +125,7 @@ public class Scroll extends Tool {
 						break;
 					case CHEST:
 						//CHEST can not be safely scrolled because of double chests.
-						subject.sendMessage(clicked.getType()+" is not scrollable");
+						subject.sendMessage(type+" is not scrollable");
 						return;
 					case STONE_PLATE:
 					case WOOD_PLATE:
@@ -149,7 +155,7 @@ public class Scroll extends Tool {
 						break;
 					case BED_BLOCK:
 						//TODO More research into modifying foot and head of bed at once
-						subject.sendMessage(clicked.getType()+" is not yet scrollable");
+						subject.sendMessage(type+" is not yet scrollable");
 						return;
 					case DIODE_BLOCK_OFF:
 					case DIODE_BLOCK_ON:
@@ -186,7 +192,7 @@ public class Scroll extends Tool {
 								" of placed glass bottles");
 						return;
 					default:
-						subject.sendMessage(clicked.getType()+" is not yet scrollable");
+						subject.sendMessage(type+" is not yet scrollable");
 						return;
 					}
 				}
@@ -196,16 +202,16 @@ public class Scroll extends Tool {
 				if(spawnBuild(clicked,subject)) {
 					if(isUseEvent()) {
 						if(safeReplace(newInfo,clicked,subject,true)) {
-							subject.sendBlockChange(clicked.getLocation(), clicked.getType(), data);
+							subject.sendBlockChange(clicked.getLocation(), type, data);
 							subject.sendMessage(ChatColor.GREEN + "Block is now " +
-									ChatColor.GOLD + clicked.getType() + ChatColor.WHITE + ":" +
+									ChatColor.GOLD + type + ChatColor.WHITE + ":" +
 									ChatColor.BLUE + data2Str(clicked.getState().getData()));
 						}
 					}else {
 						clicked.setData(data, false);
-						subject.sendBlockChange(clicked.getLocation(), clicked.getType(), data);
+						subject.sendBlockChange(clicked.getLocation(), type, data);
 						subject.sendMessage(ChatColor.GREEN + "Block is now " +
-								ChatColor.GOLD + clicked.getType() + ChatColor.WHITE + ":" +
+								ChatColor.GOLD + type + ChatColor.WHITE + ":" +
 								ChatColor.BLUE + data2Str(clicked.getState().getData()));
 					}
 				}
@@ -249,41 +255,42 @@ public class Scroll extends Tool {
 		if(!loadRepeatDelay(tSet,conf,-1))
 			return false;
 
-		HashMap<Material, Integer> supported = defDataMap();
-		if(conf.getBoolean(tSet+"."+name+".override",false)) {
-			HashMap<Material, Integer> holdDataMap = new HashMap<Material, Integer>();
-			List<Integer> intL = conf.getIntegerList(tSet+"."+name+".allow");
+		//Initialize the dataMap list
+		dataMap = defDataMap();
 
-			if(intL == null) {
-				log.warning("["+gc.modName+"] "+tSet+"."+name+".allow is returning null");
-				return false;
-			}
+		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".onlyAllow");
 
-			for(Integer entry : intL) {
-				if(entry > 0) {
-					Material type = Material.getMaterial(entry);
-					if(type != null) {
-						if(supported.containsKey(type)) {
-							holdDataMap.put(type, supported.get(type));
-							if(isDebug()) log.info( "["+gc.modName+"][loadConf] "+
-									name+" allow: "+type);
-						} else {
-							log.warning("["+gc.modName+"] "+tSet+"."+name+".allow: '" + entry +
-										"' is not supported for scrolling" );
-							return false;
-						}
-						continue;
-					}
-				}
-				log.warning("["+gc.modName+"] "+tSet+"."+name+".allow: '" + entry +
-						"' is not a Material type" );
+		if(!intL.isEmpty())
+		{
+			if(isDebug())
+				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
+						" it overwrites the global");
+
+			if(!onlyAllow.loadMatList(intL,false,tSet+"."+name))
 				return false;
+
+			if(isDebug()) {
+				onlyAllow.logMatSet("loadConf",name);
+				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
+						" only those materials are usable");
 			}
-			dataMap = holdDataMap;
-		} else {
-			if(isDebug()) log.info( "["+gc.modName+"][loadConf] "+name+
-					" loadout set to all plugin supported materials");
-			dataMap = supported;
+		}else if(isDebug()&& !onlyAllow.isEmpty()) {
+			log.info( "["+gc.modName+"][loadConf] As global.onlyAllow has items,"+
+					" only those materials are usable");
+		}
+
+		intL = conf.getIntegerList(tSet+"."+name+".stopOverwrite");
+
+		if(!intL.isEmpty())
+		{
+			if(isDebug())
+				log.info( "["+gc.modName+"][loadConf] As "+name+".stopOverwrite has items,"+
+						" it overwrites the global");
+
+			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+name))
+				return false;
+
+			if(isDebug()) stopOverwrite.logMatSet("loadConf",name);
 		}
 		return true;
 	}

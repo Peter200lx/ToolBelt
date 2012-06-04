@@ -1,7 +1,7 @@
 # Here are the configuration descriptions for the scroll tool
 # 
-# The "tools: bind:" setting is specified in greater detail
-#  in the config.yml file
+# The "tools: bind:" and "tools: global: *:" settings are
+#  specified in greater detail in the config.yml file.
 # 
 # tools: scroll: override: <true|false>
 #    By default there are only certain types of materials that can
@@ -17,6 +17,9 @@
 tools:
   bind:
     scroll: 352 # BONE
+  global:
+    onlyAllow: []
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119]
   scroll:
-    override: false
-    allow: [35, 43, 44, 98]
+    onlyAllow: []
+    stopOverwrite: []

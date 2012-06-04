@@ -114,8 +114,8 @@ tools:
       105: 362  # MELON_STEM to MELON_SEEDS
     keepData: [5, 6, 17, 18, 24, 31, 35, 43, 44, 98, 263, 351, 373, 374]
   scroll:
-    override: false
-    allow: [35, 43, 44, 98]
+    onlyAllow: []
+    stopOverwrite: []
   paint:
     rangeDefault: 0
     rangeCrouch: 25
