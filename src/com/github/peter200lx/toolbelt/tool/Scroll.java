@@ -202,14 +202,14 @@ public class Scroll extends Tool {
 				if(spawnBuild(clicked,subject)) {
 					if(isUseEvent()) {
 						if(safeReplace(newInfo,clicked,subject,true)) {
-							subject.sendBlockChange(clicked.getLocation(), type, data);
+							this.updateUser(subject, clicked.getLocation(), type, data);
 							subject.sendMessage(ChatColor.GREEN + "Block is now " +
 									ChatColor.GOLD + type + ChatColor.WHITE + ":" +
 									ChatColor.BLUE + data2Str(clicked.getState().getData()));
 						}
 					}else {
 						clicked.setData(data, false);
-						subject.sendBlockChange(clicked.getLocation(), type, data);
+						this.updateUser(subject, clicked.getLocation(), type, data);
 						subject.sendMessage(ChatColor.GREEN + "Block is now " +
 								ChatColor.GOLD + type + ChatColor.WHITE + ":" +
 								ChatColor.BLUE + data2Str(clicked.getState().getData()));

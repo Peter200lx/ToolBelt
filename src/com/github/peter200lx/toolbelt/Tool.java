@@ -219,6 +219,18 @@ public abstract class Tool implements ToolInterface {
 		return true;
 	}
 
+	protected void updateUser(Player subject, Location loc, MaterialData info) {
+		updateUser(subject, loc, info.getItemTypeId(), info.getData());
+	}
+
+	protected void updateUser(Player subject, Location loc, Material type, byte data) {
+		updateUser(subject, loc, type.getId(), data);
+	}
+
+	protected void updateUser(Player subject, Location loc, int type, byte data) {
+		subject.sendBlockChange(loc, type, data);
+	}
+
 	protected boolean loadRepeatDelay(String tSet, FileConfiguration conf, int def) {
 
 		int localDelay = conf.getInt(tSet+"."+getToolName()+".repeatDelay", def);

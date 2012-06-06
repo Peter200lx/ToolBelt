@@ -71,10 +71,10 @@ public class Pickhax extends Tool  {
 			if(spawnBuild(target,event.getPlayer())) {
 				if(isUseEvent()) {
 					if(safeBreak(target,event.getPlayer(),physics))
-						subject.sendBlockChange(target.getLocation(), 0, (byte)0);
+						this.updateUser(subject, target.getLocation(), 0, (byte)0);
 				}else {
 					target.setTypeId(0,physics);
-					subject.sendBlockChange(target.getLocation(), 0, (byte)0);
+					this.updateUser(subject, target.getLocation(), 0, (byte)0);
 				}
 			}
 		}else if((target != null)&&!target.getType().equals(Material.AIR)) {

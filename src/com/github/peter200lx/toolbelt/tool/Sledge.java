@@ -79,16 +79,15 @@ public class Sledge extends Tool  {
 			if(isUseEvent()) {
 				if(safeReplace(set,target,subject,true)) {
 					if(safeBreak(clicked,subject,false)){
-						subject.sendBlockChange(clicked.getLocation(), 0, (byte)0);
-						subject.sendBlockChange(target.getLocation(), set.getItemType(),
-								set.getData());
+						this.updateUser(subject, clicked.getLocation(), 0, (byte)0);
+						this.updateUser(subject, target.getLocation(), set);
 					}
 				}
 			}else {
 				clicked.setTypeId(0, false);
 				target.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
-				subject.sendBlockChange(clicked.getLocation(), 0, (byte)0);
-				subject.sendBlockChange(target.getLocation(), set.getItemType(), set.getData());
+				this.updateUser(subject, clicked.getLocation(), 0, (byte)0);
+				this.updateUser(subject, target.getLocation(), set);
 			}
 		}
 	}

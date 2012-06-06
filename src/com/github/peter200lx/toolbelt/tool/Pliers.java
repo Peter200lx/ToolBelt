@@ -70,11 +70,11 @@ public class Pliers extends Tool  {
 			MaterialData set = clicked.getState().getData();
 			if(isUseEvent()) {
 				if(safeReplace(set,target,subject,true)) {
-					subject.sendBlockChange(target.getLocation(), set.getItemType(),set.getData());
+					this.updateUser(subject, target.getLocation(), set);
 				}
 			}else {
 				target.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
-				subject.sendBlockChange(target.getLocation(), set.getItemType(), set.getData());
+				this.updateUser(subject, target.getLocation(), set);
 			}
 		}
 	}

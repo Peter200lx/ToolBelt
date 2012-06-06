@@ -96,11 +96,11 @@ public class Paint extends Tool  {
 					if(spawnBuild(bTarget,subject)) {
 						if(isUseEvent()) {
 							if(safeReplace(set,bTarget,subject,true)) {
-								subject.sendBlockChange(bTarget.getLocation(), set.getItemType(),set.getData());
+								this.updateUser(subject, bTarget.getLocation(), set);
 							}
 						}else {
 							bTarget.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
-							subject.sendBlockChange(bTarget.getLocation(), set.getItemType(), set.getData());
+							this.updateUser(subject, bTarget.getLocation(), set);
 						}
 					}
 				}else if(bTarget != null) {

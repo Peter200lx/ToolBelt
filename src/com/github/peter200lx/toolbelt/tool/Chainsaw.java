@@ -57,10 +57,10 @@ public class Chainsaw extends Tool  {
 			if(spawnBuild(cur,event.getPlayer())) {
 				if(isUseEvent()) {
 					if(safeBreak(cur,event.getPlayer(),true))
-						subject.sendBlockChange(cur.getLocation(), 0, (byte)0);
+						this.updateUser(subject, cur.getLocation(), 0, (byte)0);
 				}else {
 					cur.setTypeId(0,true);
-					subject.sendBlockChange(cur.getLocation(), 0, (byte)0);
+					this.updateUser(subject, cur.getLocation(), 0, (byte)0);
 				}
 			}
 		}
