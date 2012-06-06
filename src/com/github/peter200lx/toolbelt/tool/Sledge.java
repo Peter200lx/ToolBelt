@@ -110,26 +110,8 @@ public class Sledge extends Tool  {
 		if(!loadRepeatDelay(tSet,conf,-1))
 			return false;
 
-		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".onlyAllow");
-
-		if(!intL.isEmpty())
-		{
-			if(isDebug())
-				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
-						" it overwrites the global");
-
-			if(!onlyAllow.loadMatList(intL,false,tSet+"."+name))
-				return false;
-
-			if(isDebug()) {
-				onlyAllow.logMatSet("loadConf",name);
-				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
-						" only those materials are usable");
-			}
-		} else if(isDebug()&& !onlyAllow.isEmpty()) {
-			log.info( "["+gc.modName+"][loadConf] As global.onlyAllow has items,"+
-					" only those materials are usable");
-		}
+		if(!loadOnlyAllow(tSet, conf))
+			return false;
 
 		String rankName = "ranks";
 		ConfigurationSection rankConf = conf.getConfigurationSection(tSet+"."+
@@ -139,37 +121,15 @@ public class Sledge extends Tool  {
 			return false;
 		if(gc.debug) onlyAllow.logRankedMatSet("loadConf", getToolName()+"."+rankName);
 
-		intL = conf.getIntegerList(tSet+"."+name+".stopCopy");
-
-		if(!intL.isEmpty())
-		{
-			if(isDebug())
-				log.info( "["+gc.modName+"][loadConf] As "+name+".stopCopy has items,"+
-						" it overwrites the global");
-
-			if(!stopCopy.loadMatList(intL,true,tSet+"."+name))
-				return false;
-
-			if(isDebug()) stopCopy.logMatSet("loadConf",name);
-		}
+		if(!loadStopCopy(tSet, conf))
+			return false;
 
 		if(!stopCopy.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
 			return false;
 		if(gc.debug) stopCopy.logRankedMatSet("loadConf", getToolName()+"."+rankName);
 
-		intL = conf.getIntegerList(tSet+"."+name+".stopOverwrite");
-
-		if(!intL.isEmpty())
-		{
-			if(isDebug())
-				log.info( "["+gc.modName+"][loadConf] As "+name+".stopOverwrite has items,"+
-						" it overwrites the global");
-
-			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+name))
-				return false;
-
-			if(isDebug()) stopOverwrite.logMatSet("loadConf",name);
-		}
+		if(!loadStopOverwrite(tSet, conf))
+			return false;
 
 		if(!stopOverwrite.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
 			return false;

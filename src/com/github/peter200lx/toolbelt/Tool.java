@@ -2,6 +2,7 @@ package com.github.peter200lx.toolbelt;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -256,6 +257,64 @@ public abstract class Tool implements ToolInterface {
 		if(isDebug()) {
 			log.info("["+gc.modName+"][loadConf] "+getToolName()+" tool use repeat delay is "+
 					repeatDelay);
+		}
+		return true;
+	}
+
+	protected boolean loadOnlyAllow(String tSet, FileConfiguration conf) {
+		List<Integer> intL = conf.getIntegerList(tSet+"."+getToolName()+".onlyAllow");
+
+		if(!intL.isEmpty())
+		{
+			if(isDebug())
+				log.info( "["+gc.modName+"][loadConf] As "+getToolName()+".onlyAllow has items,"+
+						" it overwrites the global");
+
+			if(!onlyAllow.loadMatList(intL,false,tSet+"."+getToolName()))
+				return false;
+
+			if(isDebug()) {
+				onlyAllow.logMatSet("loadConf",getToolName());
+				log.info( "["+gc.modName+"][loadConf] As "+getToolName()+".onlyAllow"+
+						" has items, only those materials are usable");
+			}
+		} else if(isDebug()&& !onlyAllow.isEmpty()) {
+			log.info( "["+gc.modName+"][loadConf] As global.onlyAllow has items,"+
+					" only those materials are usable");
+		}
+		return true;
+	}
+
+	protected boolean loadStopCopy(String tSet, FileConfiguration conf) {
+		List<Integer> intL = conf.getIntegerList(tSet+"."+getToolName()+".stopCopy");
+
+		if(!intL.isEmpty())
+		{
+			if(isDebug())
+				log.info( "["+gc.modName+"][loadConf] As "+getToolName()+".stopCopy"+
+						" has items, it overwrites the global");
+
+			if(!stopCopy.loadMatList(intL,true,tSet+"."+getToolName()))
+				return false;
+
+			if(isDebug()) stopCopy.logMatSet("loadConf",getToolName());
+		}
+		return true;
+	}
+
+	protected boolean loadStopOverwrite(String tSet, FileConfiguration conf) {
+		List<Integer> intL = conf.getIntegerList(tSet+"."+getToolName()+".stopOverwrite");
+
+		if(!intL.isEmpty())
+		{
+			if(isDebug())
+				log.info( "["+gc.modName+"][loadConf] As "+getToolName()+".stopOverwrite"+
+						" has items, it overwrites the global");
+
+			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+getToolName()))
+				return false;
+
+			if(isDebug()) stopOverwrite.logMatSet("loadConf",getToolName());
 		}
 		return true;
 	}

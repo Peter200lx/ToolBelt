@@ -1,8 +1,6 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -119,40 +117,12 @@ public class Pickhax extends Tool  {
 		if(isDebug())
 			log.info("["+gc.modName+"][loadConf] Crouched PickHax range distance is set to "+range);
 
-		List<Integer> intL = conf.getIntegerList(tSet+"."+name+".onlyAllow");
+		if(!loadOnlyAllow(tSet, conf))
+			return false;
 
-		if(!intL.isEmpty())
-		{
-			if(isDebug())
-				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
-						" it overwrites the global");
+		if(!loadStopOverwrite(tSet, conf))
+			return false;
 
-			if(!onlyAllow.loadMatList(intL,false,tSet+"."+name))
-				return false;
-
-			if(isDebug()) {
-				onlyAllow.logMatSet("loadConf",name);
-				log.info( "["+gc.modName+"][loadConf] As "+name+".onlyAllow has items,"+
-						" only those materials are usable");
-			}
-		} else if(isDebug()&& !onlyAllow.isEmpty()) {
-			log.info( "["+gc.modName+"][loadConf] As global.onlyAllow has items,"+
-					" only those materials are usable");
-		}
-
-		intL = conf.getIntegerList(tSet+"."+name+".stopOverwrite");
-
-		if(!intL.isEmpty())
-		{
-			if(isDebug())
-				log.info( "["+gc.modName+"][loadConf] As "+name+".stopOverwrite has items,"+
-						" it overwrites the global");
-
-			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+name))
-				return false;
-
-			if(isDebug()) stopOverwrite.logMatSet("loadConf",name);
-		}
 		return true;
 	}
 }
