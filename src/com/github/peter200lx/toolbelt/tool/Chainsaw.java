@@ -148,7 +148,7 @@ public class Chainsaw extends Tool  {
 					" only those materials are usable");
 		}
 
-		intL = conf.getIntegerList(tSet+"."+name);
+		intL = conf.getIntegerList(tSet+"."+name+".stopOverwrite");
 
 		if(!intL.isEmpty())
 		{
