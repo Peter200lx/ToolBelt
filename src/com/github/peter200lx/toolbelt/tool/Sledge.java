@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -113,27 +112,12 @@ public class Sledge extends Tool  {
 		if(!loadOnlyAllow(tSet, conf))
 			return false;
 
-		String rankName = "ranks";
-		ConfigurationSection rankConf = conf.getConfigurationSection(tSet+"."+
-				getToolName()+"."+rankName);
-
-		if(!onlyAllow.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
-			return false;
-		if(gc.debug) onlyAllow.logRankedMatSet("loadConf", getToolName()+"."+rankName);
-
 		if(!loadStopCopy(tSet, conf))
 			return false;
-
-		if(!stopCopy.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
-			return false;
-		if(gc.debug) stopCopy.logRankedMatSet("loadConf", getToolName()+"."+rankName);
 
 		if(!loadStopOverwrite(tSet, conf))
 			return false;
 
-		if(!stopOverwrite.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
-			return false;
-		if(gc.debug) stopOverwrite.logRankedMatSet("loadConf", getToolName()+"."+rankName);
 		return true;
 	}
 }

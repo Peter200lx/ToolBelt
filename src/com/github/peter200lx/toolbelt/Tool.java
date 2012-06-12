@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -282,6 +283,15 @@ public abstract class Tool implements ToolInterface {
 			log.info( "["+gc.modName+"][loadConf] As global.onlyAllow has items,"+
 					" only those materials are usable");
 		}
+
+		String rankName = "ranks";
+		ConfigurationSection rankConf = conf.getConfigurationSection(tSet+"."+
+				getToolName()+"."+rankName);
+
+		if(!onlyAllow.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
+			return false;
+		if(gc.debug) onlyAllow.logRankedMatSet("loadConf", getToolName()+"."+rankName);
+
 		return true;
 	}
 
@@ -299,6 +309,15 @@ public abstract class Tool implements ToolInterface {
 
 			if(isDebug()) stopCopy.logMatSet("loadConf",getToolName());
 		}
+
+		String rankName = "ranks";
+		ConfigurationSection rankConf = conf.getConfigurationSection(tSet+"."+
+				getToolName()+"."+rankName);
+
+		if(!stopCopy.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
+			return false;
+		if(gc.debug) stopCopy.logRankedMatSet("loadConf", getToolName()+"."+rankName);
+
 		return true;
 	}
 
@@ -316,6 +335,15 @@ public abstract class Tool implements ToolInterface {
 
 			if(isDebug()) stopOverwrite.logMatSet("loadConf",getToolName());
 		}
+
+		String rankName = "ranks";
+		ConfigurationSection rankConf = conf.getConfigurationSection(tSet+"."+
+				getToolName()+"."+rankName);
+
+		if(!stopOverwrite.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
+			return false;
+		if(gc.debug) stopOverwrite.logRankedMatSet("loadConf", getToolName()+"."+rankName);
+
 		return true;
 	}
 
