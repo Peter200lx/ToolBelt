@@ -37,17 +37,18 @@ public class Shovel extends Tool  {
 		if(!delayElapsed(subject.getName()))
 			return;
 		Block target;
+		List<String> subRanks = gc.ranks.getUserRank(subject);
 		switch(event.getAction()) {
 		case LEFT_CLICK_BLOCK:
 			target = event.getClickedBlock();
-			toChange = getCube(target,widthCube);
+			toChange = getCube(target,widthCube,subRanks);
 			break;
 		case RIGHT_CLICK_BLOCK:
 			target = event.getClickedBlock();
 			if(!subject.isSneaking())
-				toChange = getDisk(target,radiusDisk);
+				toChange = getDisk(target,radiusDisk,subRanks);
 			else
-				toChange = getSphere(target,radiusSphere);
+				toChange = getSphere(target,radiusSphere,subRanks);
 			break;
 		default:
 			return;
@@ -70,15 +71,14 @@ public class Shovel extends Tool  {
 		}
 	}
 
-	private List<Block> getCube(Block center, int width) {
+	private List<Block> getCube(Block center, int width, List<String> subRanks) {
 		int bound = (width-1)/2;
 		List<Block> toRet = new ArrayList<Block>();
 		for (int x = -bound; x <= bound; ++x) {
 			for (int y = -bound; y <= bound; ++y) {
 				for (int z = -bound; z <= bound; ++z) {
 					Block loc = center.getRelative(x, y, z);
-					if(!stopOverwrite.contains(loc.getType())       &&
-							(onlyAllow.isEmpty() || onlyAllow.contains(loc.getType())) ){
+					if(!noOverwrite(subRanks,loc.getType())){
 						toRet.add(loc);
 					}
 				}
@@ -87,7 +87,7 @@ public class Shovel extends Tool  {
 		return toRet;
 	}
 
-	private List<Block> getDisk(Block center, double radius) {
+	private List<Block> getDisk(Block center, double radius, List<String> subRanks) {
 		List<Block> toRet = new ArrayList<Block>();
 		int round = (int) Math.round(radius-0.001);
 		for (int x = -round; x <= round; ++x) {
@@ -95,8 +95,7 @@ public class Shovel extends Tool  {
 				Block loc = center.getRelative(x, 0, z);
 				if(loc.getLocation().toVector().isInSphere(
 						center.getLocation().toVector(), radius)) {
-					if(!stopOverwrite.contains(loc.getType())       &&
-							(onlyAllow.isEmpty() || onlyAllow.contains(loc.getType())) ){
+					if(!noOverwrite(subRanks,loc.getType())){
 						toRet.add(loc);
 					}
 				}
@@ -105,7 +104,7 @@ public class Shovel extends Tool  {
 		return toRet;
 	}
 
-	private List<Block> getSphere(Block center, double radius) {
+	private List<Block> getSphere(Block center, double radius, List<String> subRanks) {
 		List<Block> toRet = new ArrayList<Block>();
 		int round = (int) Math.round(radius-0.001);
 		for (int x = -round; x <= round; ++x) {
@@ -114,8 +113,7 @@ public class Shovel extends Tool  {
 					Block loc = center.getRelative(x, y, z);
 					if(loc.getLocation().toVector().isInSphere(
 							center.getLocation().toVector(), radius)) {
-						if(!stopOverwrite.contains(loc.getType())       &&
-								(onlyAllow.isEmpty() || onlyAllow.contains(loc.getType())) ){
+						if(!noOverwrite(subRanks,loc.getType())){
 							toRet.add(loc);
 						}
 					}

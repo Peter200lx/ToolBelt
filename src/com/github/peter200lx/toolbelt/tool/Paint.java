@@ -59,8 +59,7 @@ public class Paint extends Tool  {
 				}
 			}else
 				mdTarget = subject.getTargetBlock(null, 200).getState().getData();
-			if(!stopCopy.contains(mdTarget.getItemType()) && ( onlyAllow.isEmpty() ||
-					onlyAllow.contains(mdTarget.getItemType()) ) ){
+			if(!noCopy(subject,mdTarget.getItemType())){
 				pPalette.get(subject.getName()).put(
 						subject.getInventory().getHeldItemSlot(), mdTarget );
 				paintPrint("Paint is now ",subject,mdTarget);
@@ -85,8 +84,7 @@ public class Paint extends Tool  {
 						bTarget = subject.getTargetBlock(null, rangeCrouch);
 				}else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 					bTarget = event.getClickedBlock();
-				if(bTarget != null && !stopOverwrite.contains(bTarget.getType())       &&
-						(onlyAllow.isEmpty() || onlyAllow.contains(bTarget.getType())) ){
+				if(bTarget != null && !noOverwrite(subject,bTarget.getType())	){
 					if((bTarget.getType()==set.getItemType())&&(bTarget.getData()==set.getData())) {
 						//Don't replace blocks with the same type and data
 						return;

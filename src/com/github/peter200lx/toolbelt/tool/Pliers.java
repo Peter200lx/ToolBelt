@@ -1,5 +1,7 @@
 package com.github.peter200lx.toolbelt.tool;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -47,8 +49,9 @@ public class Pliers extends Tool  {
 		default:
 			return;
 		}
-		if(!target.getType().equals(Material.AIR) && !(!stopOverwrite.contains(target.getType()) &&
-				(onlyAllow.isEmpty() || onlyAllow.contains(target.getType()))) ){
+		List<String> subRanks = gc.ranks.getUserRank(subject);
+		if(!target.getType().equals(Material.AIR) &&
+				noOverwrite(subRanks,target.getType()) ){
 			subject.sendMessage(ChatColor.RED+"Sorry, you can't overwrite "+
 					ChatColor.GOLD+target.getType());
 			return;
@@ -58,8 +61,7 @@ public class Pliers extends Tool  {
 					"Can't copy into a non-air block without crouching.");
 			return;
 		}
-		if(stopCopy.contains(clicked.getType()) || !( onlyAllow.isEmpty() ||
-				onlyAllow.contains(clicked.getType()) ) ){
+		if(noCopy(subRanks,clicked.getType()) ){
 			subject.sendMessage(ChatColor.RED+"Sorry, you can't copy "+
 				ChatColor.GOLD+clicked.getType());
 			return;

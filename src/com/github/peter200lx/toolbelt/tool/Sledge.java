@@ -55,9 +55,7 @@ public class Sledge extends Tool  {
 			return;
 		}
 		List<String> subRanks = gc.ranks.getUserRank(subject);
-		if(!target.getType().equals(Material.AIR) &&
-				!(!stopOverwrite.contains(subRanks, target.getType()) &&
-				(onlyAllow.isEmpty(subRanks) || onlyAllow.contains(subRanks,target.getType()))) ){
+		if(!target.getType().equals(Material.AIR) && noOverwrite(subRanks, target.getType())){
 			subject.sendMessage(ChatColor.RED+"Sorry, you can't overwrite "+
 					ChatColor.GOLD+target.getType());
 			return;
@@ -67,8 +65,7 @@ public class Sledge extends Tool  {
 					"Can't move into a non-air block without crouching.");
 			return;
 		}
-		if(stopCopy.contains(subRanks, clicked.getType()) || !( onlyAllow.isEmpty(subRanks) ||
-				onlyAllow.contains(subRanks, clicked.getType()) ) ){
+		if(noCopy(subRanks, clicked.getType()) ){
 			subject.sendMessage(ChatColor.RED+"Sorry, you can't move "+
 				ChatColor.GOLD+clicked.getType());
 			return;

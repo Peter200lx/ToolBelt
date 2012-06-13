@@ -52,8 +52,7 @@ public class Scroll extends Tool {
 			Material type = clicked.getType();
 			if(!dataMap.containsKey(type)) {
 				//?Warn about not a supported scroll type?
-			}else if(!(onlyAllow.isEmpty() || onlyAllow.contains(type)) ||
-					stopOverwrite.contains(type)) {
+			}else if(noOverwrite(subject, type)) {
 				//?Warn about material being blocked?
 			}else {
 				if(isDebug()) log.info("["+gc.modName+"][scrollTool] "+subject.getName()+

@@ -211,6 +211,24 @@ public abstract class Tool implements ToolInterface {
 		return !canPlace.isCancelled();
 	}
 
+	protected boolean noCopy(Player subject, Material type) {
+		return noCopy(gc.ranks.getUserRank(subject), type);
+	}
+
+	protected boolean noCopy(List<String> subRanks, Material type) {
+		return stopCopy.contains(subRanks, type) ||
+				!(onlyAllow.isEmpty(subRanks) || onlyAllow.contains(subRanks, type));
+	}
+
+	protected boolean noOverwrite(Player subject, Material type) {
+		return noOverwrite(gc.ranks.getUserRank(subject),type);
+	}
+
+	protected boolean noOverwrite(List<String> subRanks, Material type) {
+		return stopOverwrite.contains(subRanks, type) ||
+				!(onlyAllow.isEmpty(subRanks) || onlyAllow.contains(subRanks,type));
+	}
+
 	protected boolean delayElapsed(String name) {
 		if(repeatDelay == 0)
 			return true; //Don't bother filling pCooldown with data when not used

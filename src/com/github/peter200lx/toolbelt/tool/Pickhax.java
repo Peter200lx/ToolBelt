@@ -64,8 +64,7 @@ public class Pickhax extends Tool  {
 		default:
 			return;
 		}
-		if(target != null && !stopOverwrite.contains(target.getType())       &&
-				(onlyAllow.isEmpty() || onlyAllow.contains(target.getType())) ){
+		if(target != null && !noOverwrite(subject,target.getType()) ){
 			if(spawnBuild(target,event.getPlayer())) {
 				if(isUseEvent()) {
 					if(safeBreak(target,event.getPlayer(),physics))
