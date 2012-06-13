@@ -248,6 +248,16 @@ public abstract class Tool implements ToolInterface {
 	}
 
 	protected void updateUser(Player subject, Location loc, int type, byte data) {
+		int horizon = (gc.server.getViewDistance() + 1) * 16;
+		int horSqr = horizon * horizon;
+		Player[] online = gc.server.getOnlinePlayers();
+		for(Player other: online) {
+			if(loc.getWorld().equals(other.getWorld())) {
+				if(loc.distanceSquared(other.getLocation()) < horSqr) {
+					other.sendBlockChange(loc, type, data);
+				}
+			}
+		}
 		subject.sendBlockChange(loc, type, data);
 	}
 
