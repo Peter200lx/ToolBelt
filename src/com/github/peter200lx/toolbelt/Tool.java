@@ -20,6 +20,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.material.Cake;
@@ -162,8 +163,6 @@ public abstract class Tool implements ToolInterface {
 		return !canBreak.isCancelled();
 	}
 
-	@SuppressWarnings("deprecation") //Replace ContainerBlock with InventoryHolder once not
-	// supporting CB-1.1-R4
 	protected boolean safeReplace(MaterialData newInfo, Block old, Player subject, boolean canBuild) {
 		BlockState oldInfo = old.getState();
 		if(oldInfo.getType().equals(Material.SIGN_POST)         ||
@@ -176,7 +175,7 @@ public abstract class Tool implements ToolInterface {
 			return false;
 		}else if(oldInfo.getType().equals(newInfo.getItemType()))
 			old.setData(newInfo.getData(), false);
-		else if(oldInfo instanceof org.bukkit.block.ContainerBlock) {
+		else if(oldInfo instanceof InventoryHolder) {
 			subject.sendMessage(ChatColor.RED + "Plugin doesn't support overwriting "+
 					ChatColor.GOLD+"Container Blocks");
 			return false;
