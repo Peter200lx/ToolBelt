@@ -91,6 +91,12 @@
 #   builder.onlyAllow: []
 #   admin.stopCopy: []
 #   mod.stopOverwrite: []
+# 
+#NOTE: Not mentioned in this example, but worth looking at is the shovel
+# and saw ranked onlyAllow lists in the below example. This is because a
+# ranked list always overwrites an unranked list, and so the shovel and
+# saw's unranked onlyAllow lists will be replaced for builders on up 
+# with the tools.global.ranks.builder.onlyAllow list
 
 ranksDef:
   admin:
@@ -150,6 +156,13 @@ tools:
 #  global.ranks.mod.onlyAllow [1,2,3] \
 #                                     += onlyAllow [] for the sledge tool
 #  sledge.ranks.mod.onlyAllow []      /
+# 
+#NOTE: As a ranked list that a user has overpowers the unranked list, it is
+# highly suggested that tools.shovel.ranks.rank_name.onlyAllow be set to the
+# same [1,2,3,12,13] list as the unranked list so that the shovel doesn't
+# suddenly start working for more block types just because a users gains a
+# rank that overwrites onlyAllow. Likewise the rank_name.onlyAllow for the
+# saw should be explicitly set to [17,18, 106]
 
 ranksDef:
   admin:
@@ -180,6 +193,23 @@ tools:
       mod:
         stopCopy: []
       builder:
+  shovel:
+    widthCube: 3
+    radiusDisk: 2.5
+    radiusSphere: 2.5
+    onlyAllow: [1,2,3,12,13]
+    stopOverwrite: []
+    ranks:
+      builder:
+        onlyAllow: [1,2,3,12,13]
+  saw:
+    widthCube: 3
+    radiusSphere: 2.5
+    onlyAllow: [17,18, 106]
+    stopOverwrite: []
+    ranks:
+      builder:
+        onlyAllow: [17,18, 106]
 
 #**************************************************************
 #* advanced example of ranks with multiple inheritance groups *
