@@ -21,6 +21,13 @@ permissions:
         default: op
         children:
             toolbelt.reload: true
+            toolbelt.tool.*: true
+            toolbelt.rank.*: false
+    toolbelt.reload:
+        description: Allows the player to reload toolbelt from configuration file.
+    toolbelt.tool.*:
+        description: Gives access to the tool specific permissions for toolbelt
+        children:
             toolbelt.tool.dupe: true
             toolbelt.tool.scroll: true
             toolbelt.tool.paint: true
@@ -37,8 +44,6 @@ permissions:
             toolbelt.tool.pliers: true
             toolbelt.tool.shovel: true
             toolbelt.tool.saw: true
-    toolbelt.reload:
-        description: Allows the player to reload toolbelt from configuration file.
     toolbelt.tool.dupe:
         description: Allows the player to use the duplicator tool.
     toolbelt.tool.scroll:
@@ -69,4 +74,7 @@ permissions:
         description: Allows the player to clear large amounts of (by default) stone, dirt, grass, sand and gravel.
     toolbelt.tool.saw:
         description: Allows the player to clear large amounts of (by default) logs, leaves and vines.
+    toolbelt.rank.*:
+        description: Optional functionality, read help/Ranks.txt for more information
+        default: false
 
