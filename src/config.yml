@@ -136,6 +136,7 @@ tools:
     thrust: 8
     cruise: 110
     teleport: false
+    cFly: true
     invuln: -1
   phax:
     range: 25

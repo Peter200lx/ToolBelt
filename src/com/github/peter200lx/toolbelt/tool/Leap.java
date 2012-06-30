@@ -1,6 +1,7 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -26,6 +27,8 @@ public class Leap extends Tool {
 
 	private boolean leapTeleport;
 
+	private boolean leapFly;
+
 	private int leapThrust;
 
 	private int leapCruise;
@@ -33,6 +36,8 @@ public class Leap extends Tool {
 	private double leapInvuln;
 
 	private HashMap<String, Long> pInvuln = new HashMap<String, Long>();
+
+	private HashSet<String> pFlight = new HashSet<String>();
 
 	@Override
 	public String getToolName() {
@@ -101,12 +106,39 @@ public class Leap extends Tool {
 				subject.setVelocity(new Vector(pX, pY / 2.5D, pZ));
 			if(leapInvuln > 0)
 				pInvuln.put(subject.getName(), System.currentTimeMillis());
+		}else if(act.equals(Action.LEFT_CLICK_AIR)||act.equals(Action.LEFT_CLICK_BLOCK)) {
+			if(leapFly && hasCFlyPerm(subject)) {
+				if(subject.isFlying()) {
+					subject.setFlying(false);
+					if(leapInvuln > 0)
+						pInvuln.put(subject.getName(), System.currentTimeMillis());
+					if(pFlight.contains(subject.getName())) {
+						subject.setAllowFlight(false);
+						gc.pl.print(PrintEnum.INFO, subject, "Creative mode flying disabled");
+						pFlight.remove(subject.getName());
+					}
+				}else {
+					if(!subject.getAllowFlight()) {
+						pFlight.add(subject.getName());
+						subject.setAllowFlight(true);
+						gc.pl.print(PrintEnum.INFO, subject, "Creative mode flying enabled");
+					}
+					subject.setFlying(true);
+				}
+			}
 		}
 	}
 
 	private boolean hasTeleportPerm (CommandSender subject) {
 		if(gc.perm)
 			return subject.hasPermission(getPermStr()+".tel");
+		else
+			return true;
+	}
+
+	private boolean hasCFlyPerm (CommandSender subject) {
+		if(gc.perm)
+			return subject.hasPermission(getPermStr()+".fly");
 		else
 			return true;
 	}
@@ -142,16 +174,19 @@ public class Leap extends Tool {
 		if(!loadRepeatDelay(tSet,conf,0))
 			return false;
 
-		leapTeleport = conf.getBoolean("tools.leap.teleport", false);
+		leapTeleport = conf.getBoolean(tSet+"."+name+".teleport", false);
 		if(isDebug())
 			log.info("["+gc.modName+"][loadConf] Teleport leaping is set to "+leapTeleport);
-		leapThrust = conf.getInt("tools.leap.thrust", 8);
+		leapFly = conf.getBoolean(tSet+"."+name+".fly", true);
+		if(isDebug())
+			log.info("["+gc.modName+"][loadConf] Creative flying is set to "+leapFly);
+		leapThrust = conf.getInt(tSet+"."+name+".thrust", 8);
 		if(isDebug())
 			log.info("["+gc.modName+"][loadConf] Flap thrust is set to "+leapThrust);
-		leapCruise = conf.getInt("tools.leap.cruise", 110);
+		leapCruise = conf.getInt(tSet+"."+name+".cruise", 110);
 		if(isDebug())
 			log.info("["+gc.modName+"][loadConf] Cruising altitude is set to "+leapCruise);
-		leapInvuln = conf.getDouble("tools.leap.invuln", -1);
+		leapInvuln = conf.getDouble(tSet+"."+name+".invuln", -1);
 		if(isDebug()) {
 			if(leapInvuln < 0)
 				log.info("["+gc.modName+"][loadConf] Fall damage is disabled");

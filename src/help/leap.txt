@@ -20,6 +20,15 @@
 #    be blocked by, it has a separate permission node:
 #    toolbelt.tool.leap.tel
 # 
+# tools: leap: cFly: <true|false>
+#    Bukkit now allows mods to enable players to use creative
+#    flight without all of the rest of the creative mode
+#    differences. As such left-click with the leap tool can
+#    now enable creative flight for a user. The feature can
+#    be disabled by setting this to false. Further, if perms
+#    are enabled, it can be controlled per user by:
+#    toolbelt.tool.leap.fly
+# 
 # tools: leap: invuln: <Number of seconds>
 #    This controls how long the user of the leap tool is
 #    protected from fall damage after using the leap tool. By
@@ -40,4 +49,5 @@ tools:
     thrust: 8
     cruise: 110
     teleport: false
+    cFly: true
     invuln: -1
