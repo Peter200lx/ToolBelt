@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
+import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Watch extends Tool  {
@@ -52,20 +53,21 @@ public class Watch extends Tool  {
 
 		if(!subject.isSneaking()) {
 			subject.setPlayerTime(time-subject.getWorld().getTime(), true);
-			subject.sendMessage(ChatColor.GREEN+"Your time has been set to "+
-					ChatColor.GOLD+time+ChatColor.GREEN+" (Crouch and click to reset)");
+			gc.pl.print(PrintEnum.INFO, subject, ChatColor.GREEN +
+					"Your time has been set to " + ChatColor.GOLD + time +
+					ChatColor.GREEN+" (Crouch and click to reset)");
 			pNotSync.add(subject.getName());
 		}else {
 			if(pNotSync.contains(subject.getName())) {
 				subject.resetPlayerTime();
-				subject.sendMessage(ChatColor.GREEN+
+				gc.pl.print(PrintEnum.INFO, subject, ChatColor.GREEN+
 						"Your time is now synced with the server at "+
 						ChatColor.GOLD+subject.getWorld().getTime());
 				pNotSync.remove(subject.getName());
 			}else if(hasServerPerm(subject)) {
 				subject.getWorld().setTime(time);
-				subject.sendMessage(ChatColor.DARK_GREEN+"Server time has been set to "+
-						ChatColor.GOLD+time);
+				gc.pl.print(PrintEnum.IMPORT, subject, ChatColor.DARK_GREEN+
+						"Server time has been set to " + ChatColor.GOLD+time);
 			}
 		}
 	}
@@ -80,8 +82,8 @@ public class Watch extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Left click with the "+ChatColor.GOLD+getType()+
-					ChatColor.WHITE+" to set time to day, right for night");
+			gc.pl.print(PrintEnum.CMD, sender, "Left click with the "+ChatColor.GOLD+
+					getType()+ChatColor.WHITE+" to set time to day, right for night");
 			return true;
 		}
 		return false;

@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
+import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.SetMat;
 import com.github.peter200lx.toolbelt.Tool;
 
@@ -46,15 +47,12 @@ public class Duplicator extends Tool {
 			Block clicked = event.getClickedBlock();
 			Material type = clicked.getType();
 
-			if(isDebug()) log.info("["+gc.modName+"][dupeTool] "+subject.getName()+
-					" clicked "+clicked.getState().getData());
-
 			Material toUse = dupeMap.get(type);
 			if(toUse == null)
 				toUse = type;
 			if(toUse == Material.AIR) {
-				subject.sendMessage(ChatColor.RED + "Duplicating " + ChatColor.GOLD +
-						type.toString()+ ChatColor.RED + " is disabled");
+				gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED + "Duplicating " +
+						ChatColor.GOLD + type.toString()+ ChatColor.RED + " is disabled");
 				return;
 			}
 
@@ -75,12 +73,12 @@ public class Duplicator extends Tool {
 			subject.updateInventory();
 			if(printData.contains(toUse))
 			{
-				subject.sendMessage(ChatColor.GREEN + "Enjoy your " + ChatColor.GOLD +
-						toUse.toString() + ChatColor.WHITE + ":" +
+				gc.pl.print(PrintEnum.INFO, subject, ChatColor.GREEN + "Enjoy your " +
+						ChatColor.GOLD + toUse.toString() + ChatColor.WHITE + ":" +
 						ChatColor.BLUE + data2Str(clicked.getState().getData()));
 			} else {
-				subject.sendMessage(ChatColor.GREEN + "Enjoy your " + ChatColor.GOLD +
-							toUse.toString());
+				gc.pl.print(PrintEnum.INFO, subject, ChatColor.GREEN + "Enjoy your " +
+						ChatColor.GOLD + toUse.toString());
 			}
 		}
 	}
@@ -88,8 +86,8 @@ public class Duplicator extends Tool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Right-click with the "+ChatColor.GOLD+getType()+
-					ChatColor.WHITE+" to duplicate the item selected");
+			gc.pl.print(PrintEnum.CMD, sender, "Right-click with the "+ChatColor.GOLD+
+					getType()+ChatColor.WHITE+" to duplicate the item selected");
 			return true;
 		}
 		return false;

@@ -7,7 +7,7 @@ public class GlobalConf {
 	public GlobalConf(String modName, Server server, boolean debug,
 			boolean perm, boolean useEvent, int repeatDelay,
 			SetMat onlyAllow, SetMat stopCopy, SetMat stopOverwrite,
-			Ranks ranks) {
+			Ranks ranks, PrintEnum printLevel) {
 		super();
 		this.modName = modName;
 		this.server = server;
@@ -19,6 +19,7 @@ public class GlobalConf {
 		this.stopCopy = stopCopy;
 		this.stopOverwrite = stopOverwrite;
 		this.ranks = ranks;
+		this.pl = printLevel;
 	}
 
 	public final String modName;
@@ -40,5 +41,7 @@ public class GlobalConf {
 	public final SetMat stopOverwrite;
 
 	public final Ranks ranks;
+
+	public final PrintEnum pl;
 
 }

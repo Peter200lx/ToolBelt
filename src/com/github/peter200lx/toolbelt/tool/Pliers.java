@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.material.MaterialData;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
+import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Pliers extends Tool  {
@@ -44,25 +45,25 @@ public class Pliers extends Tool  {
 			break;
 		case LEFT_CLICK_AIR:
 		case RIGHT_CLICK_AIR:
-			subject.sendMessage(ChatColor.RED +"Sorry, didn't catch that, "+
-					"you need to click on a block.");
+			gc.pl.print(PrintEnum.HINT, subject, ChatColor.RED +
+					"Didn't catch that, you need to click on a block.");
 		default:
 			return;
 		}
 		List<String> subRanks = gc.ranks.getUserRank(subject);
 		if(!target.getType().equals(Material.AIR) &&
 				noOverwrite(subRanks,target.getType()) ){
-			subject.sendMessage(ChatColor.RED+"Sorry, you can't overwrite "+
-					ChatColor.GOLD+target.getType());
+			gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED+
+					"You can't overwrite "+ChatColor.GOLD+target.getType());
 			return;
 		}
 		if(!subject.isSneaking()&&!target.getType().equals(Material.AIR)){
-			subject.sendMessage(ChatColor.RED+
+			gc.pl.print(PrintEnum.HINT, subject, ChatColor.RED+
 					"Can't copy into a non-air block without crouching.");
 			return;
 		}
 		if(noCopy(subRanks,clicked.getType()) ){
-			subject.sendMessage(ChatColor.RED+"Sorry, you can't copy "+
+			gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED+"You can't copy "+
 				ChatColor.GOLD+clicked.getType());
 			return;
 		}
@@ -82,9 +83,9 @@ public class Pliers extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("left/right click with the "+ChatColor.GOLD+getType()+
-					ChatColor.WHITE+" to copy and push or pull blocks");
-			//sender.sendMessage("Crouch to push or pull into more then just air");
+			gc.pl.print(PrintEnum.CMD, sender, "left/right click with the "+ChatColor.GOLD+
+					getType()+ChatColor.WHITE+" to copy and push or pull blocks");
+			gc.pl.print(PrintEnum.HINT, sender, "Crouch to push or pull into more then just air");
 			return true;
 		}
 		return false;

@@ -201,6 +201,20 @@ public class ToolBelt extends JavaPlugin {
 			ranks.printRanks(log);
 		}
 
+		//Check and load the user print level from config
+		int printLevelInt = conf.getInt("userPrint", 5);
+		PrintEnum printLevel = null;
+		for(PrintEnum level: PrintEnum.values()) {
+			if(level.getPri() == printLevelInt) {
+				printLevel = level;
+			}
+		}
+		if(printLevel == null) {
+			log.warning("["+cName+"][loadConf] "+printLevelInt+" is not a valid userPrint level.");
+			return false;
+		}
+		if(debug) log.info( "["+cName+"][loadConf] The current user print level is "+printLevel);
+
 		String globalName = "global";
 
 		//Load Global repeat delay
@@ -270,7 +284,7 @@ public class ToolBelt extends JavaPlugin {
 
 		//Store settings into global config for use outside of loadConf()
 		gc = new GlobalConf(cName,this.getServer(),debug,permissions,useEvent,
-				repeatDelay,onlyAllow,stopCopy,stopOverwrite,ranks);
+				repeatDelay,onlyAllow,stopCopy,stopOverwrite,ranks,printLevel);
 
 		HashMap<String,Tool> available = new HashMap<String,Tool>();
 		available.put(Duplicator.name, new Duplicator(gc));

@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.material.MaterialData;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
+import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Paint extends Tool  {
@@ -54,20 +55,20 @@ public class Paint extends Tool  {
 				if(subject.getGameMode().equals(GameMode.CREATIVE)      &&(
 						mdTarget.getItemType().equals(Material.SIGN_POST) ||
 						mdTarget.getItemType().equals(Material.WALL_SIGN))){
-					subject.sendMessage("The sign is not erased on the server, "+
-								"it is just client side");
+					gc.pl.print(PrintEnum.WARN, subject, "The sign is not erased on "
+							+"the server, it is just client side");
 				}
 			}else
 				mdTarget = subject.getTargetBlock(null, 200).getState().getData();
 			if(!noCopy(subject,mdTarget.getItemType())){
 				pPalette.get(subject.getName()).put(
 						subject.getInventory().getHeldItemSlot(), mdTarget );
-				paintPrint("Paint is now ",subject,mdTarget);
+				gc.pl.print(PrintEnum.IMPORT, subject, paintFormat("Paint is now ",mdTarget));
 			} else {
-				subject.sendMessage(ChatColor.RED + "Was not able to grab a block to paint.");
 				MaterialData old = pPalette.get(subject.getName()).get(
 						subject.getInventory().getHeldItemSlot());
-				paintPrint("Paint is still ",subject,old);
+				gc.pl.print(PrintEnum.IMPORT, subject, ChatColor.RED + "No paint aquired, "+
+						paintFormat("paint is still ",old));
 			}
 			break;
 		case RIGHT_CLICK_BLOCK:
@@ -100,11 +101,12 @@ public class Paint extends Tool  {
 						}
 					}
 				}else if(bTarget != null) {
-					if(bTarget.getType().equals(Material.AIR))
-						subject.sendMessage(ChatColor.RED + "Target is out of range");
-					else
-						subject.sendMessage(ChatColor.RED + "You can't overwrite "+
-								ChatColor.GOLD+bTarget.getType());
+					if(bTarget.getType().equals(Material.AIR)) {
+						gc.pl.print(PrintEnum.HINT, subject, ChatColor.RED+"Target out of range");
+					}else {
+						gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED +
+								"You can't overwrite "+ ChatColor.GOLD+bTarget.getType());
+					}
 				}
 			}
 			break;
@@ -113,16 +115,16 @@ public class Paint extends Tool  {
 		}
 	}
 
-	private void paintPrint(String prefix, CommandSender subject, MaterialData m) {
+	private String paintFormat(String prefix, MaterialData m) {
 		if(m == null)
-			subject.sendMessage(ChatColor.RED + prefix + ChatColor.GOLD + "empty");
+			return ChatColor.RED + prefix + ChatColor.GOLD + "empty";
 		else if(printData.contains(m.getItemType())||(m.getData() != 0))
-			subject.sendMessage(ChatColor.GREEN + prefix + ChatColor.GOLD +
+			return ChatColor.GREEN + prefix + ChatColor.GOLD +
 					m.getItemType().toString() + ChatColor.WHITE + ":" +
-					ChatColor.BLUE + data2Str(m));
+					ChatColor.BLUE + data2Str(m);
 		else
-			subject.sendMessage(ChatColor.GREEN + prefix + ChatColor.GOLD +
-						m.getItemType().toString());
+			return ChatColor.GREEN + prefix + ChatColor.GOLD +
+						m.getItemType().toString();
 	}
 
 	private boolean hasRangePerm(CommandSender subject) {
@@ -138,24 +140,24 @@ public class Paint extends Tool  {
 		if(pPalette.containsKey(subject.getName())				&&
 				(pPalette.get(subject.getName()).size() > 1)	){
 			MaterialData c = pPalette.get(subject.getName()).get(event.getNewSlot());
-			paintPrint("Paint in this slot is ",subject,c);
+			gc.pl.print(PrintEnum.IMPORT, subject, paintFormat("Paint in this slot is ",c));
 		}
 	}
 
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Left-click with the "+ChatColor.GOLD+getType()+
-					ChatColor.WHITE+" to load a block");
-			sender.sendMessage("Right-click with the "+ChatColor.GOLD+getType()+
-					ChatColor.WHITE+" to paint the loaded block");
+			gc.pl.print(PrintEnum.CMD, sender, "Left-click with the "+ChatColor.GOLD+
+					getType()+ChatColor.WHITE+" to load a block");
+			gc.pl.print(PrintEnum.CMD, sender, "Right-click with the "+ChatColor.GOLD+
+					getType()+ChatColor.WHITE+" to paint the loaded block");
 			if(hasRangePerm(sender)) {
 				if(rangeDef > 0)
-					sender.sendMessage("Be careful, you can paint at a range of up to "+
-						rangeDef+" blocks.");
+					gc.pl.print(PrintEnum.CMD, sender, "Be careful, you can paint at a "+
+							"range of up to "+rangeDef+" blocks.");
 				if(rangeCrouch > 0)
-					sender.sendMessage("If you crouch, you can paint at a range of "+
-							rangeCrouch);
+					gc.pl.print(PrintEnum.CMD, sender, "If you crouch, you can paint at a "+
+							"range of "+rangeCrouch);
 			}
 			return true;
 		}

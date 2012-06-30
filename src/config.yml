@@ -27,6 +27,15 @@
 #    not integrate with this option, please open an issue at:
 #    https://github.com/Peter200lx/ToolBelt/issues
 # 
+# userPrint: <#>
+#    This will control how often and what messages users will
+#    receive from tools. It is ranked from quietest at the low
+#    end to debug spam at the high end.
+#    important->warning->info->hint->debug
+#        1         2      3     4      5
+#    It defaults to hint messages, and is suggested once used
+#    to the tools to switch to info (3).
+# 
 # tools: bind: <tool>: <id>
 #    This gives a mapping of what item to use for what tool.
 #    If a tool is not wanted, you can disable it by removing
@@ -83,6 +92,7 @@
 debug: false
 permissions: true
 useEvent: true
+userPrint: 4
 tools:
   bind:
     dupe: 275   # STONE_AXE

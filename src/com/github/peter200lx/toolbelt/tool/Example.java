@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
+import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.Tool;
 
 //Instructions for setting up a new tool:
@@ -46,8 +47,8 @@ public class Example extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("(Right-,Left-,)Click with the "+ChatColor.GOLD+getType()+
-					ChatColor.WHITE+" to (description of tool action)");
+			gc.pl.print(PrintEnum.CMD, sender, "(Right-,Left-,)Click with the "+ChatColor.GOLD+
+					getType()+ChatColor.WHITE+" to (description of tool action)");
 			//Also add any special case messages here
 			return true;
 		}

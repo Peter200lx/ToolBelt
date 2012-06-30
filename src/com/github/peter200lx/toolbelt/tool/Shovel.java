@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
+import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Shovel extends Tool  {
@@ -54,8 +55,7 @@ public class Shovel extends Tool  {
 			return;
 		}
 		if(toChange == null) {
-			//Change this message if getDisk/Sphere/Cube can return null
-			subject.sendMessage("Plugin had an error!");
+			log.warning("["+gc.modName+"][Shovel] Got a null block selection");
 			return;
 		}
 		for(Block cur: toChange) {
@@ -126,8 +126,8 @@ public class Shovel extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Click with the "+ChatColor.GOLD+getType()+
-					ChatColor.WHITE+" to make big digs");
+			gc.pl.print(PrintEnum.CMD, sender, "Click with the "+ChatColor.GOLD+
+					getType() + ChatColor.WHITE + " to make big digs");
 			return true;
 		}
 		return false;

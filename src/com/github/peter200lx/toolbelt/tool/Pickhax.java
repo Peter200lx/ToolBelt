@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
+import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Pickhax extends Tool  {
@@ -50,14 +51,16 @@ public class Pickhax extends Tool  {
 			else if(!warningElapsed(subject.getName()))
 				return;
 			else if(range <= 0){
-				subject.sendMessage(ChatColor.RED+"Ranged block removal isn't enabled");
+				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.RED+
+						"Ranged block removal isn't enabled");
 				return;
 			}else if(!hasRangePerm(subject)) {
-				subject.sendMessage(ChatColor.RED+"You don't have ranged delete permission");
+				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.RED+
+						"You don't have ranged delete permission");
 				return;
 			}else {
-				subject.sendMessage(ChatColor.RED+"Sorry, you clicked on air,"+
-						" try crouching for ranged removal");
+				gc.pl.print(PrintEnum.HINT, subject, ChatColor.RED+"Sorry, you clicked "+
+						"on air, try crouching for ranged removal");
 				return;
 			}
 			break;
@@ -65,9 +68,9 @@ public class Pickhax extends Tool  {
 			return;
 		}
 		if(target != null && !noOverwrite(subject,target.getType()) ){
-			if(spawnBuild(target,event.getPlayer())) {
+			if(spawnBuild(target,subject)) {
 				if(isUseEvent()) {
-					if(safeBreak(target,event.getPlayer(),physics))
+					if(safeBreak(target,subject,physics))
 						this.updateUser(subject, target.getLocation(), 0, (byte)0);
 				}else {
 					target.setTypeId(0,physics);
@@ -75,7 +78,7 @@ public class Pickhax extends Tool  {
 				}
 			}
 		}else if((target != null)&&!target.getType().equals(Material.AIR)) {
-			event.getPlayer().sendMessage(ChatColor.RED + "You can't insta-delete "+
+			gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED + "You can't insta-delete "+
 					ChatColor.GOLD+target.getType());
 		}
 	}
@@ -98,7 +101,7 @@ public class Pickhax extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Click with the "+ChatColor.GOLD+getType()+
+			gc.pl.print(PrintEnum.CMD, sender, "Click with the "+ChatColor.GOLD+getType()+
 					ChatColor.WHITE+" to delete a block (Right-click for no-physics)");
 			return true;
 		}

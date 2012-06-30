@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
+import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Chainsaw extends Tool  {
@@ -50,8 +51,7 @@ public class Chainsaw extends Tool  {
 			return;
 		}
 		if(toChange == null) {
-			//Change this message if getSphere/Cube can return null
-			subject.sendMessage("Plugin had an error!");
+			log.warning("["+gc.modName+"][Chainsaw] Got a null block selection");
 			return;
 		}
 		for(Block cur: toChange) {
@@ -105,8 +105,8 @@ public class Chainsaw extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Click with the "+ChatColor.GOLD+getType()+
-					ChatColor.WHITE+" to cut down large chunks of trees");
+			gc.pl.print(PrintEnum.CMD, sender, "Click with the "+ChatColor.GOLD+
+					getType()+ChatColor.WHITE+" to cut down large chunks of trees");
 			return true;
 		}
 		return false;

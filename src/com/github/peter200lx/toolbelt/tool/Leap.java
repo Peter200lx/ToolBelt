@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
+import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.Tool;
 
 public class Leap extends Tool {
@@ -44,8 +45,6 @@ public class Leap extends Tool {
 		Player subject = event.getPlayer();
 		if(!delayElapsed(subject.getName()))
 			return;
-		if(isDebug()) log.info("["+gc.modName+"][leapTool] "+subject.getName()+
-				" " + act.toString()+" with the leap tool");
 		if(act.equals(Action.RIGHT_CLICK_AIR)||act.equals(Action.RIGHT_CLICK_BLOCK)) {
 			//This code block is copied from VoxelAir from FlyRidgeFly
 			// Further modifications by peter200lx
@@ -124,10 +123,10 @@ public class Leap extends Tool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			sender.sendMessage("Right-Click with the "+ChatColor.GOLD+getType()+
-					ChatColor.WHITE+" to make magnificent leaps");
+			gc.pl.print(PrintEnum.CMD, sender, "Right-Click with the "+ChatColor.GOLD+
+					getType()+ChatColor.WHITE+" to make magnificent leaps");
 			if(hasTeleportPerm(sender)&&leapTeleport)
-				sender.sendMessage("Crouch while leaping to teleport");
+				gc.pl.print(PrintEnum.CMD, sender, "Crouch while leaping to teleport");
 			return true;
 		}
 		return false;
