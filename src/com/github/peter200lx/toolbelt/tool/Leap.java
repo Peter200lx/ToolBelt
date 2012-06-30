@@ -100,7 +100,7 @@ public class Leap extends Tool {
 			else
 				subject.setVelocity(new Vector(pX, pY / 2.5D, pZ));
 			if(leapInvuln > 0)
-				pInvuln.put(name, System.currentTimeMillis());
+				pInvuln.put(subject.getName(), System.currentTimeMillis());
 		}
 	}
 
@@ -114,8 +114,11 @@ public class Leap extends Tool {
 	@Override
 	public void handleDamage(EntityDamageEvent event) {
 		if(event.getCause().equals(EntityDamageEvent.DamageCause.FALL)){
-			if((leapInvuln < 0) || pInvuln.containsKey(name) &&
-					(System.currentTimeMillis() <= (pInvuln.get(name)+leapInvuln*1000)))
+			//Safe to cast to Player because catchDamage() in ToolListener has already
+			// verified that the entity in question is a Player
+			String pName = ((Player)event.getEntity()).getName();
+			if((leapInvuln < 0) || pInvuln.containsKey(pName) &&
+					(System.currentTimeMillis() <= (pInvuln.get(pName)+leapInvuln*1000)))
 				event.setCancelled(true);
 		}
 	}
