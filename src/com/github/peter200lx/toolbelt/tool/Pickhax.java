@@ -51,11 +51,11 @@ public class Pickhax extends Tool  {
 			else if(!warningElapsed(subject.getName()))
 				return;
 			else if(range <= 0){
-				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.RED+
+				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
 						"Ranged block removal isn't enabled");
 				return;
 			}else if(!hasRangePerm(subject)) {
-				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.RED+
+				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
 						"You don't have ranged delete permission");
 				return;
 			}else {

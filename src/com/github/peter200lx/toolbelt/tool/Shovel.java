@@ -39,6 +39,8 @@ public class Shovel extends Tool  {
 			return;
 		Block target;
 		List<String> subRanks = gc.ranks.getUserRank(subject);
+		if(subRanks != null) gc.pl.print(PrintEnum.DEBUG, subject,
+				ChatColor.DARK_PURPLE+"Your ranks are: "+ChatColor.GOLD+subRanks);
 		switch(event.getAction()) {
 		case LEFT_CLICK_BLOCK:
 			target = event.getClickedBlock();

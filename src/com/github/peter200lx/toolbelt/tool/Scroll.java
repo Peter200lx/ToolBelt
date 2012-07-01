@@ -53,9 +53,9 @@ public class Scroll extends Tool {
 			Material type = clicked.getType();
 			if(!dataMap.containsKey(type)) {
 				gc.pl.print(PrintEnum.DEBUG, subject, ""+ ChatColor.GOLD + type +
-						ChatColor.RED + " is not supported for scrolling");
+						ChatColor.DARK_PURPLE + " is not supported for scrolling");
 			}else if(noOverwrite(subject, type)) {
-				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.RED +
+				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
 						"You can't overwrite " + ChatColor.GOLD + type);
 			}else {
 				if(subject.getGameMode().equals(GameMode.CREATIVE)	&&
@@ -75,12 +75,12 @@ public class Scroll extends Tool {
 					MaterialData b = clicked.getState().getData();
 					switch (type) {
 					case JUKEBOX:
-						gc.pl.print(PrintEnum.DEBUG, subject, "Data value indicates "+
-								"contained record, can't scroll");
+						gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
+								"Data value indicates contained record, can't scroll");
 						return;
 					case SOIL:
-						gc.pl.print(PrintEnum.DEBUG, subject, "Data value indicates "+
-								"dampness level, can't scroll");
+						gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
+								"Data value indicates dampness level, can't scroll");
 						return;
 					case TORCH:
 					case REDSTONE_TORCH_OFF:
@@ -126,12 +126,13 @@ public class Scroll extends Tool {
 						break;
 					case CHEST:
 						//CHEST can not be safely scrolled because of double chests.
-						gc.pl.print(PrintEnum.DEBUG, subject, type+" is not scrollable");
+						gc.pl.print(PrintEnum.DEBUG, subject, ""+ChatColor.GOLD+type+
+								ChatColor.DARK_PURPLE+" is not scrollable");
 						return;
 					case STONE_PLATE:
 					case WOOD_PLATE:
-						gc.pl.print(PrintEnum.DEBUG, subject, "There is no useful "+
-								"data to scroll");
+						gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
+								"There is no useful data to scroll");
 						return;
 					case STEP:
 						boolean inverted = (data&0x8) == 0x8;
@@ -157,7 +158,8 @@ public class Scroll extends Tool {
 						break;
 					case BED_BLOCK:
 						//TODO More research into modifying foot and head of bed at once
-						gc.pl.print(PrintEnum.DEBUG, subject, type+" is not yet scrollable");
+						gc.pl.print(PrintEnum.DEBUG, subject, ""+ChatColor.GOLD+type+
+								ChatColor.DARK_PURPLE+" is not yet scrollable");
 						return;
 					case DIODE_BLOCK_OFF:
 					case DIODE_BLOCK_ON:
@@ -166,8 +168,8 @@ public class Scroll extends Tool {
 						data |= tick;
 						break;
 					case REDSTONE_WIRE:
-						gc.pl.print(PrintEnum.DEBUG, subject, "There is no useful "+
-								"data to scroll");
+						gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
+								"There is no useful data to scroll");
 						return;
 					case TRAP_DOOR:
 						data = simpScroll(event, (byte)(data&0x03), 4);
@@ -193,11 +195,12 @@ public class Scroll extends Tool {
 							data |= 0x04;
 						break;
 					case BREWING_STAND:
-						gc.pl.print(PrintEnum.DEBUG, subject, "Stand data just is for "+
-								"visual indication of placed glass bottles");
+						gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+"Stand data "+
+								"just is for visual indication of placed glass bottles");
 						return;
 					default:
-						gc.pl.print(PrintEnum.DEBUG, subject, type+" is not yet scrollable");
+						gc.pl.print(PrintEnum.DEBUG, subject, ""+ChatColor.GOLD+ type+
+								ChatColor.DARK_PURPLE+" is not yet scrollable");
 						return;
 					}
 				}

@@ -56,6 +56,8 @@ public class Sledge extends Tool  {
 			return;
 		}
 		List<String> subRanks = gc.ranks.getUserRank(subject);
+		if(subRanks != null) gc.pl.print(PrintEnum.DEBUG, subject,
+				ChatColor.DARK_PURPLE+"Your ranks are: "+ChatColor.GOLD+subRanks);
 		if(!target.getType().equals(Material.AIR) && noOverwrite(subRanks, target.getType())){
 			gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED+"You can't overwrite "+
 					ChatColor.GOLD+target.getType());
