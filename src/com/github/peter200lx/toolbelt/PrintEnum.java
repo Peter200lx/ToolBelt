@@ -1,30 +1,28 @@
 package com.github.peter200lx.toolbelt;
 
-import org.bukkit.command.CommandSender;
-
 public enum PrintEnum {
 
-	CMD(0),
-	IMPORT(1),
-	WARN(2),
-	INFO(3),
-	HINT(4),
-	DEBUG(5);
+	CMD(0,"cmd"),
+	IMPORT(1,"important"),
+	WARN(2,"warning"),
+	INFO(3,"info"),
+	HINT(4,"hint"),
+	DEBUG(5,"debug");
 
-	private PrintEnum(int priority) {
+	private PrintEnum(int priority, String permName) {
 		this.priority = priority;
+		this.permName = permName;
 	}
 
 	private int priority;
+	private String permName;
 
 	public int getPri() {
 		return priority;
 	}
 
-	public void print(PrintEnum pri, CommandSender subject, String message) {
-		if(this.shouldPrint(pri)) {
-			subject.sendMessage(message);
-		}
+	public String getPermName() {
+		return permName;
 	}
 
 	public boolean shouldPrint(PrintEnum pri) {

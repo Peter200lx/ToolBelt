@@ -53,20 +53,20 @@ public class Watch extends Tool  {
 
 		if(!subject.isSneaking()) {
 			subject.setPlayerTime(time-subject.getWorld().getTime(), true);
-			gc.pl.print(PrintEnum.INFO, subject, ChatColor.GREEN +
+			uPrint(PrintEnum.INFO, subject, ChatColor.GREEN +
 					"Your time has been set to " + ChatColor.GOLD + time +
 					ChatColor.GREEN+" (Crouch and click to reset)");
 			pNotSync.add(subject.getName());
 		}else {
 			if(pNotSync.contains(subject.getName())) {
 				subject.resetPlayerTime();
-				gc.pl.print(PrintEnum.INFO, subject, ChatColor.GREEN+
+				uPrint(PrintEnum.INFO, subject, ChatColor.GREEN+
 						"Your time is now synced with the server at "+
 						ChatColor.GOLD+subject.getWorld().getTime());
 				pNotSync.remove(subject.getName());
 			}else if(hasServerPerm(subject)) {
 				subject.getWorld().setTime(time);
-				gc.pl.print(PrintEnum.IMPORT, subject, ChatColor.DARK_GREEN+
+				uPrint(PrintEnum.IMPORT, subject, ChatColor.DARK_GREEN+
 						"Server time has been set to " + ChatColor.GOLD+time);
 			}
 		}
@@ -82,7 +82,7 @@ public class Watch extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			gc.pl.print(PrintEnum.CMD, sender, "Left click with the "+ChatColor.GOLD+
+			uPrint(PrintEnum.CMD, sender, "Left click with the "+ChatColor.GOLD+
 					getType()+ChatColor.WHITE+" to set time to day, right for night");
 			return true;
 		}

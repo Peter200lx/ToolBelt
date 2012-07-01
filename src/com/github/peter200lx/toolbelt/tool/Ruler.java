@@ -44,21 +44,21 @@ public class Ruler extends Tool  {
 		switch(event.getAction()) {
 		case LEFT_CLICK_BLOCK:
 			ptArray[0] = event.getClickedBlock().getLocation();
-			gc.pl.print(PrintEnum.IMPORT, subject, ChatColor.GREEN+
+			uPrint(PrintEnum.IMPORT, subject, ChatColor.GREEN+
 					"Point 0 is now: "+ ChatColor.GOLD+loc2Str(ptArray[0]));
 			break;
 		case RIGHT_CLICK_BLOCK:
 			ptArray[1] = event.getClickedBlock().getLocation();
-			gc.pl.print(PrintEnum.IMPORT, subject, ChatColor.GREEN+
+			uPrint(PrintEnum.IMPORT, subject, ChatColor.GREEN+
 					"Point 1 is now: "+ ChatColor.GOLD+loc2Str(ptArray[1]));
 			break;
 		case LEFT_CLICK_AIR:
 			if(subject.isSneaking()) {
 				ptArray[0] = subject.getTargetBlock(null, 0).getLocation();
-				gc.pl.print(PrintEnum.IMPORT, subject, ChatColor.GREEN+
+				uPrint(PrintEnum.IMPORT, subject, ChatColor.GREEN+
 						"Point 0 is now: "+ ChatColor.GOLD+loc2Str(ptArray[0]));
 			}else {
-				gc.pl.print(PrintEnum.HINT, subject, ChatColor.RED +
+				uPrint(PrintEnum.HINT, subject, ChatColor.RED +
 						"Didn't catch that, try crouching for distance measurement");
 				return;
 			}
@@ -66,10 +66,10 @@ public class Ruler extends Tool  {
 		case RIGHT_CLICK_AIR:
 			if(subject.isSneaking()) {
 				ptArray[1] = subject.getTargetBlock(null, 0).getLocation();
-				gc.pl.print(PrintEnum.IMPORT, subject, ChatColor.GREEN+
+				uPrint(PrintEnum.IMPORT, subject, ChatColor.GREEN+
 						"Point 1 is now: "+ChatColor.GOLD+loc2Str(ptArray[1]));
 			}else {
-				gc.pl.print(PrintEnum.HINT, subject, ChatColor.RED +
+				uPrint(PrintEnum.HINT, subject, ChatColor.RED +
 						"Didn't catch that, try crouching for distance measurement");
 				return;
 			}
@@ -88,25 +88,25 @@ public class Ruler extends Tool  {
 			int vol = widthX * widthY * widthZ;
 			double dist = pt1.distance(pt2);
 			DecimalFormat df = new DecimalFormat("#.##");
-			gc.pl.print(PrintEnum.IMPORT, subject, ChatColor.GREEN+"The width in (x,y,z) is: "+
+			uPrint(PrintEnum.IMPORT, subject, ChatColor.GREEN+"The width in (x,y,z) is: "+
 					ChatColor.GOLD+"("+widthX+","+widthY+","+widthZ+")"+ChatColor.GREEN+
 					" and the total distance: "+ChatColor.GOLD+df.format(dist));
-			gc.pl.print(PrintEnum.IMPORT, subject, ChatColor.GREEN+
+			uPrint(PrintEnum.IMPORT, subject, ChatColor.GREEN+
 					"The volume of the enclosed space is: "+ChatColor.GOLD+vol);
 		}else if((pt1 != null)&&(pt2 != null)) {
 			//tell user worlds are different
 			if(subject.getWorld().equals(pt1.getWorld()))
-				gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED+"Your previous click was out "+
+				uPrint(PrintEnum.WARN, subject, ChatColor.RED+"Your previous click was out "+
 						"of this world, right-click to refresh it");
 			else if(subject.getWorld().equals(pt2.getWorld()))
-				gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED+"Your previous click was out "+
+				uPrint(PrintEnum.WARN, subject, ChatColor.RED+"Your previous click was out "+
 						"of this world, left-click to refresh it");
 		}else if((pt1 != null)&&(pt2 == null)) {
 			//Tell user to right-click
-			gc.pl.print(PrintEnum.HINT, subject, "Now right-click to grab the other point");
+			uPrint(PrintEnum.HINT, subject, "Now right-click to grab the other point");
 		}else if((pt1 == null)&&(pt2 != null)) {
 			//Tell user to left-click
-			gc.pl.print(PrintEnum.HINT, subject, "Now left-click to grab the other point");
+			uPrint(PrintEnum.HINT, subject, "Now left-click to grab the other point");
 		}
 	}
 
@@ -117,7 +117,7 @@ public class Ruler extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			gc.pl.print(PrintEnum.CMD, sender, "Left and right click with the "+ChatColor.GOLD+
+			uPrint(PrintEnum.CMD, sender, "Left and right click with the "+ChatColor.GOLD+
 					getType()+ChatColor.WHITE+" to get distance information (crouch for range)");
 			return true;
 		}

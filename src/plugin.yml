@@ -17,16 +17,32 @@ commands:
            Example: /<command> on|off - Enables or disables ToolBelt tools for the player
 permissions:
     toolbelt.*:
-        description: Gives access to all permissions for toolbelt
-        default: op
-        children:
-            toolbelt.reload: true
-            toolbelt.tool.*: true
-            toolbelt.rank.*: false
+        default: false
+        description: Do not use this (.print. and .ranks. do not like *)
     toolbelt.reload:
+        default: op
         description: Allows the player to reload toolbelt from configuration file.
+    toolbelt.print.*:
+        default: false
+        description: Do not use this. Give any user only one of the sub-permissions.
+    toolbelt.print.debug:
+        default: false
+        description: Print all messages including ones that give debugging information.
+    toolbelt.print.hint:
+        default: false
+        description: Print all quieter messages + hints for using tools.
+    toolbelt.print.info:
+        default: false
+        description: Print all quieter messages + informational notices for tools.
+    toolbelt.print.warning:
+        default: false
+        description: Print all quieter messages + warnings on wrong tool use.
+    toolbelt.print.important:
+        default: false
+        description: Print important messages, such as loaded paint material and such.
     toolbelt.tool.*:
         description: Gives access to the tool specific permissions for toolbelt
+        default: op
         children:
             toolbelt.tool.dupe: true
             toolbelt.tool.scroll: true
@@ -78,6 +94,6 @@ permissions:
     toolbelt.tool.saw:
         description: Allows the player to clear large amounts of (by default) logs, leaves and vines.
     toolbelt.rank.*:
-        description: Optional functionality, read help/Ranks.txt for more information
         default: false
+        description: (Do not use .rank.*) Optional functionality, read help/Ranks.txt for more information
 

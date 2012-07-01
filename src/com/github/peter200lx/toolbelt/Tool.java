@@ -134,6 +134,34 @@ public abstract class Tool implements ToolInterface {
 		host.saveResource("help/"+getToolName()+".txt", true);
 	}
 
+	protected void uPrint(PrintEnum pri, CommandSender subject, String message) {
+		if(gc.perm) {
+			PrintEnum usrLvl = null;
+			int count = 0;
+			for(PrintEnum level: PrintEnum.values()) {
+				if(subject.hasPermission(
+						gc.modName.toLowerCase()+".print."+level.getPermName())) {
+					count++;
+					usrLvl = level;
+				}
+			}
+			if(count > 1) {
+				log.warning("["+gc.modName+"] "+subject.getName()+
+						" has multiple print permissions, using toolbelt.print."+
+						usrLvl.getPermName());
+			}
+			if(usrLvl != null) {
+				if(usrLvl.shouldPrint(pri)) {
+					subject.sendMessage(message);
+				}
+			}else if(gc.pl.shouldPrint(pri)) {
+				subject.sendMessage(message);
+			}
+		}else if(gc.pl.shouldPrint(pri)) {
+			subject.sendMessage(message);
+		}
+	}
+
 	protected boolean spawnBuild(Block target, Player subject) {
 		int spawnSize = gc.server.getSpawnRadius();
 		if (subject.isOp())
@@ -148,7 +176,7 @@ public abstract class Tool implements ToolInterface {
 			if(distanceFromSpawn > spawnSize)
 				return true;
 			else {
-				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
+				uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
 						"You can't build inside spawn protection");
 				return false;
 			}
@@ -161,7 +189,7 @@ public abstract class Tool implements ToolInterface {
 		BlockDamageEvent canDamage = new BlockDamageEvent(subject, target, hand, true);
 		gc.server.getPluginManager().callEvent(canDamage);
 		if(canDamage.isCancelled()) {
-			gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
 					"You can't damage blocks here");
 			return false;
 		}
@@ -172,7 +200,7 @@ public abstract class Tool implements ToolInterface {
 		if(!canBreak.isCancelled())
 			return true;
 		else {
-			gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
 					"You can't break blocks here");
 			return false;
 		}
@@ -185,30 +213,30 @@ public abstract class Tool implements ToolInterface {
 				newInfo.getItemType().equals(Material.SIGN_POST)||
 				newInfo.getItemType().equals(Material.WALL_SIGN)){
 			//LogBlock doesn't catch BlockPlaceEvent's having to do with signs
-			gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
 					"support writing or overwriting "+ChatColor.GOLD+"Signs");
 			return false;
 		}else if(oldInfo.getType().equals(newInfo.getItemType()))
 			old.setData(newInfo.getData(), false);
 		else if(oldInfo instanceof InventoryHolder) {
-			gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
 					"support overwriting "+ChatColor.GOLD+"Container Blocks");
 			return false;
 		}else if(oldInfo.getType().equals(Material.SIGN_POST)||
 				oldInfo.getType().equals(Material.WALL_SIGN) ){
-			gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
 					"support overwriting "+ChatColor.GOLD+"Signs");
 			return false;
 		}else if(oldInfo.getType().equals(Material.NOTE_BLOCK)) {
-			gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
 					"support overwriting "+ChatColor.GOLD+"NoteBlocks");
 			return false;
 		}else if(oldInfo.getType().equals(Material.JUKEBOX)) {
-			gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
 					"support overwriting "+ChatColor.GOLD+"Jukeboxs");
 			return false;
 		}else if(oldInfo.getType().equals(Material.MOB_SPAWNER)) {
-			gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
 					"support overwriting "+ChatColor.GOLD+"CreatureSpawners");
 			return false;
 		}else
@@ -225,7 +253,7 @@ public abstract class Tool implements ToolInterface {
 		if(!canPlace.isCancelled())
 			return true;
 		else {
-			gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
 					"You can't place/replace blocks here");
 			return false;
 		}
@@ -233,7 +261,7 @@ public abstract class Tool implements ToolInterface {
 
 	protected boolean noCopy(Player subject, Material type) {
 		List<String> ranks = gc.ranks.getUserRank(subject);
-		if(ranks != null)gc.pl.print(PrintEnum.DEBUG, subject,ChatColor.DARK_PURPLE+
+		if(ranks != null) uPrint(PrintEnum.DEBUG, subject,ChatColor.DARK_PURPLE+
 				"Your ranks are: "+ChatColor.GOLD+ranks);
 		return noCopy(ranks, type);
 	}
@@ -245,7 +273,7 @@ public abstract class Tool implements ToolInterface {
 
 	protected boolean noOverwrite(Player subject, Material type) {
 		List<String> ranks = gc.ranks.getUserRank(subject);
-		if(ranks != null) gc.pl.print(PrintEnum.DEBUG, subject,ChatColor.DARK_PURPLE+
+		if(ranks != null) uPrint(PrintEnum.DEBUG, subject,ChatColor.DARK_PURPLE+
 				"Your ranks are: "+ChatColor.GOLD+ranks);
 		return noOverwrite(ranks,type);
 	}

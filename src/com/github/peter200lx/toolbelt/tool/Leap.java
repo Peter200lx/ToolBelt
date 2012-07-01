@@ -114,14 +114,14 @@ public class Leap extends Tool {
 						pInvuln.put(subject.getName(), System.currentTimeMillis());
 					if(pFlight.contains(subject.getName())) {
 						subject.setAllowFlight(false);
-						gc.pl.print(PrintEnum.INFO, subject, "Creative mode flying disabled");
+						uPrint(PrintEnum.INFO, subject, "Creative mode flying disabled");
 						pFlight.remove(subject.getName());
 					}
 				}else {
 					if(!subject.getAllowFlight()) {
 						pFlight.add(subject.getName());
 						subject.setAllowFlight(true);
-						gc.pl.print(PrintEnum.INFO, subject, "Creative mode flying enabled");
+						uPrint(PrintEnum.INFO, subject, "Creative mode flying enabled");
 					}
 					subject.setFlying(true);
 				}
@@ -158,10 +158,10 @@ public class Leap extends Tool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			gc.pl.print(PrintEnum.CMD, sender, "Right-Click with the "+ChatColor.GOLD+
+			uPrint(PrintEnum.CMD, sender, "Right-Click with the "+ChatColor.GOLD+
 					getType()+ChatColor.WHITE+" to make magnificent leaps");
 			if(hasTeleportPerm(sender)&&leapTeleport)
-				gc.pl.print(PrintEnum.CMD, sender, "Crouch while leaping to teleport");
+				uPrint(PrintEnum.CMD, sender, "Crouch while leaping to teleport");
 			return true;
 		}
 		return false;

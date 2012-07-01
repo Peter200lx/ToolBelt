@@ -55,7 +55,7 @@ public class Paint extends Tool  {
 				if(subject.getGameMode().equals(GameMode.CREATIVE)      &&(
 						mdTarget.getItemType().equals(Material.SIGN_POST) ||
 						mdTarget.getItemType().equals(Material.WALL_SIGN))){
-					gc.pl.print(PrintEnum.WARN, subject, "The sign is not erased on "
+					uPrint(PrintEnum.WARN, subject, "The sign is not erased on "
 							+"the server, it is just client side");
 				}
 			}else
@@ -63,11 +63,11 @@ public class Paint extends Tool  {
 			if(!noCopy(subject,mdTarget.getItemType())){
 				pPalette.get(subject.getName()).put(
 						subject.getInventory().getHeldItemSlot(), mdTarget );
-				gc.pl.print(PrintEnum.IMPORT, subject, paintFormat("Paint is now ",mdTarget));
+				uPrint(PrintEnum.IMPORT, subject, paintFormat("Paint is now ",mdTarget));
 			} else {
 				MaterialData old = pPalette.get(subject.getName()).get(
 						subject.getInventory().getHeldItemSlot());
-				gc.pl.print(PrintEnum.IMPORT, subject, ChatColor.RED + "No paint aquired, "+
+				uPrint(PrintEnum.IMPORT, subject, ChatColor.RED + "No paint aquired, "+
 						paintFormat("paint is still ",old));
 			}
 			break;
@@ -102,9 +102,9 @@ public class Paint extends Tool  {
 					}
 				}else if(bTarget != null) {
 					if(bTarget.getType().equals(Material.AIR)) {
-						gc.pl.print(PrintEnum.HINT, subject, ChatColor.RED+"Target out of range");
+						uPrint(PrintEnum.HINT, subject, ChatColor.RED+"Target out of range");
 					}else {
-						gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED +
+						uPrint(PrintEnum.WARN, subject, ChatColor.RED +
 								"You can't overwrite "+ ChatColor.GOLD+bTarget.getType());
 					}
 				}
@@ -140,23 +140,23 @@ public class Paint extends Tool  {
 		if(pPalette.containsKey(subject.getName())				&&
 				(pPalette.get(subject.getName()).size() > 1)	){
 			MaterialData c = pPalette.get(subject.getName()).get(event.getNewSlot());
-			gc.pl.print(PrintEnum.IMPORT, subject, paintFormat("Paint in this slot is ",c));
+			uPrint(PrintEnum.IMPORT, subject, paintFormat("Paint in this slot is ",c));
 		}
 	}
 
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			gc.pl.print(PrintEnum.CMD, sender, "Left-click with the "+ChatColor.GOLD+
+			uPrint(PrintEnum.CMD, sender, "Left-click with the "+ChatColor.GOLD+
 					getType()+ChatColor.WHITE+" to load a block");
-			gc.pl.print(PrintEnum.CMD, sender, "Right-click with the "+ChatColor.GOLD+
+			uPrint(PrintEnum.CMD, sender, "Right-click with the "+ChatColor.GOLD+
 					getType()+ChatColor.WHITE+" to paint the loaded block");
 			if(hasRangePerm(sender)) {
 				if(rangeDef > 0)
-					gc.pl.print(PrintEnum.CMD, sender, "Be careful, you can paint at a "+
+					uPrint(PrintEnum.CMD, sender, "Be careful, you can paint at a "+
 							"range of up to "+rangeDef+" blocks.");
 				if(rangeCrouch > 0)
-					gc.pl.print(PrintEnum.CMD, sender, "If you crouch, you can paint at a "+
+					uPrint(PrintEnum.CMD, sender, "If you crouch, you can paint at a "+
 							"range of "+rangeCrouch);
 			}
 			return true;

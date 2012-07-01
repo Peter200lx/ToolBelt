@@ -47,7 +47,7 @@ public class Example extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			gc.pl.print(PrintEnum.CMD, sender, "(Right-,Left-,)Click with the "+ChatColor.GOLD+
+			uPrint(PrintEnum.CMD, sender, "(Right-,Left-,)Click with the "+ChatColor.GOLD+
 					getType()+ChatColor.WHITE+" to (description of tool action)");
 			//Also add any special case messages here
 			return true;

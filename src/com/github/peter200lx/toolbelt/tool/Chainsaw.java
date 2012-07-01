@@ -38,7 +38,7 @@ public class Chainsaw extends Tool  {
 			return;
 		Block target;
 		List<String> subRanks = gc.ranks.getUserRank(subject);
-		if(subRanks != null) gc.pl.print(PrintEnum.DEBUG, subject,
+		if(subRanks != null) uPrint(PrintEnum.DEBUG, subject,
 				ChatColor.DARK_PURPLE+"Your ranks are: "+ChatColor.GOLD+subRanks);
 		switch(event.getAction()) {
 		case LEFT_CLICK_BLOCK:
@@ -107,7 +107,7 @@ public class Chainsaw extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			gc.pl.print(PrintEnum.CMD, sender, "Click with the "+ChatColor.GOLD+
+			uPrint(PrintEnum.CMD, sender, "Click with the "+ChatColor.GOLD+
 					getType()+ChatColor.WHITE+" to cut down large chunks of trees");
 			return true;
 		}

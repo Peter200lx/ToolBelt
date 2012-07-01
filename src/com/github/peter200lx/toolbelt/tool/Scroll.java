@@ -52,17 +52,17 @@ public class Scroll extends Tool {
 			Block clicked = event.getClickedBlock();
 			Material type = clicked.getType();
 			if(!dataMap.containsKey(type)) {
-				gc.pl.print(PrintEnum.DEBUG, subject, ""+ ChatColor.GOLD + type +
+				uPrint(PrintEnum.DEBUG, subject, ""+ ChatColor.GOLD + type +
 						ChatColor.DARK_PURPLE + " is not supported for scrolling");
 			}else if(noOverwrite(subject, type)) {
-				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
+				uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
 						"You can't overwrite " + ChatColor.GOLD + type);
 			}else {
 				if(subject.getGameMode().equals(GameMode.CREATIVE)	&&
 						act.equals(Action.LEFT_CLICK_BLOCK)			&&(
 						type.equals(Material.SIGN_POST)				||
 						type.equals(Material.WALL_SIGN)			)	){
-					gc.pl.print(PrintEnum.WARN, subject, "The sign is not erased on "+
+					uPrint(PrintEnum.WARN, subject, "The sign is not erased on "+
 							"the server, it is just client side");
 				}
 
@@ -75,11 +75,11 @@ public class Scroll extends Tool {
 					MaterialData b = clicked.getState().getData();
 					switch (type) {
 					case JUKEBOX:
-						gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
+						uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
 								"Data value indicates contained record, can't scroll");
 						return;
 					case SOIL:
-						gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
+						uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
 								"Data value indicates dampness level, can't scroll");
 						return;
 					case TORCH:
@@ -105,14 +105,14 @@ public class Scroll extends Tool {
 					case WOODEN_DOOR:
 					case IRON_DOOR_BLOCK:
 						if(((Door)b).isTopHalf()) {
-							gc.pl.print(PrintEnum.INFO, subject, "Clicking the top "+
+							uPrint(PrintEnum.INFO, subject, "Clicking the top "+
 									"half of a door can't scroll the rotation corner.");
 							return;
 						}
 						data = simpScroll(event,(byte)(data&0x07),4);
 						if(((Door)b).isOpen())
 							data |= 0x04;
-						gc.pl.print(PrintEnum.HINT, subject, "Top door half now looks "+
+						uPrint(PrintEnum.HINT, subject, "Top door half now looks "+
 								"funny, open/close door to fix");
 						break;
 					case STONE_BUTTON:
@@ -126,12 +126,12 @@ public class Scroll extends Tool {
 						break;
 					case CHEST:
 						//CHEST can not be safely scrolled because of double chests.
-						gc.pl.print(PrintEnum.DEBUG, subject, ""+ChatColor.GOLD+type+
+						uPrint(PrintEnum.DEBUG, subject, ""+ChatColor.GOLD+type+
 								ChatColor.DARK_PURPLE+" is not scrollable");
 						return;
 					case STONE_PLATE:
 					case WOOD_PLATE:
-						gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
+						uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
 								"There is no useful data to scroll");
 						return;
 					case STEP:
@@ -158,7 +158,7 @@ public class Scroll extends Tool {
 						break;
 					case BED_BLOCK:
 						//TODO More research into modifying foot and head of bed at once
-						gc.pl.print(PrintEnum.DEBUG, subject, ""+ChatColor.GOLD+type+
+						uPrint(PrintEnum.DEBUG, subject, ""+ChatColor.GOLD+type+
 								ChatColor.DARK_PURPLE+" is not yet scrollable");
 						return;
 					case DIODE_BLOCK_OFF:
@@ -168,7 +168,7 @@ public class Scroll extends Tool {
 						data |= tick;
 						break;
 					case REDSTONE_WIRE:
-						gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
+						uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
 								"There is no useful data to scroll");
 						return;
 					case TRAP_DOOR:
@@ -179,14 +179,14 @@ public class Scroll extends Tool {
 					case PISTON_BASE:
 					case PISTON_STICKY_BASE:
 						if(((PistonBaseMaterial)b).isPowered()) {
-							gc.pl.print(PrintEnum.INFO, subject, "The piston will not "+
+							uPrint(PrintEnum.INFO, subject, "The piston will not "+
 									"be scrolled while extended");
 							return;
 						}
 						data = simpScroll(event, (byte)(data&0x07), 6);
 						break;
 					case PISTON_EXTENSION:
-						gc.pl.print(PrintEnum.HINT, subject, "The piston extension should "+
+						uPrint(PrintEnum.HINT, subject, "The piston extension should "+
 								"not be scrolled");
 						return;
 					case FENCE_GATE:
@@ -195,11 +195,11 @@ public class Scroll extends Tool {
 							data |= 0x04;
 						break;
 					case BREWING_STAND:
-						gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+"Stand data "+
+						uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+"Stand data "+
 								"just is for visual indication of placed glass bottles");
 						return;
 					default:
-						gc.pl.print(PrintEnum.DEBUG, subject, ""+ChatColor.GOLD+ type+
+						uPrint(PrintEnum.DEBUG, subject, ""+ChatColor.GOLD+ type+
 								ChatColor.DARK_PURPLE+" is not yet scrollable");
 						return;
 					}
@@ -211,14 +211,14 @@ public class Scroll extends Tool {
 					if(isUseEvent()) {
 						if(safeReplace(newInfo,clicked,subject,true)) {
 							this.updateUser(subject, clicked.getLocation(), type, data);
-							gc.pl.print(PrintEnum.INFO, subject, ChatColor.GREEN +
+							uPrint(PrintEnum.INFO, subject, ChatColor.GREEN +
 									"Block is now " + ChatColor.GOLD +type+ ChatColor.WHITE +":"+
 									ChatColor.BLUE + data2Str(clicked.getState().getData()));
 						}
 					}else {
 						clicked.setData(data, false);
 						this.updateUser(subject, clicked.getLocation(), type, data);
-						gc.pl.print(PrintEnum.INFO, subject, ChatColor.GREEN + "Block is now " +
+						uPrint(PrintEnum.INFO, subject, ChatColor.GREEN + "Block is now " +
 								ChatColor.GOLD + type + ChatColor.WHITE + ":" +
 								ChatColor.BLUE + data2Str(clicked.getState().getData()));
 					}
@@ -249,7 +249,7 @@ public class Scroll extends Tool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			gc.pl.print(PrintEnum.CMD, sender, "Click with the "+ChatColor.GOLD+
+			uPrint(PrintEnum.CMD, sender, "Click with the "+ChatColor.GOLD+
 					getType()+ChatColor.WHITE+" to change a block's data value");
 			return true;
 		}

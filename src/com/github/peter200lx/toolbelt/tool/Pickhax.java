@@ -51,15 +51,15 @@ public class Pickhax extends Tool  {
 			else if(!warningElapsed(subject.getName()))
 				return;
 			else if(range <= 0){
-				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
+				uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
 						"Ranged block removal isn't enabled");
 				return;
 			}else if(!hasRangePerm(subject)) {
-				gc.pl.print(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
+				uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE+
 						"You don't have ranged delete permission");
 				return;
 			}else {
-				gc.pl.print(PrintEnum.HINT, subject, ChatColor.RED+"Sorry, you clicked "+
+				uPrint(PrintEnum.HINT, subject, ChatColor.RED+"Sorry, you clicked "+
 						"on air, try crouching for ranged removal");
 				return;
 			}
@@ -78,7 +78,7 @@ public class Pickhax extends Tool  {
 				}
 			}
 		}else if((target != null)&&!target.getType().equals(Material.AIR)) {
-			gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED + "You can't insta-delete "+
+			uPrint(PrintEnum.WARN, subject, ChatColor.RED + "You can't insta-delete "+
 					ChatColor.GOLD+target.getType());
 		}
 	}
@@ -101,7 +101,7 @@ public class Pickhax extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			gc.pl.print(PrintEnum.CMD, sender, "Click with the "+ChatColor.GOLD+getType()+
+			uPrint(PrintEnum.CMD, sender, "Click with the "+ChatColor.GOLD+getType()+
 					ChatColor.WHITE+" to delete a block (Right-click for no-physics)");
 			return true;
 		}

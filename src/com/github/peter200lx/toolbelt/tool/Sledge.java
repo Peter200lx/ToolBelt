@@ -50,26 +50,26 @@ public class Sledge extends Tool  {
 			break;
 		case LEFT_CLICK_AIR:
 		case RIGHT_CLICK_AIR:
-			gc.pl.print(PrintEnum.HINT, subject, ChatColor.RED +
+			uPrint(PrintEnum.HINT, subject, ChatColor.RED +
 					"Didn't catch that, you need to click on a block.");
 		default:
 			return;
 		}
 		List<String> subRanks = gc.ranks.getUserRank(subject);
-		if(subRanks != null) gc.pl.print(PrintEnum.DEBUG, subject,
+		if(subRanks != null) uPrint(PrintEnum.DEBUG, subject,
 				ChatColor.DARK_PURPLE+"Your ranks are: "+ChatColor.GOLD+subRanks);
 		if(!target.getType().equals(Material.AIR) && noOverwrite(subRanks, target.getType())){
-			gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED+"You can't overwrite "+
+			uPrint(PrintEnum.WARN, subject, ChatColor.RED+"You can't overwrite "+
 					ChatColor.GOLD+target.getType());
 			return;
 		}
 		if(!subject.isSneaking()&&!target.getType().equals(Material.AIR)){
-			gc.pl.print(PrintEnum.HINT, subject, ChatColor.RED+
+			uPrint(PrintEnum.HINT, subject, ChatColor.RED+
 					"Can't move into a non-air block without crouching.");
 			return;
 		}
 		if(noCopy(subRanks, clicked.getType()) ){
-			gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED+
+			uPrint(PrintEnum.WARN, subject, ChatColor.RED+
 					"You can't move "+ChatColor.GOLD+clicked.getType());
 			return;
 		}
@@ -94,9 +94,9 @@ public class Sledge extends Tool  {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			gc.pl.print(PrintEnum.CMD, sender, "left/right click with the "+ChatColor.GOLD+
+			uPrint(PrintEnum.CMD, sender, "left/right click with the "+ChatColor.GOLD+
 					getType() + ChatColor.WHITE + " to push or pull blocks");
-			gc.pl.print(PrintEnum.HINT, sender, "Crouch to push or pull into more then just air");
+			uPrint(PrintEnum.HINT, sender, "Crouch to push or pull into more then just air");
 			return true;
 		}
 		return false;

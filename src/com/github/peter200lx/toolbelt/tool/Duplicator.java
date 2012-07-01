@@ -51,7 +51,7 @@ public class Duplicator extends Tool {
 			if(toUse == null)
 				toUse = type;
 			if(toUse == Material.AIR) {
-				gc.pl.print(PrintEnum.WARN, subject, ChatColor.RED + "Duplicating " +
+				uPrint(PrintEnum.WARN, subject, ChatColor.RED + "Duplicating " +
 						ChatColor.GOLD + type.toString()+ ChatColor.RED + " is disabled");
 				return;
 			}
@@ -73,11 +73,11 @@ public class Duplicator extends Tool {
 			subject.updateInventory();
 			if(printData.contains(toUse))
 			{
-				gc.pl.print(PrintEnum.INFO, subject, ChatColor.GREEN + "Enjoy your " +
+				uPrint(PrintEnum.INFO, subject, ChatColor.GREEN + "Enjoy your " +
 						ChatColor.GOLD + toUse.toString() + ChatColor.WHITE + ":" +
 						ChatColor.BLUE + data2Str(clicked.getState().getData()));
 			} else {
-				gc.pl.print(PrintEnum.INFO, subject, ChatColor.GREEN + "Enjoy your " +
+				uPrint(PrintEnum.INFO, subject, ChatColor.GREEN + "Enjoy your " +
 						ChatColor.GOLD + toUse.toString());
 			}
 		}
@@ -86,7 +86,7 @@ public class Duplicator extends Tool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if(hasPerm(sender)) {
-			gc.pl.print(PrintEnum.CMD, sender, "Right-click with the "+ChatColor.GOLD+
+			uPrint(PrintEnum.CMD, sender, "Right-click with the "+ChatColor.GOLD+
 					getType()+ChatColor.WHITE+" to duplicate the item selected");
 			return true;
 		}
