@@ -12,7 +12,8 @@ import org.bukkit.entity.Player;
 
 public class Ranks {
 
-	public Ranks(ConfigurationSection sect) {
+	public Ranks(ConfigurationSection sect, String modName) {
+		prefix = modName.toLowerCase()+".rank.";
 		entryPoints = new LinkedList<RankNode>();
 		if(sect == null)
 			return;
@@ -53,9 +54,13 @@ public class Ranks {
 
 	private final String global = "unranked";
 	private final String fbName = "fallback";
-	private final String prefix = "toolbelt.rank.";
+	private final String prefix;
 
 	private List<RankNode> entryPoints;
+
+	public String getPrefix() {
+		return prefix;
+	}
 
 	public List<String> getUserRank(Player user) {
 		if(entryPoints.isEmpty()) {

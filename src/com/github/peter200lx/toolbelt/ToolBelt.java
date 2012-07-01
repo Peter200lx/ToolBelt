@@ -19,6 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -191,7 +192,7 @@ public class ToolBelt extends JavaPlugin {
 		//Check and load the Ranks object
 		Ranks ranks = null;
 		try {
-			ranks = new Ranks(permissions?conf.getConfigurationSection("ranksDef"):null);
+			ranks = new Ranks(permissions?conf.getConfigurationSection("ranksDef"):null,cName);
 		}catch (RuntimeException e) {
 			log.warning(e.getMessage());
 			return false;
@@ -199,6 +200,13 @@ public class ToolBelt extends JavaPlugin {
 		if(debug) {
 			log.info( "["+cName+"][loadConf] Below is a listing of the defined ranks");
 			ranks.printRanks(log);
+		}
+		for(String rank:ranks.getRanks()) {
+			if(getServer().getPluginManager().getPermission(ranks.getPrefix()+rank) == null) {
+				getServer().getPluginManager().addPermission(
+						new Permission(ranks.getPrefix()+rank,
+								"auto-gen rank perm: "+rank,PermissionDefault.FALSE));
+			}
 		}
 
 		//Check and load the user print level from config
@@ -347,7 +355,7 @@ public class ToolBelt extends JavaPlugin {
 		}
 
 		//Create a help/Permissions.txt file listing all permissions from plugin.yml
-		printPerm("help/Permissions.txt");
+		printPerm("help/Permissions.txt", gc.ranks);
 
 		//Create a help/Commands.txt file listing all commands from plugin.yml
 		printCommands("help/Commands.txt");
@@ -360,7 +368,7 @@ public class ToolBelt extends JavaPlugin {
 		return true;
 	}
 
-	private boolean printPerm(String outName) {
+	private boolean printPerm(String outName, Ranks ranks) {
 		List<Permission> perms = this.getDescription().getPermissions();
 		File outFile = new File(this.getDataFolder(), outName);
 		try {
@@ -388,6 +396,11 @@ public class ToolBelt extends JavaPlugin {
 								child.getValue()+"\n");
 					}
 				}
+			}
+			for(String rank: ranks.getRanks()) {
+				Permission perm = this.getServer().getPluginManager().getPermission(
+						ranks.getPrefix()+rank);
+				out.write(perm.getName()+"\n\t"+perm.getDescription()+"\n");
 			}
 			out.close();
 		} catch (IOException e) {
