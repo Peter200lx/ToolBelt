@@ -3,36 +3,42 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.peter200lx</groupId>
+  <groupId>com.github.peter200lx.toolbelt</groupId>
   <artifactId>toolbelt</artifactId>
   <packaging>jar</packaging>
 
-  <version>0.3</version>
+  <version>0.4</version>
   <name>ToolBelt</name>
   <description>Go armed out into the world with an assortment of gizmos at your side.</description>
   <url>http://dev.bukkit.org/server-mods/toolbelt/</url>
 
-    <issueManagement>
-      <url>https://github.com/peter200lx/toolbelt/issues</url>
-      <system>GitHub Issues</system>
-    </issueManagement>
+  <issueManagement>
+    <url>https://github.com/peter200lx/toolbelt/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <scm>
+    <connection>scm:git:git://github.com/Peter200lx/ToolBelt.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:Peter200lx/ToolBelt.git</developerConnection>
+    <url>https://github.com/Peter200lx/ToolBelt</url>
+  </scm>
+
   <repositories>
-   <repository>
+    <repository>
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/groups/public</url>
-   </repository>   
+    </repository>
   </repositories>
 
   <dependencies>
     <dependency>
-      <artifactId>bukkit</artifactId>
       <groupId>org.bukkit</groupId>
-      <version>1.2.5-R3.1-SNAPSHOT</version>
+      <artifactId>bukkit</artifactId>
+      <version>1.2.5-R4.0</version>
     </dependency>
   </dependencies>
 
