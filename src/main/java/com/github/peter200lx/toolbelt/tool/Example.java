@@ -21,8 +21,16 @@ import com.github.peter200lx.toolbelt.Tool;
 // the loadConf() function.
 //Put the following line (without the //) after the last similar line
 //available.put(Example.name, new Example(gc));
+/**
+ * A basic tool definition provided to assist others to build tools.
+ */
 public class Example extends Tool  {
 
+	/**
+	 * Pass the global config object into Tool's constructor.
+	 *
+	 * @param gc GlobalConf structure holds static configuration from plugin
+	 */
 	public Example(GlobalConf gc) {
 		super(gc);
 		// You shouldn't need to add anything here. However if you have
@@ -30,25 +38,28 @@ public class Example extends Tool  {
 		//  you can put that logic here.
 	}
 
-	//This is the string used for the config.yml and plugin.yml files
-	public static String name = "unique_lowercase_name";
+	/**
+	 * This is the string used for the config.yml and plugin.yml files.
+	 */
+	public static final String name = "unique_lowercase_name";
 
 	@Override
-	public String getToolName() {
+	public final String getToolName() {
 		return name;
 	}
 
 	@Override
-	public void handleInteract(PlayerInteractEvent event){
+	public final void handleInteract(PlayerInteractEvent event) {
 		//Handle left and right clicks in here
 		// This is where the main logic of your tool should go
 	}
 
 	@Override
-	public boolean printUse(CommandSender sender) {
-		if(hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "(Right-,Left-,)Click with the "+ChatColor.GOLD+
-					getType()+ChatColor.WHITE+" to (description of tool action)");
+	public final boolean printUse(CommandSender sender) {
+		if (hasPerm(sender)) {
+			uPrint(PrintEnum.CMD, sender, "(Right-,Left-,)Click with the "
+					+ ChatColor.GOLD + getType() + ChatColor.WHITE
+					+ " to (description of tool action)");
 			//Also add any special case messages here
 			return true;
 		}
@@ -56,7 +67,7 @@ public class Example extends Tool  {
 	}
 
 	@Override
-	public boolean loadConf(String tSet, FileConfiguration conf) {
+	public final boolean loadConf(String tSet, FileConfiguration conf) {
 		//There only needs to be logic in here if you have tool specific
 		// data you want to load. This function should always be present.
 		//This function should return true if all data loaded successfully
