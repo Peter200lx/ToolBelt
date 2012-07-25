@@ -45,13 +45,15 @@ public class Leap extends Tool {
 	}
 
 	@Override
-	public void handleInteract(PlayerInteractEvent event){
+	public void handleInteract(PlayerInteractEvent event) {
 		Action act = event.getAction();
 		Player subject = event.getPlayer();
-		if(!delayElapsed(subject.getName()))
+		if (!delayElapsed(subject.getName())) {
 			return;
-		if(act.equals(Action.RIGHT_CLICK_AIR)||act.equals(Action.RIGHT_CLICK_BLOCK)) {
-			//This code block is copied from VoxelAir from FlyRidgeFly
+		}
+		if (act.equals(Action.RIGHT_CLICK_AIR)
+				|| act.equals(Action.RIGHT_CLICK_BLOCK)) {
+			// This code block is copied from VoxelAir from FlyRidgeFly
 			// Further modifications by peter200lx
 			double cProt = subject.getLocation().getYaw() % 360.0F;
 			if (cProt > 0.0D) {
@@ -66,14 +68,14 @@ public class Leap extends Tool {
 			if ((pPit < 21.0D) && (pPit > -21.0D)) {
 				pX = Math.sin(Math.toRadians(pRot)) * 10.0D;
 				pZ = Math.cos(Math.toRadians(pRot)) * 10.0D;
-				if (subject.getLocation().getY() < leapCruise)
+				if (subject.getLocation().getY() < leapCruise) {
 					pY = 2.5D;
-				else if (subject.getLocation().getY() <= leapCruise + 5)
+				} else if (subject.getLocation().getY() <= leapCruise + 5) {
 					pY = 1.0D;
-				else
+				} else {
 					pY = 0.0D;
-			}
-			else {
+				}
+			} else {
 				if (pPit < 0.0D) {
 					pY = Math.sin(Math.toRadians(Math.abs(pPit))) * 10.0D;
 					pyY = Math.cos(Math.toRadians(Math.abs(pPit))) * 10.0D;
@@ -97,31 +99,41 @@ public class Leap extends Tool {
 					pZ = 0.0D;
 				}
 			}
-			if (subject.isSneaking() && leapTeleport && (hasTeleportPerm(subject)))
+			if (subject.isSneaking() && leapTeleport
+					&& (hasTeleportPerm(subject))) {
 				subject.teleport(new Location(subject.getWorld(),
-						subject.getLocation().getX() + pX, subject.getLocation().getY() + pY,
+						subject.getLocation().getX() + pX,
+						subject.getLocation().getY() + pY,
 						subject.getLocation().getZ() + pZ,
-						subject.getLocation().getYaw(), subject.getLocation().getPitch()));
-			else
+						subject.getLocation().getYaw(),
+						subject.getLocation().getPitch()));
+			} else {
 				subject.setVelocity(new Vector(pX, pY / 2.5D, pZ));
-			if(leapInvuln > 0)
+			}
+			if (leapInvuln > 0) {
 				pInvuln.put(subject.getName(), System.currentTimeMillis());
-		}else if(act.equals(Action.LEFT_CLICK_AIR)||act.equals(Action.LEFT_CLICK_BLOCK)) {
-			if(leapFly && hasCFlyPerm(subject)) {
-				if(subject.isFlying()) {
+			}
+		} else if (act.equals(Action.LEFT_CLICK_AIR)
+				|| act.equals(Action.LEFT_CLICK_BLOCK)) {
+			if (leapFly && hasCFlyPerm(subject)) {
+				if (subject.isFlying()) {
 					subject.setFlying(false);
-					if(leapInvuln > 0)
-						pInvuln.put(subject.getName(), System.currentTimeMillis());
-					if(pFlight.contains(subject.getName())) {
+					if (leapInvuln > 0) {
+						pInvuln.put(subject.getName(),
+								System.currentTimeMillis());
+					}
+					if (pFlight.contains(subject.getName())) {
 						subject.setAllowFlight(false);
-						uPrint(PrintEnum.INFO, subject, "Creative mode flying disabled");
+						uPrint(PrintEnum.INFO, subject,
+								"Creative mode flying disabled");
 						pFlight.remove(subject.getName());
 					}
-				}else {
-					if(!subject.getAllowFlight()) {
+				} else {
+					if (!subject.getAllowFlight()) {
 						pFlight.add(subject.getName());
 						subject.setAllowFlight(true);
-						uPrint(PrintEnum.INFO, subject, "Creative mode flying enabled");
+						uPrint(PrintEnum.INFO, subject,
+								"Creative mode flying enabled");
 					}
 					subject.setFlying(true);
 				}
@@ -129,39 +141,46 @@ public class Leap extends Tool {
 		}
 	}
 
-	private boolean hasTeleportPerm (CommandSender subject) {
-		if(gc.perm)
-			return subject.hasPermission(getPermStr()+".tel");
-		else
+	private boolean hasTeleportPerm(CommandSender subject) {
+		if (gc.perm) {
+			return subject.hasPermission(getPermStr() + ".tel");
+		} else {
 			return true;
+		}
 	}
 
-	private boolean hasCFlyPerm (CommandSender subject) {
-		if(gc.perm)
-			return subject.hasPermission(getPermStr()+".fly");
-		else
+	private boolean hasCFlyPerm(CommandSender subject) {
+		if (gc.perm) {
+			return subject.hasPermission(getPermStr() + ".fly");
+		} else {
 			return true;
+		}
 	}
 
 	@Override
 	public void handleDamage(EntityDamageEvent event) {
-		if(event.getCause().equals(EntityDamageEvent.DamageCause.FALL)){
-			//Safe to cast to Player because catchDamage() in ToolListener has already
-			// verified that the entity in question is a Player
-			String pName = ((Player)event.getEntity()).getName();
-			if((leapInvuln < 0) || pInvuln.containsKey(pName) &&
-					(System.currentTimeMillis() <= (pInvuln.get(pName)+leapInvuln*1000)))
+		if (event.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
+			// Safe to cast to Player because catchDamage() in ToolListener has
+			// already verified that the entity in question is a Player
+			String pName = ((Player) event.getEntity()).getName();
+			if ((leapInvuln < 0) || pInvuln.containsKey(pName)
+					&& (System.currentTimeMillis()
+							<= (pInvuln.get(pName) + leapInvuln * 1000))) {
 				event.setCancelled(true);
+			}
 		}
 	}
 
 	@Override
 	public boolean printUse(CommandSender sender) {
-		if(hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Right-Click with the "+ChatColor.GOLD+
-					getType()+ChatColor.WHITE+" to make magnificent leaps");
-			if(hasTeleportPerm(sender)&&leapTeleport)
-				uPrint(PrintEnum.CMD, sender, "Crouch while leaping to teleport");
+		if (hasPerm(sender)) {
+			uPrint(PrintEnum.CMD, sender, "Right-Click with the "
+					+ ChatColor.GOLD + getType() + ChatColor.WHITE
+					+ " to make magnificent leaps");
+			if (hasTeleportPerm(sender) && leapTeleport) {
+				uPrint(PrintEnum.CMD, sender,
+						"Crouch while leaping to teleport");
+			}
 			return true;
 		}
 		return false;
@@ -170,29 +189,41 @@ public class Leap extends Tool {
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
 
-		//Load the repeat delay
-		if(!loadRepeatDelay(tSet,conf,0))
+		// Load the repeat delay
+		if (!loadRepeatDelay(tSet, conf, 0)) {
 			return false;
+		}
 
-		leapTeleport = conf.getBoolean(tSet+"."+name+".teleport", false);
-		if(isDebug())
-			log.info("["+gc.modName+"][loadConf] Teleport leaping is set to "+leapTeleport);
-		leapFly = conf.getBoolean(tSet+"."+name+".fly", true);
-		if(isDebug())
-			log.info("["+gc.modName+"][loadConf] Creative flying is set to "+leapFly);
-		leapThrust = conf.getInt(tSet+"."+name+".thrust", 8);
-		if(isDebug())
-			log.info("["+gc.modName+"][loadConf] Flap thrust is set to "+leapThrust);
-		leapCruise = conf.getInt(tSet+"."+name+".cruise", 110);
-		if(isDebug())
-			log.info("["+gc.modName+"][loadConf] Cruising altitude is set to "+leapCruise);
-		leapInvuln = conf.getDouble(tSet+"."+name+".invuln", -1);
-		if(isDebug()) {
-			if(leapInvuln < 0)
-				log.info("["+gc.modName+"][loadConf] Fall damage is disabled");
-			else
-				log.info("["+gc.modName+"][loadConf] Fall damage is disabled for "+
-						leapInvuln+" seconds after using leap tool");
+		leapTeleport = conf.getBoolean(tSet + "." + name + ".teleport", false);
+		if (isDebug()) {
+			log.info("[" + gc.modName + "][loadConf] Teleport leaping"
+					+ " is set to " + leapTeleport);
+		}
+		leapFly = conf.getBoolean(tSet + "." + name + ".fly", true);
+		if (isDebug()) {
+			log.info("[" + gc.modName + "][loadConf] Creative flying"
+					+ " is set to " + leapFly);
+		}
+		leapThrust = conf.getInt(tSet + "." + name + ".thrust", 8);
+		if (isDebug()) {
+			log.info("[" + gc.modName + "][loadConf] Flap thrust"
+					+ " is set to " + leapThrust);
+		}
+		leapCruise = conf.getInt(tSet + "." + name + ".cruise", 110);
+		if (isDebug()) {
+			log.info("[" + gc.modName + "][loadConf] Cruising altitude"
+					+ " is set to " + leapCruise);
+		}
+		leapInvuln = conf.getDouble(tSet + "." + name + ".invuln", -1);
+		if (isDebug()) {
+			if (leapInvuln < 0) {
+				log.info("[" + gc.modName + "][loadConf] Fall damage"
+						+ " is disabled");
+			} else {
+				log.info("[" + gc.modName + "][loadConf]"
+						+ " Fall damage is disabled for " + leapInvuln
+						+ " seconds after using leap tool");
+			}
 		}
 		return true;
 	}

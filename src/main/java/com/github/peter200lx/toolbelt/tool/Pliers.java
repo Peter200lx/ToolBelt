@@ -15,7 +15,7 @@ import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.Tool;
 
-public class Pliers extends Tool  {
+public class Pliers extends Tool {
 
 	public Pliers(GlobalConf gc) {
 		super(gc);
@@ -29,15 +29,18 @@ public class Pliers extends Tool  {
 	}
 
 	@Override
-	public void handleInteract(PlayerInteractEvent event){
+	public void handleInteract(PlayerInteractEvent event) {
 		Player subject = event.getPlayer();
 		Block clicked, target;
-		if(!delayElapsed(subject.getName()))
+		if (!delayElapsed(subject.getName())) {
 			return;
+		}
+
 		switch (event.getAction()) {
 		case LEFT_CLICK_BLOCK:
 			clicked = event.getClickedBlock();
-			target = clicked.getRelative(event.getBlockFace().getOppositeFace());
+			target = clicked.getRelative(
+					event.getBlockFace().getOppositeFace());
 			break;
 		case RIGHT_CLICK_BLOCK:
 			clicked = event.getClickedBlock();
@@ -45,38 +48,46 @@ public class Pliers extends Tool  {
 			break;
 		case LEFT_CLICK_AIR:
 		case RIGHT_CLICK_AIR:
-			uPrint(PrintEnum.HINT, subject, ChatColor.RED +
-					"Didn't catch that, you need to click on a block.");
+			uPrint(PrintEnum.HINT, subject, ChatColor.RED
+					+ "Didn't catch that, you need to click on a block.");
 		default:
 			return;
 		}
+
 		List<String> subRanks = gc.ranks.getUserRank(subject);
-		if(subRanks != null) uPrint(PrintEnum.DEBUG, subject,
-				ChatColor.DARK_PURPLE+"Your ranks are: "+ChatColor.GOLD+subRanks);
-		if(!target.getType().equals(Material.AIR) &&
-				noOverwrite(subRanks,target.getType()) ){
-			uPrint(PrintEnum.WARN, subject, ChatColor.RED+
-					"You can't overwrite "+ChatColor.GOLD+target.getType());
+		if (subRanks != null) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Your ranks are: " + ChatColor.GOLD + subRanks);
+		}
+
+		if (!target.getType().equals(Material.AIR)
+				&& noOverwrite(subRanks, target.getType())) {
+			uPrint(PrintEnum.WARN, subject,
+					ChatColor.RED + "You can't overwrite "
+							+ ChatColor.GOLD + target.getType());
 			return;
 		}
-		if(!subject.isSneaking()&&!target.getType().equals(Material.AIR)){
-			uPrint(PrintEnum.HINT, subject, ChatColor.RED+
-					"Can't copy into a non-air block without crouching.");
+		if (!subject.isSneaking() && !target.getType().equals(Material.AIR)) {
+			uPrint(PrintEnum.HINT, subject, ChatColor.RED
+					+ "Can't copy into a non-air block without crouching.");
 			return;
 		}
-		if(noCopy(subRanks,clicked.getType()) ){
-			uPrint(PrintEnum.WARN, subject, ChatColor.RED+"You can't copy "+
-				ChatColor.GOLD+clicked.getType());
+
+		if (noCopy(subRanks, clicked.getType())) {
+			uPrint(PrintEnum.WARN, subject, ChatColor.RED + "You can't copy "
+					+ ChatColor.GOLD + clicked.getType());
 			return;
 		}
-		if(spawnBuild(clicked,subject)&&spawnBuild(target,subject)) {
+
+		if (spawnBuild(clicked, subject) && spawnBuild(target, subject)) {
 			MaterialData set = clicked.getState().getData();
-			if(isUseEvent()) {
-				if(safeReplace(set,target,subject,true)) {
+			if (isUseEvent()) {
+				if (safeReplace(set, target, subject, true)) {
 					this.updateUser(subject, target.getLocation(), set);
 				}
-			}else {
-				target.setTypeIdAndData(set.getItemTypeId(), set.getData(), false);
+			} else {
+				target.setTypeIdAndData(set.getItemTypeId(), set.getData(),
+						false);
 				this.updateUser(subject, target.getLocation(), set);
 			}
 		}
@@ -84,10 +95,12 @@ public class Pliers extends Tool  {
 
 	@Override
 	public boolean printUse(CommandSender sender) {
-		if(hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "left/right click with the "+ChatColor.GOLD+
-					getType()+ChatColor.WHITE+" to copy and push or pull blocks");
-			uPrint(PrintEnum.HINT, sender, "Crouch to push or pull into more then just air");
+		if (hasPerm(sender)) {
+			uPrint(PrintEnum.CMD, sender, "left/right click with the "
+					+ ChatColor.GOLD + getType() + ChatColor.WHITE
+					+ " to copy and push or pull blocks");
+			uPrint(PrintEnum.HINT, sender,
+					"Crouch to push or pull into more then just air");
 			return true;
 		}
 		return false;
@@ -96,18 +109,22 @@ public class Pliers extends Tool  {
 	@Override
 	public boolean loadConf(String tSet, FileConfiguration conf) {
 
-		//Load the repeat delay
-		if(!loadRepeatDelay(tSet,conf,-1))
+		// Load the repeat delay
+		if (!loadRepeatDelay(tSet, conf, -1)) {
 			return false;
+		}
 
-		if(!loadOnlyAllow(tSet, conf))
+		if (!loadOnlyAllow(tSet, conf)) {
 			return false;
+		}
 
-		if(!loadStopCopy(tSet, conf))
+		if (!loadStopCopy(tSet, conf)) {
 			return false;
+		}
 
-		if(!loadStopOverwrite(tSet, conf))
+		if (!loadStopOverwrite(tSet, conf)) {
 			return false;
+		}
 
 		return true;
 	}
