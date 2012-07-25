@@ -83,11 +83,11 @@ public abstract class Tool implements ToolInterface {
 		return type;
 	}
 
-	public void setType(Material type) {
-		this.type = type;
+	public void setType(Material newType) {
+		this.type = newType;
 	}
 
-	//Each tool must implement this so that the tool specific name is returned
+	// Each tool must implement this so that the tool specific name is returned
 	public abstract String getToolName();
 
 	protected boolean isDebug() {
@@ -99,558 +99,713 @@ public abstract class Tool implements ToolInterface {
 	}
 
 	protected String getPermStr() {
-		return gc.modName.toLowerCase()+".tool."+getToolName();
+		return gc.modName.toLowerCase() + ".tool." + getToolName();
 	}
 
-	//This catches left/right click events
+	// This catches left/right click events
 	public abstract void handleInteract(PlayerInteractEvent event);
 
 	public void handleItemChange(PlayerItemHeldEvent event) {
-		//Only some tools will override this, it is the
-		//  change selected item bar event catch
+		// Only some tools will override this, it is the
+		// change selected item bar event catch
 	}
 
 	public void handleDamage(EntityDamageEvent event) {
-		//Only some tools will override this, it is used
-		//  if a tool wants to protect a user from damage.
+		// Only some tools will override this, it is used
+		// if a tool wants to protect a user from damage.
 	}
 
 	public boolean hasPerm(CommandSender sender) {
-		if(gc.perm)
+		if (gc.perm) {
 			return sender.hasPermission(getPermStr());
-		else
+		} else {
 			return true;
+		}
 	}
 
-	//This is for printing use instructions for a player
+	// This is for printing use instructions for a player
 	public abstract boolean printUse(CommandSender sender);
 
-	//All tools must override this, however they can just return true; if
-	//  they have no data to load.
+	// All tools must override this, however they can just return true; if
+	// they have no data to load.
 	public abstract boolean loadConf(String tSet, FileConfiguration conf);
 
 	public void saveHelp(JavaPlugin host) {
-		if(isDebug()) log.info("["+gc.modName+"] Help saved for: "+getToolName());
-		host.saveResource("help/"+getToolName()+".txt", true);
+		if (isDebug()) {
+			log.info("[" + gc.modName + "] Help saved for: " + getToolName());
+		}
+		host.saveResource("help/" + getToolName() + ".txt", true);
 	}
 
-	protected void uPrint(PrintEnum pri, CommandSender subject, String message) {
-		if(gc.perm) {
+	protected void uPrint(PrintEnum pri, CommandSender subject,
+			String message) {
+		if (gc.perm) {
 			PrintEnum usrLvl = null;
 			int count = 0;
-			for(PrintEnum level: PrintEnum.values()) {
-				if(subject.hasPermission(
-						gc.modName.toLowerCase()+".print."+level.getPermName())) {
+			for (PrintEnum level : PrintEnum.values()) {
+				if (subject.hasPermission(gc.modName.toLowerCase() + ".print."
+						+ level.getPermName())) {
 					count++;
 					usrLvl = level;
 				}
 			}
-			if(count > 1) {
-				log.warning("["+gc.modName+"] "+subject.getName()+
-						" has multiple print permissions, using toolbelt.print."+
-						usrLvl.getPermName());
+			if (count > 1) {
+				log.warning("[" + gc.modName + "] " + subject.getName()
+						+ " has multiple print perms, using toolbelt.print."
+						+ usrLvl.getPermName());
 			}
-			if(usrLvl != null) {
-				if(usrLvl.shouldPrint(pri)) {
+			if (usrLvl != null) {
+				if (usrLvl.shouldPrint(pri)) {
 					subject.sendMessage(message);
 				}
-			}else if(gc.pl.shouldPrint(pri)) {
+			} else if (gc.pl.shouldPrint(pri)) {
 				subject.sendMessage(message);
 			}
-		}else if(gc.pl.shouldPrint(pri)) {
+		} else if (gc.pl.shouldPrint(pri)) {
 			subject.sendMessage(message);
 		}
 	}
 
 	protected boolean spawnBuild(Block target, Player subject) {
 		int spawnSize = gc.server.getSpawnRadius();
-		if (subject.isOp())
+		if (subject.isOp()) {
 			return true;
-		else if(spawnSize <= 0)
+		} else if (spawnSize <= 0) {
 			return true;
-		else {
+		} else {
 			Location spawn = target.getWorld().getSpawnLocation();
 			int distanceFromSpawn = (int) Math.max(
 					Math.abs(target.getX() - spawn.getX()),
 					Math.abs(target.getZ() - spawn.getZ()));
-			if(distanceFromSpawn > spawnSize)
+			if (distanceFromSpawn > spawnSize) {
 				return true;
-			else {
-				uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
-						"You can't build inside spawn protection");
+			} else {
+				uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+						+ "You can't build inside spawn protection");
 				return false;
 			}
 		}
 	}
 
-	//This is only needed if breaking a block and not replacing it with a new block
-	protected boolean safeBreak(Block target, Player subject, boolean applyPhysics) {
+	// This is needed if breaking a block and not replacing it with a new block
+	protected boolean safeBreak(Block target, Player subject,
+			boolean applyPhysics) {
 		ItemStack hand = subject.getItemInHand();
-		BlockDamageEvent canDamage = new BlockDamageEvent(subject, target, hand, true);
+		BlockDamageEvent canDamage = new BlockDamageEvent(subject, target,
+				hand, true);
 		gc.server.getPluginManager().callEvent(canDamage);
-		if(canDamage.isCancelled()) {
-			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
-					"You can't damage blocks here");
+		if (canDamage.isCancelled()) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "You can't damage blocks here");
 			return false;
 		}
-		BlockBreakEvent canBreak = new BlockBreakEvent(target,subject);
+		BlockBreakEvent canBreak = new BlockBreakEvent(target, subject);
 		gc.server.getPluginManager().callEvent(canBreak);
-		if(!canBreak.isCancelled())
+		if (!canBreak.isCancelled()) {
 			target.setTypeId(0, applyPhysics);
-		if(!canBreak.isCancelled())
+		}
+		if (!canBreak.isCancelled()) {
 			return true;
-		else {
-			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
-					"You can't break blocks here");
+		} else {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "You can't break blocks here");
 			return false;
 		}
 	}
 
-	protected boolean safeReplace(MaterialData newInfo, Block old, Player subject, boolean canBuild) {
+	protected boolean safeReplace(MaterialData newInfo, Block old,
+			Player subject, boolean canBuild) {
 		BlockState oldInfo = old.getState();
-		if(oldInfo.getType().equals(Material.SIGN_POST)         ||
-				oldInfo.getType().equals(Material.WALL_SIGN)    ||
-				newInfo.getItemType().equals(Material.SIGN_POST)||
-				newInfo.getItemType().equals(Material.WALL_SIGN)){
-			//LogBlock doesn't catch BlockPlaceEvent's having to do with signs
-			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
-					"support writing or overwriting "+ChatColor.GOLD+"Signs");
+		if (oldInfo.getType().equals(Material.SIGN_POST)
+				|| oldInfo.getType().equals(Material.WALL_SIGN)
+				|| newInfo.getItemType().equals(Material.SIGN_POST)
+				|| newInfo.getItemType().equals(Material.WALL_SIGN)) {
+			// LogBlock doesn't catch BlockPlaceEvent's having to do with signs
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Plugin doesn't support writing or overwriting "
+					+ ChatColor.GOLD + "Signs");
 			return false;
-		}else if(oldInfo.getType().equals(newInfo.getItemType()))
+		} else if (oldInfo.getType().equals(newInfo.getItemType())) {
 			old.setData(newInfo.getData(), false);
-		else if(oldInfo instanceof InventoryHolder) {
-			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
-					"support overwriting "+ChatColor.GOLD+"Container Blocks");
+		} else if (oldInfo instanceof InventoryHolder) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Plugin doesn't support overwriting "
+					+ ChatColor.GOLD + "Container Blocks");
 			return false;
-		}else if(oldInfo.getType().equals(Material.SIGN_POST)||
-				oldInfo.getType().equals(Material.WALL_SIGN) ){
-			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
-					"support overwriting "+ChatColor.GOLD+"Signs");
+		} else if (oldInfo.getType().equals(Material.SIGN_POST)
+				|| oldInfo.getType().equals(Material.WALL_SIGN)) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Plugin doesn't support overwriting "
+					+ ChatColor.GOLD + "Signs");
 			return false;
-		}else if(oldInfo.getType().equals(Material.NOTE_BLOCK)) {
-			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
-					"support overwriting "+ChatColor.GOLD+"NoteBlocks");
+		} else if (oldInfo.getType().equals(Material.NOTE_BLOCK)) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Plugin doesn't support overwriting "
+					+ ChatColor.GOLD + "NoteBlocks");
 			return false;
-		}else if(oldInfo.getType().equals(Material.JUKEBOX)) {
-			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
-					"support overwriting "+ChatColor.GOLD+"Jukeboxs");
+		} else if (oldInfo.getType().equals(Material.JUKEBOX)) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Plugin doesn't support overwriting "
+					+ ChatColor.GOLD + "Jukeboxs");
 			return false;
-		}else if(oldInfo.getType().equals(Material.MOB_SPAWNER)) {
-			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE + "Plugin doesn't "+
-					"support overwriting "+ChatColor.GOLD+"CreatureSpawners");
+		} else if (oldInfo.getType().equals(Material.MOB_SPAWNER)) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Plugin doesn't support overwriting "
+					+ ChatColor.GOLD + "CreatureSpawners");
 			return false;
-		}else
-			old.setTypeIdAndData(newInfo.getItemTypeId(), newInfo.getData(), false);
-		ItemStack type = newInfo.toItemStack();
-		BlockPlaceEvent canPlace = new BlockPlaceEvent(old,oldInfo,old,type,subject,canBuild);
+		} else {
+			old.setTypeIdAndData(newInfo.getItemTypeId(), newInfo.getData(),
+					false);
+		}
+		ItemStack newType = newInfo.toItemStack();
+		BlockPlaceEvent canPlace = new BlockPlaceEvent(old, oldInfo, old,
+				newType, subject, canBuild);
 		gc.server.getPluginManager().callEvent(canPlace);
-		if(canPlace.isCancelled()) {
-			if(oldInfo.getType().equals(newInfo.getItemType()))
+		if (canPlace.isCancelled()) {
+			if (oldInfo.getType().equals(newInfo.getItemType())) {
 				old.setData(oldInfo.getRawData(), false);
-			else
-				old.setTypeIdAndData(oldInfo.getTypeId(), oldInfo.getRawData(), false);
+			} else {
+				old.setTypeIdAndData(oldInfo.getTypeId(), oldInfo.getRawData(),
+						false);
+			}
 		}
-		if(!canPlace.isCancelled())
+		if (!canPlace.isCancelled()) {
 			return true;
-		else {
-			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE +
-					"You can't place/replace blocks here");
+		} else {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "You can't place/replace blocks here");
 			return false;
 		}
 	}
 
-	protected boolean noCopy(Player subject, Material type) {
+	protected boolean noCopy(Player subject, Material toTest) {
 		List<String> ranks = gc.ranks.getUserRank(subject);
-		if(ranks != null) uPrint(PrintEnum.DEBUG, subject,ChatColor.DARK_PURPLE+
-				"Your ranks are: "+ChatColor.GOLD+ranks);
-		return noCopy(ranks, type);
+		if (ranks != null) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Your ranks are: " + ChatColor.GOLD + ranks);
+		}
+		return noCopy(ranks, toTest);
 	}
 
-	protected boolean noCopy(List<String> subRanks, Material type) {
-		return stopCopy.contains(subRanks, type) ||
-				!(onlyAllow.isEmpty(subRanks) || onlyAllow.contains(subRanks, type));
+	protected boolean noCopy(List<String> subRanks, Material toTest) {
+		return stopCopy.contains(subRanks, toTest)
+				|| !(onlyAllow.isEmpty(subRanks)
+				|| onlyAllow.contains(subRanks, toTest));
 	}
 
-	protected boolean noOverwrite(Player subject, Material type) {
+	protected boolean noOverwrite(Player subject, Material toTest) {
 		List<String> ranks = gc.ranks.getUserRank(subject);
-		if(ranks != null) uPrint(PrintEnum.DEBUG, subject,ChatColor.DARK_PURPLE+
-				"Your ranks are: "+ChatColor.GOLD+ranks);
-		return noOverwrite(ranks,type);
+		if (ranks != null) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Your ranks are: " + ChatColor.GOLD + ranks);
+		}
+		return noOverwrite(ranks, toTest);
 	}
 
-	protected boolean noOverwrite(List<String> subRanks, Material type) {
-		return stopOverwrite.contains(subRanks, type) ||
-				!(onlyAllow.isEmpty(subRanks) || onlyAllow.contains(subRanks,type));
+	protected boolean noOverwrite(List<String> subRanks, Material toTest) {
+		return stopOverwrite.contains(subRanks, toTest)
+				|| !(onlyAllow.isEmpty(subRanks)
+				|| onlyAllow.contains(subRanks, toTest));
 	}
 
-	protected boolean delayElapsed(String name) {
-		if(repeatDelay == 0)
-			return true; //Don't bother filling pCooldown with data when not used
-		if(pCooldown.containsKey(name) &&
-				(System.currentTimeMillis() < (pCooldown.get(name)+repeatDelay)))
+	protected boolean delayElapsed(String userName) {
+		if (repeatDelay == 0) {
+			return true; // Don't fill pCooldown with data when not used
+		}
+		if (pCooldown.containsKey(userName) && (System.currentTimeMillis()
+						< (pCooldown.get(userName) + repeatDelay))) {
 			return false;
-		pCooldown.put(name, System.currentTimeMillis());
+		}
+		pCooldown.put(userName, System.currentTimeMillis());
 		return true;
 	}
 
-	protected void updateUser(Player subject, Location loc, MaterialData info) {
+	protected void updateUser(Player subject, Location loc,
+			MaterialData info) {
 		updateUser(subject, loc, info.getItemTypeId(), info.getData());
 	}
 
-	protected void updateUser(Player subject, Location loc, Material type, byte data) {
-		updateUser(subject, loc, type.getId(), data);
+	protected void updateUser(Player subject, Location loc, Material newType,
+			byte data) {
+		updateUser(subject, loc, newType.getId(), data);
 	}
 
-	protected void updateUser(Player subject, Location loc, int type, byte data) {
+	protected void updateUser(Player subject, Location loc, int newType,
+			byte data) {
 		int horizon = (gc.server.getViewDistance() + 1) * 16;
 		int horSqr = horizon * horizon;
 		Player[] online = gc.server.getOnlinePlayers();
-		for(Player other: online) {
-			if(loc.getWorld().equals(other.getWorld())) {
-				if(loc.distanceSquared(other.getLocation()) < horSqr) {
-					other.sendBlockChange(loc, type, data);
+		for (Player other : online) {
+			if (loc.getWorld().equals(other.getWorld())) {
+				if (loc.distanceSquared(other.getLocation()) < horSqr) {
+					other.sendBlockChange(loc, newType, data);
 				}
 			}
 		}
-		subject.sendBlockChange(loc, type, data);
+		subject.sendBlockChange(loc, newType, data);
 	}
 
-	protected boolean loadRepeatDelay(String tSet, FileConfiguration conf, int def) {
+	protected boolean loadRepeatDelay(String tSet, FileConfiguration conf,
+			int def) {
 
-		int localDelay = conf.getInt(tSet+"."+getToolName()+".repeatDelay", def);
+		int localDelay = conf.getInt(tSet + "." + getToolName()
+				+ ".repeatDelay", def);
 
-		if(localDelay == -1) {
-			//If the local value is -1, we want to grab the global setting
+		if (localDelay == -1) {
+			// If the local value is -1, we want to grab the global setting
 			repeatDelay = gc.repeatDelay;
-			if(isDebug()) {
-				log.info("["+gc.modName+"][loadConf] Using global tool reuse delay for "+
-						getToolName());
+			if (isDebug()) {
+				log.info("[" + gc.modName + "][loadConf] Using global tool"
+						+ " reuse delay for " + getToolName());
 			}
-		}else if(localDelay < 0) {
-			//If we are any negative number that isn't -1
-			log.warning("["+gc.modName+"] "+tSet+"."+getToolName()+".repeatDelay has an "+
-					"invalid value of "+repeatDelay);
-			log.warning("["+gc.modName+"] (The tool specific delay must be -1,0,"+
-					" or a positive number)");
+		} else if (localDelay < 0) {
+			// If we are any negative number that isn't -1
+			log.warning("[" + gc.modName + "] " + tSet + "." + getToolName()
+					+ ".repeatDelay has an invalid value of " + repeatDelay);
+			log.warning("[" + gc.modName + "] (The tool specific delay must be"
+					+ " -1,0, or a positive number)");
 			return false;
-		}else {
-			//We want to go with what the local value is
+		} else {
+			// We want to go with what the local value is
 			repeatDelay = localDelay;
 		}
-		if(isDebug()) {
-			log.info("["+gc.modName+"][loadConf] "+getToolName()+" tool use repeat delay is "+
-					repeatDelay);
+		if (isDebug()) {
+			log.info("[" + gc.modName + "][loadConf] " + getToolName()
+					+ " tool use repeat delay is " + repeatDelay);
 		}
 		return true;
 	}
 
 	protected boolean loadOnlyAllow(String tSet, FileConfiguration conf) {
-		List<Integer> intL = conf.getIntegerList(tSet+"."+getToolName()+".onlyAllow");
+		List<Integer> intL = conf.getIntegerList(tSet + "." + getToolName()
+				+ ".onlyAllow");
 
-		if(!intL.isEmpty())
-		{
-			if(isDebug())
-				log.info( "["+gc.modName+"][loadConf] As "+getToolName()+".onlyAllow has items,"+
-						" it overwrites the global");
-
-			if(!onlyAllow.loadMatList(intL,false,tSet+"."+getToolName()))
-				return false;
-
-			if(isDebug()) {
-				onlyAllow.logMatSet("loadConf",getToolName());
-				log.info( "["+gc.modName+"][loadConf] As "+getToolName()+".onlyAllow"+
-						" has items, only those materials are usable");
+		if (!intL.isEmpty()) {
+			if (isDebug()) {
+				log.info("[" + gc.modName + "][loadConf] As " + getToolName()
+						+ ".onlyAllow has items, it overwrites the global");
 			}
-		} else if(isDebug()&& !onlyAllow.isEmpty()) {
-			log.info( "["+gc.modName+"][loadConf] As global.onlyAllow has items,"+
-					" only those materials are usable");
+
+			if (!onlyAllow.loadMatList(intL, false,
+					tSet + "." + getToolName())) {
+				return false;
+			}
+
+			if (isDebug()) {
+				onlyAllow.logMatSet("loadConf", getToolName());
+				log.info("[" + gc.modName + "][loadConf] As " + getToolName()
+						+ ".onlyAllow  has items, only those materials are"
+						+ " usable");
+			}
+		} else if (isDebug() && !onlyAllow.isEmpty()) {
+			log.info("[" + gc.modName + "][loadConf] As global.onlyAllow has"
+					+ " items, only those materials are usable");
 		}
 
 		String rankName = "ranks";
-		ConfigurationSection rankConf = conf.getConfigurationSection(tSet+"."+
-				getToolName()+"."+rankName);
+		ConfigurationSection rankConf = conf.getConfigurationSection(
+				tSet + "." + getToolName() + "." + rankName);
 
-		if(!onlyAllow.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
+		if (!onlyAllow.loadRankedMatLists(rankConf, gc.ranks,
+				getToolName() + "." + rankName)) {
 			return false;
-		if(gc.debug) onlyAllow.logRankedMatSet("loadConf", getToolName()+"."+rankName);
+		}
+		if (gc.debug) {
+			onlyAllow.logRankedMatSet("loadConf",
+					getToolName() + "." + rankName);
+		}
 
 		return true;
 	}
 
 	protected boolean loadStopCopy(String tSet, FileConfiguration conf) {
-		List<Integer> intL = conf.getIntegerList(tSet+"."+getToolName()+".stopCopy");
+		List<Integer> intL = conf.getIntegerList(tSet + "." + getToolName()
+				+ ".stopCopy");
 
-		if(!intL.isEmpty())
-		{
-			if(isDebug())
-				log.info( "["+gc.modName+"][loadConf] As "+getToolName()+".stopCopy"+
-						" has items, it overwrites the global");
+		if (!intL.isEmpty()) {
+			if (isDebug()) {
+				log.info("[" + gc.modName + "][loadConf] As " + getToolName()
+						+ ".stopCopy has items, it overwrites the global");
+			}
 
-			if(!stopCopy.loadMatList(intL,true,tSet+"."+getToolName()))
+			if (!stopCopy.loadMatList(intL, true, tSet + "." + getToolName())) {
 				return false;
+			}
 
-			if(isDebug()) stopCopy.logMatSet("loadConf",getToolName());
+			if (isDebug()) {
+				stopCopy.logMatSet("loadConf", getToolName());
+			}
 		}
 
 		String rankName = "ranks";
-		ConfigurationSection rankConf = conf.getConfigurationSection(tSet+"."+
-				getToolName()+"."+rankName);
+		ConfigurationSection rankConf = conf.getConfigurationSection(
+				tSet + "." + getToolName() + "." + rankName);
 
-		if(!stopCopy.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
+		if (!stopCopy.loadRankedMatLists(rankConf, gc.ranks,
+				getToolName() + "." + rankName)) {
 			return false;
-		if(gc.debug) stopCopy.logRankedMatSet("loadConf", getToolName()+"."+rankName);
+		}
+		if (gc.debug) {
+			stopCopy.logRankedMatSet("loadConf",
+					getToolName() + "." + rankName);
+		}
 
 		return true;
 	}
 
 	protected boolean loadStopOverwrite(String tSet, FileConfiguration conf) {
-		List<Integer> intL = conf.getIntegerList(tSet+"."+getToolName()+".stopOverwrite");
+		List<Integer> intL = conf.getIntegerList(tSet + "." + getToolName()
+				+ ".stopOverwrite");
 
-		if(!intL.isEmpty())
-		{
-			if(isDebug())
-				log.info( "["+gc.modName+"][loadConf] As "+getToolName()+".stopOverwrite"+
-						" has items, it overwrites the global");
+		if (!intL.isEmpty()) {
+			if (isDebug()) {
+				log.info("[" + gc.modName + "][loadConf] As " + getToolName()
+						+ ".stopOverwrite has items, it overwrites the global");
+			}
 
-			if(!stopOverwrite.loadMatList(intL,true,tSet+"."+getToolName()))
+			if (!stopOverwrite.loadMatList(intL, true, tSet + "."
+					+ getToolName())) {
 				return false;
+			}
 
-			if(isDebug()) stopOverwrite.logMatSet("loadConf",getToolName());
+			if (isDebug()) {
+				stopOverwrite.logMatSet("loadConf", getToolName());
+			}
 		}
 
 		String rankName = "ranks";
-		ConfigurationSection rankConf = conf.getConfigurationSection(tSet+"."+
-				getToolName()+"."+rankName);
+		ConfigurationSection rankConf = conf.getConfigurationSection(
+				tSet + "." + getToolName() + "." + rankName);
 
-		if(!stopOverwrite.loadRankedMatLists(rankConf, gc.ranks, getToolName()+"."+rankName))
+		if (!stopOverwrite.loadRankedMatLists(rankConf, gc.ranks,
+				getToolName() + "." + rankName)) {
 			return false;
-		if(gc.debug) stopOverwrite.logRankedMatSet("loadConf", getToolName()+"."+rankName);
+		}
+		if (gc.debug) {
+			stopOverwrite.logRankedMatSet("loadConf",
+					getToolName() + "." + rankName);
+		}
 
 		return true;
 	}
 
 	protected String data2Str(MaterialData b) {
 		byte data = b.getData();
-		switch(b.getItemType()) {
+		switch (b.getItemType()) {
 		case LOG:
 		case WOOD:
 		case LEAVES:
 		case SAPLING:
-			if(((Tree)b).getSpecies() != null)
-				return ((Tree)b).getSpecies().toString();
-			else
-				return ""+data;
+			if (((Tree) b).getSpecies() != null) {
+				return ((Tree) b).getSpecies().toString();
+			} else {
+				return "" + data;
+			}
 		case JUKEBOX:
-			if(data == 0x0)			return "Empty";
-			else if(data == 0x1)	return "Record 13";
-			else if(data == 0x2)	return "Record cat";
-			else if(data == 0x3)	return "Record blocks";
-			else if(data == 0x4)	return "Record chrip";
-			else if(data == 0x5)	return "Record far";
-			else if(data == 0x6)	return "Record mall";
-			else if(data == 0x7)	return "Record melloci";
-			else if(data == 0x8)	return "Record stal";
-			else if(data == 0x9)	return "Record strad";
-			else if(data == 0x10)	return "Record ward";
-			else					return "Record " + data;
+			if (data == 0x0) {
+				return "Empty";
+			} else if (data == 0x1) {
+				return "Record 13";
+			} else if (data == 0x2) {
+				return "Record cat";
+			} else if (data == 0x3) {
+				return "Record blocks";
+			} else if (data == 0x4) {
+				return "Record chrip";
+			} else if (data == 0x5) {
+				return "Record far";
+			} else if (data == 0x6) {
+				return "Record mall";
+			} else if (data == 0x7) {
+				return "Record melloci";
+			} else if (data == 0x8) {
+				return "Record stal";
+			} else if (data == 0x9) {
+				return "Record strad";
+			} else if (data == 0x10) {
+				return "Record ward";
+			} else {
+				return "Record " + data;
+			}
 		case CROPS:
-			return ((Crops)b).getState().toString();
+			return ((Crops) b).getState().toString();
 		case WOOL:
-				return ((Wool)b).getColor().toString();
+			return ((Wool) b).getColor().toString();
 		case INK_SACK:
-				return ((Dye)b).toString();
+			return ((Dye) b).toString();
 		case TORCH:
-			return ((Torch)b).getFacing().toString();
+			return ((Torch) b).getFacing().toString();
 		case REDSTONE_TORCH_OFF:
 		case REDSTONE_TORCH_ON:
-			return ((RedstoneTorch)b).getFacing().toString();
+			return ((RedstoneTorch) b).getFacing().toString();
 		case RAILS:
-			return ((Rails)b).getDirection() +
-				(	((Rails)b).isCurve() ? " on a curve" : (
-					((Rails)b).isOnSlope() ? " on a slope" : ""	)	);
+			return ((Rails) b).getDirection()
+					+ (((Rails) b).isCurve() ? " on a curve" : (((Rails) b)
+							.isOnSlope() ? " on a slope" : ""));
 		case POWERED_RAIL:
-			return ((PoweredRail)b).getDirection() +
-					(((PoweredRail)b).isOnSlope() ? " on a slope" : "");
+			return ((PoweredRail) b).getDirection()
+					+ (((PoweredRail) b).isOnSlope() ? " on a slope" : "");
 		case DETECTOR_RAIL:
-			return ((DetectorRail)b).getDirection() +
-					(((DetectorRail)b).isOnSlope() ? " on a slope" : "");
+			return ((DetectorRail) b).getDirection()
+					+ (((DetectorRail) b).isOnSlope() ? " on a slope" : "");
 		case WOOD_STAIRS:
 		case COBBLESTONE_STAIRS:
 		case NETHER_BRICK_STAIRS:
 		case BRICK_STAIRS:
 		case SMOOTH_STAIRS:
 			String append = "";
-			if((data&0x4) == 0x4)
+			if ((data & 0x4) == 0x4) {
 				append = " and UPSIDE-DOWN";
-			if((data&0x3) == 0x0) {
-				return "NORTH"+append;
-			} else if((data&0x3) == 0x1) {
-				return "SOUTH"+append;
-			} else if((data&0x3) == 0x2) {
-				return "EAST"+append;
-			} else if((data&0x3) == 0x3) {
-				return "WEST"+append;
+			}
+			if ((data & 0x3) == 0x0) {
+				return "NORTH" + append;
+			} else if ((data & 0x3) == 0x1) {
+				return "SOUTH" + append;
+			} else if ((data & 0x3) == 0x2) {
+				return "EAST" + append;
+			} else if ((data & 0x3) == 0x3) {
+				return "WEST" + append;
 			}
 			return "" + data;
 		case LEVER:
-			return ((Lever)b).getAttachedFace().toString();
+			return ((Lever) b).getAttachedFace().toString();
 		case WOODEN_DOOR:
 		case IRON_DOOR_BLOCK:
-			if(((Door)b).isTopHalf())
-				return "TOP half,"+" hinge "+(((data&0x1)==0x1)?"LEFT":"RIGHT");
-			else
-				return "BOTTOM half, "+((Door)b).getHingeCorner().toString() + " is " +
-					(((Door)b).isOpen()?"OPEN":"CLOSED");
+			if (((Door) b).isTopHalf()) {
+				return "TOP half," + " hinge "
+						+ (((data & 0x1) == 0x1) ? "LEFT" : "RIGHT");
+			} else {
+				return "BOTTOM half, " + ((Door) b).getHingeCorner().toString()
+						+ " is " + (((Door) b).isOpen() ? "OPEN" : "CLOSED");
+			}
 		case STONE_BUTTON:
-			return ((Button)b).getAttachedFace().toString();
+			return ((Button) b).getAttachedFace().toString();
 		case SIGN_POST:
-			return ((Sign)b).getFacing().toString();
+			return ((Sign) b).getFacing().toString();
 		case LADDER:
-			return ((Ladder)b).getAttachedFace().toString();
+			return ((Ladder) b).getAttachedFace().toString();
 		case WALL_SIGN:
-			return ((Sign)b).getAttachedFace().toString();
+			return ((Sign) b).getAttachedFace().toString();
 		case FURNACE:
-			return ((Directional)b).getFacing().toString();
+			return ((Directional) b).getFacing().toString();
 		case DISPENSER:
-			return ((Directional)b).getFacing().toString();
+			return ((Directional) b).getFacing().toString();
 		case PUMPKIN:
 		case JACK_O_LANTERN:
-			return ((Pumpkin)b).getFacing().toString();
+			return ((Pumpkin) b).getFacing().toString();
 		case STONE_PLATE:
 		case WOOD_PLATE:
-			return ((PressurePlate)b).isPressed()?" is PRESSED":" is not PRESSED";
+			return ((PressurePlate) b).isPressed() ? " is PRESSED"
+					: " is not PRESSED";
 		case COAL:
-			return ((Coal)b).getType().toString();
+			return ((Coal) b).getType().toString();
 		case STEP:
 			append = " BOTTOM-HALF";
-			if((data&0x8) == 0x8)
+			if ((data & 0x8) == 0x8) {
 				append = " TOP-HALF";
-			if((data&0x7) == 0x0) {
-				return Material.STONE.toString()+append;
-			} else if((data&0x7) == 0x1) {
-				return Material.SANDSTONE.toString()+append;
-			} else if((data&0x7) == 0x2) {
-				return Material.WOOD.toString()+append;
-			} else if((data&0x7) == 0x3) {
-				return Material.COBBLESTONE.toString()+append;
-			} else if((data&0x7) == 0x4) {
-				return Material.BRICK.toString()+append;
-			} else if((data&0x7) == 0x5) {
-				return Material.SMOOTH_BRICK.toString()+append;
+			}
+			if ((data & 0x7) == 0x0) {
+				return Material.STONE.toString() + append;
+			} else if ((data & 0x7) == 0x1) {
+				return Material.SANDSTONE.toString() + append;
+			} else if ((data & 0x7) == 0x2) {
+				return Material.WOOD.toString() + append;
+			} else if ((data & 0x7) == 0x3) {
+				return Material.COBBLESTONE.toString() + append;
+			} else if ((data & 0x7) == 0x4) {
+				return Material.BRICK.toString() + append;
+			} else if ((data & 0x7) == 0x5) {
+				return Material.SMOOTH_BRICK.toString() + append;
 			}
 			return "" + data;
 		case DOUBLE_STEP:
-			return ((Step)b).getMaterial().toString();
+			return ((Step) b).getMaterial().toString();
 		case SNOW:
-			if(data == 0x0)			return "1/8 HEIGHT";
-			else if(data == 0x1)	return "2/8 HEIGHT";
-			else if(data == 0x2)	return "3/8 HEIGHT (STEP)";
-			else if(data == 0x3)	return "4/8 HEIGHT (STEP)";
-			else if(data == 0x4)	return "5/8 HEIGHT (STEP)";
-			else if(data == 0x5)	return "6/8 HEIGHT (STEP)";
-			else if(data == 0x6)	return "7/8 HEIGHT (STEP)";
-			else if(data == 0x7)	return "FULL HEIGHT (STEP)";
-			else					return ""+data;
+			if (data == 0x0) {
+				return "1/8 HEIGHT";
+			} else if (data == 0x1) {
+				return "2/8 HEIGHT";
+			} else if (data == 0x2) {
+				return "3/8 HEIGHT (STEP)";
+			} else if (data == 0x3) {
+				return "4/8 HEIGHT (STEP)";
+			} else if (data == 0x4) {
+				return "5/8 HEIGHT (STEP)";
+			} else if (data == 0x5) {
+				return "6/8 HEIGHT (STEP)";
+			} else if (data == 0x6) {
+				return "7/8 HEIGHT (STEP)";
+			} else if (data == 0x7) {
+				return "FULL HEIGHT (STEP)";
+			} else {
+				return "" + data;
+			}
 		case CAKE_BLOCK:
-			return ""+((Cake)b).getSlicesRemaining()+"/6 REMAINING";
+			return "" + ((Cake) b).getSlicesRemaining() + "/6 REMAINING";
 		case DIODE_BLOCK_OFF:
 		case DIODE_BLOCK_ON:
-			return ((Diode)b).getFacing().toString()+" with DELAY of "+
-				((Diode)b).getDelay();
+			return ((Diode) b).getFacing().toString() + " with DELAY of "
+					+ ((Diode) b).getDelay();
 		case LONG_GRASS:
-			return ((LongGrass)b).getSpecies().toString();
+			return ((LongGrass) b).getSpecies().toString();
 		case TRAP_DOOR:
-			return ((TrapDoor)b).getAttachedFace().toString() + " is " +
-									(((TrapDoor)b).isOpen()?"OPEN":"CLOSED");
+			return ((TrapDoor) b).getAttachedFace().toString() + " is "
+					+ (((TrapDoor) b).isOpen() ? "OPEN" : "CLOSED");
 		case PISTON_BASE:
 		case PISTON_STICKY_BASE:
-			return ((PistonBaseMaterial)b).getFacing().toString();
+			return ((PistonBaseMaterial) b).getFacing().toString();
 		case SANDSTONE:
-			if(data == 0x0)			return "CRACKED";
-			else if(data == 0x1)	return "GLYPHED";
-			else if(data == 0x2)	return "SMOOTH";
-			else					return ""+data;
+			if (data == 0x0) {
+				return "CRACKED";
+			} else if (data == 0x1) {
+				return "GLYPHED";
+			} else if (data == 0x2) {
+				return "SMOOTH";
+			} else {
+				return "" + data;
+			}
 		case SMOOTH_BRICK:
-			if(data == 0x0)			return "NORMAL";
-			else if(data == 0x1)	return "MOSSY";
-			else if(data == 0x2)	return "CRACKED";
-			else if(data == 0x3)	return "CIRCLE";
-			else					return ""+data;
+			if (data == 0x0) {
+				return "NORMAL";
+			} else if (data == 0x1) {
+				return "MOSSY";
+			} else if (data == 0x2) {
+				return "CRACKED";
+			} else if (data == 0x3) {
+				return "CIRCLE";
+			} else {
+				return "" + data;
+			}
 		case HUGE_MUSHROOM_1:
 		case HUGE_MUSHROOM_2:
-			if(data == 0x0)			return "FLESHY PIECE";
-			else if(data == 0x1)	return "CAP ON TOP & W & N";
-			else if(data == 0x2)	return "CAP ON TOP & N";
-			else if(data == 0x3)	return "CAP ON TOP & N & E";
-			else if(data == 0x4)	return "CAP ON TOP & W";
-			else if(data == 0x5)	return "CAP ON TOP";
-			else if(data == 0x6)	return "CAP ON TOP & E";
-			else if(data == 0x7)	return "CAP ON TOP & S & W";
-			else if(data == 0x8)	return "CAP ON TOP & S";
-			else if(data == 0x9)	return "CAP ON TOP & E & S";
-			else if(data == 0x10)	return "STEM";
-			else					return ""+data;
+			if (data == 0x0) {
+				return "FLESHY PIECE";
+			} else if (data == 0x1) {
+				return "CAP ON TOP & W & N";
+			} else if (data == 0x2) {
+				return "CAP ON TOP & N";
+			} else if (data == 0x3) {
+				return "CAP ON TOP & N & E";
+			} else if (data == 0x4) {
+				return "CAP ON TOP & W";
+			} else if (data == 0x5) {
+				return "CAP ON TOP";
+			} else if (data == 0x6) {
+				return "CAP ON TOP & E";
+			} else if (data == 0x7) {
+				return "CAP ON TOP & S & W";
+			} else if (data == 0x8) {
+				return "CAP ON TOP & S";
+			} else if (data == 0x9) {
+				return "CAP ON TOP & E & S";
+			} else if (data == 0x10) {
+				return "STEM";
+			} else {
+				return "" + data;
+			}
 		case VINE:
 			String ret = "";
-			if((data&0x1) == 0x1) {
-				if(ret.length() == 0)	ret += "SOUTH";
-				else					ret += " & SOUTH";	}
-			if((data&0x2) == 0x2) {
-				if(ret.length() == 0)	ret += "WEST";
-				else					ret += " & WEST";	}
-			if((data&0x4) == 0x4) {
-				if(ret.length() == 0)	ret += "NORTH";
-				else					ret += " & NORTH";	}
-			if((data&0x8) == 0x8) {
-				if(ret.length() == 0)	ret += "EAST";
-				else					ret += " & EAST";	}
-			if(ret.length() == 0)
+			if ((data & 0x1) == 0x1) {
+				if (ret.length() == 0) {
+					ret += "SOUTH";
+				} else {
+					ret += " & SOUTH";
+				}
+			}
+			if ((data & 0x2) == 0x2) {
+				if (ret.length() == 0) {
+					ret += "WEST";
+				} else {
+					ret += " & WEST";
+				}
+			}
+			if ((data & 0x4) == 0x4) {
+				if (ret.length() == 0) {
+					ret += "NORTH";
+				} else {
+					ret += " & NORTH";
+				}
+			}
+			if ((data & 0x8) == 0x8) {
+				if (ret.length() == 0) {
+					ret += "EAST";
+				} else {
+					ret += " & EAST";
+				}
+			}
+			if (ret.length() == 0) {
 				ret += "TOP";
+			}
 			return ret;
 		case FENCE_GATE:
 			append = " is Closed";
-			if((data&0x4) == 0x4)
+			if ((data & 0x4) == 0x4) {
 				append = " is OPEN";
-			if((data&0x3) == 0x0) {
-				return "SOUTH"+append;
-			} else if((data&0x3) == 0x1) {
-				return "WEST"+append;
-			} else if((data&0x3) == 0x2) {
-				return "NORTH"+append;
-			} else if((data&0x3) == 0x3) {
-				return "EAST"+append;
 			}
-			return ""+data;
-		case MONSTER_EGGS:	//Hidden Silverfish
-			if(data == 0x0)			return Material.STONE.toString();
-			else if(data == 0x1)	return Material.COBBLESTONE.toString();
-			else if(data == 0x2)	return Material.SMOOTH_BRICK.toString();
-			else					return ""+data;
+			if ((data & 0x3) == 0x0) {
+				return "SOUTH" + append;
+			} else if ((data & 0x3) == 0x1) {
+				return "WEST" + append;
+			} else if ((data & 0x3) == 0x2) {
+				return "NORTH" + append;
+			} else if ((data & 0x3) == 0x3) {
+				return "EAST" + append;
+			}
+			return "" + data;
+		case MONSTER_EGGS: // Hidden Silverfish
+			if (data == 0x0) {
+				return Material.STONE.toString();
+			} else if (data == 0x1) {
+				return Material.COBBLESTONE.toString();
+			} else if (data == 0x2) {
+				return Material.SMOOTH_BRICK.toString();
+			} else {
+				return "" + data;
+			}
 		case BREWING_STAND:
 			ret = "Bottle in ";
-			if((data&0x1) == 0x1) {
-			if(ret.length() == 10)	ret += "EAST Slot";
-			else					ret += " & EAST Slot";	}
-			if((data&0x2) == 0x2) {
-			if(ret.length() == 10)	ret += "SOUTH_WEST Slot";
-			else					ret += " & SOUTH_WEST Slot";	}
-			if((data&0x4) == 0x4) {
-				if(ret.length() == 10)	ret += "NORTH_WEST Slot";
-				else					ret += " & NORTH_WEST Slot";	}
-			if(ret.length() == 10)
+			if ((data & 0x1) == 0x1) {
+				if (ret.length() == 10) {
+					ret += "EAST Slot";
+				} else {
+					ret += " & EAST Slot";
+				}
+			}
+			if ((data & 0x2) == 0x2) {
+				if (ret.length() == 10) {
+					ret += "SOUTH_WEST Slot";
+				} else {
+					ret += " & SOUTH_WEST Slot";
+				}
+			}
+			if ((data & 0x4) == 0x4) {
+				if (ret.length() == 10) {
+					ret += "NORTH_WEST Slot";
+				} else {
+					ret += " & NORTH_WEST Slot";
+				}
+			}
+			if (ret.length() == 10) {
 				ret = "Empty";
+			}
 			return ret;
 		case CAULDRON:
-			if(data == 0x0)			return "EMPTY";
-			else if(data == 0x1)	return "1/3 FILLED";
-			else if(data == 0x2)	return "2/3 FILLED";
-			else if(data == 0x3)	return "FULL";
-			else					return ""+data;
+			if (data == 0x0) {
+				return "EMPTY";
+			} else if (data == 0x1) {
+				return "1/3 FILLED";
+			} else if (data == 0x2) {
+				return "2/3 FILLED";
+			} else if (data == 0x3) {
+				return "FULL";
+			} else {
+				return "" + data;
+			}
 		case ENDER_PORTAL_FRAME:
-			//TODO Add intelligence here
+			// TODO Add intelligence here
 			return "" + data;
 		case EGG:
-			//TODO Is there anywhere we can get a mapping of entity id to name?
+			// TODO Is there anywhere we can get a mapping of entity id to name?
 			return "" + data;
 		default:
 			return "" + data;
@@ -715,4 +870,3 @@ public abstract class Tool implements ToolInterface {
 	}
 
 }
-
