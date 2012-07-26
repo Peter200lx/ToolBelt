@@ -19,7 +19,7 @@ interface ToolInterface {
 	 * Tool identifier string. Should be a single unique lowercase word.
 	 * This is the string used for the config.yml and plugin.yml files
 	 */
-	String name = null;
+	String NAME = null;
 
 	/**
 	 * Tells caller the Material this tool maps to.

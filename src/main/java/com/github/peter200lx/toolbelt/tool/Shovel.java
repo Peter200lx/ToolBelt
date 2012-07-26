@@ -20,7 +20,7 @@ public class Shovel extends Tool {
 		super(gc);
 	}
 
-	public static String name = "shovel";
+	public static final String NAME = "shovel";
 
 	private int widthCube;
 	private double radiusDisk;
@@ -28,7 +28,7 @@ public class Shovel extends Tool {
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
@@ -156,9 +156,9 @@ public class Shovel extends Tool {
 			return false;
 		}
 
-		widthCube = conf.getInt(tSet + "." + name + ".widthCube", 3);
-		radiusDisk = conf.getDouble(tSet + "." + name + ".radiusDisk", 2.5);
-		radiusSphere = conf.getDouble(tSet + "." + name + ".radiusSphere", 2.5);
+		widthCube = conf.getInt(tSet + "." + NAME + ".widthCube", 3);
+		radiusDisk = conf.getDouble(tSet + "." + NAME + ".radiusDisk", 2.5);
+		radiusSphere = conf.getDouble(tSet + "." + NAME + ".radiusSphere", 2.5);
 		if (isDebug()) {
 			log.info("[" + gc.modName + "][loadConf] Shovel Cube size set to "
 					+ widthCube);

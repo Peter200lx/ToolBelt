@@ -26,7 +26,7 @@ public class Duplicator extends Tool {
 		super(gc);
 	}
 
-	public static String name = "dupe";
+	public static final String NAME = "dupe";
 
 	private HashMap<Material, Material> dupeMap;
 
@@ -34,7 +34,7 @@ public class Duplicator extends Tool {
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
@@ -115,10 +115,10 @@ public class Duplicator extends Tool {
 		}
 
 		ConfigurationSection sect = conf.getConfigurationSection(
-				tSet + "." + name + ".replace");
+				tSet + "." + NAME + ".replace");
 
 		if (sect == null) {
-			log.warning("[" + gc.modName + "] " + tSet + "." + name
+			log.warning("[" + gc.modName + "] " + tSet + "." + NAME
 					+ ".replace is returning null");
 			return false;
 		}
@@ -143,12 +143,12 @@ public class Duplicator extends Tool {
 						}
 					}
 				}
-				log.warning("[" + gc.modName + "] " + tSet + "." + name
+				log.warning("[" + gc.modName + "] " + tSet + "." + NAME
 						+ ".replace: '" + entry.getKey() + "': '"
 						+ entry.getValue() + "' is not a Material type");
 				return false;
 			} catch (NumberFormatException e) {
-				log.warning("[" + gc.modName + "] " + tSet + "." + name
+				log.warning("[" + gc.modName + "] " + tSet + "." + NAME
 						+ ".replace: '" + entry.getKey()
 						+ "': is not an integer");
 				return false;
@@ -156,15 +156,15 @@ public class Duplicator extends Tool {
 		}
 		dupeMap = holdDupeMap;
 
-		List<Integer> intL = conf.getIntegerList(tSet + "." + name
+		List<Integer> intL = conf.getIntegerList(tSet + "." + NAME
 				+ ".keepData");
 
-		if (!keepData.loadMatList(intL, false, tSet + "." + name)) {
+		if (!keepData.loadMatList(intL, false, tSet + "." + NAME)) {
 			return false;
 		}
 
 		if (isDebug()) {
-			keepData.logMatSet("loadConf", name);
+			keepData.logMatSet("loadConf", NAME);
 		}
 
 		return true;

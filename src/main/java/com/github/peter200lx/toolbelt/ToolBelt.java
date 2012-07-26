@@ -350,17 +350,17 @@ public class ToolBelt extends JavaPlugin {
 
 		// Initialize all available tools
 		HashMap<String, Tool> available = new HashMap<String, Tool>();
-		available.put(Duplicator.name, new Duplicator(gc));
-		available.put(Scroll.name, new Scroll(gc));
-		available.put(Paint.name, new Paint(gc));
-		available.put(Leap.name, new Leap(gc));
-		available.put(Pickhax.name, new Pickhax(gc));
-		available.put(Ruler.name, new Ruler(gc));
-		available.put(Watch.name, new Watch(gc));
-		available.put(Sledge.name, new Sledge(gc));
-		available.put(Pliers.name, new Pliers(gc));
-		available.put(Shovel.name, new Shovel(gc));
-		available.put(Chainsaw.name, new Chainsaw(gc));
+		available.put(Duplicator.NAME, new Duplicator(gc));
+		available.put(Scroll.NAME, new Scroll(gc));
+		available.put(Paint.NAME, new Paint(gc));
+		available.put(Leap.NAME, new Leap(gc));
+		available.put(Pickhax.NAME, new Pickhax(gc));
+		available.put(Ruler.NAME, new Ruler(gc));
+		available.put(Watch.NAME, new Watch(gc));
+		available.put(Sledge.NAME, new Sledge(gc));
+		available.put(Pliers.NAME, new Pliers(gc));
+		available.put(Shovel.NAME, new Shovel(gc));
+		available.put(Chainsaw.NAME, new Chainsaw(gc));
 
 		// Pull in config.yml .bind section for desired tools and bindings.
 		ConfigurationSection sect = conf.getConfigurationSection(

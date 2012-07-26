@@ -24,11 +24,11 @@ public class Watch extends Tool {
 
 	private HashSet<String> pNotSync = new HashSet<String>();
 
-	public static String name = "watch";
+	public static final String NAME = "watch";
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
@@ -101,8 +101,8 @@ public class Watch extends Tool {
 			return false;
 		}
 
-		timeDay = conf.getInt(tSet + "." + name + ".timeDay", 1000);
-		timeNight = conf.getInt(tSet + "." + name + ".timeNight", 14000);
+		timeDay = conf.getInt(tSet + "." + NAME + ".timeDay", 1000);
+		timeNight = conf.getInt(tSet + "." + NAME + ".timeNight", 14000);
 		if (isDebug()) {
 			log.info("[" + gc.modName + "][loadConf] Day time is defined as "
 					+ timeDay);

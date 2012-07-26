@@ -32,13 +32,13 @@ public class Scroll extends Tool {
 		super(gc);
 	}
 
-	public static String name = "scroll";
+	public static final String NAME = "scroll";
 
 	private HashMap<Material, Integer> dataMap;
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override

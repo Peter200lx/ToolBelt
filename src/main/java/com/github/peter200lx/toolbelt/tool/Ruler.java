@@ -23,11 +23,11 @@ public class Ruler extends Tool {
 	private HashMap<String, Location[]> pCube = new HashMap<String,
 			Location[]>();
 
-	public static String name = "ruler";
+	public static final String NAME = "ruler";
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override

@@ -19,7 +19,7 @@ public class Pickhax extends Tool {
 		super(gc);
 	}
 
-	public static String name = "phax";
+	public static final String NAME = "phax";
 
 	private HashMap<String, Long> pWarned = new HashMap<String, Long>();
 
@@ -27,7 +27,7 @@ public class Pickhax extends Tool {
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class Pickhax extends Tool {
 			return false;
 		}
 
-		range = conf.getInt(tSet + "." + name + ".range", 25);
+		range = conf.getInt(tSet + "." + NAME + ".range", 25);
 		if (isDebug()) {
 			log.info("[" + gc.modName + "][loadConf] Crouched PickHax range"
 					+ " distance is set to " + range);

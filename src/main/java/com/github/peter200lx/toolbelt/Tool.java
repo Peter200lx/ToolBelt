@@ -63,7 +63,7 @@ public abstract class Tool implements ToolInterface {
 
 	protected GlobalConf gc;
 
-	public static String name;
+	public static String NAME;
 
 	private Material type;
 

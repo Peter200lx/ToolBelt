@@ -23,7 +23,7 @@ public class Paint extends Tool {
 		super(gc);
 	}
 
-	public static String name = "paint";
+	public static final String NAME = "paint";
 
 	private Integer rangeDef = 0;
 	private Integer rangeCrouch = 25;
@@ -33,7 +33,7 @@ public class Paint extends Tool {
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
@@ -200,8 +200,8 @@ public class Paint extends Tool {
 			return false;
 		}
 
-		rangeDef = conf.getInt(tSet + "." + name + ".rangeDefault", 0);
-		rangeCrouch = conf.getInt(tSet + "." + name + ".rangeCrouch", 25);
+		rangeDef = conf.getInt(tSet + "." + NAME + ".rangeDefault", 0);
+		rangeCrouch = conf.getInt(tSet + "." + NAME + ".rangeCrouch", 25);
 		if (isDebug()) {
 			log.info("[" + gc.modName + "][loadConf] Default painting range"
 					+ " distance is set to " + rangeDef);

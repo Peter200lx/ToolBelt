@@ -21,11 +21,11 @@ public class Sledge extends Tool {
 		super(gc);
 	}
 
-	public static String name = "sledge";
+	public static final String NAME = "sledge";
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override

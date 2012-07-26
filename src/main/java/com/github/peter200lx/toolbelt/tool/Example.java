@@ -41,11 +41,11 @@ public class Example extends Tool  {
 	/**
 	 * This is the string used for the config.yml and plugin.yml files.
 	 */
-	public static final String name = "unique_lowercase_name";
+	public static final String NAME = "unique_lowercase_name";
 
 	@Override
 	public final String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override

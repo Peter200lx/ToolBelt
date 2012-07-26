@@ -21,11 +21,11 @@ public class Pliers extends Tool {
 		super(gc);
 	}
 
-	public static String name = "pliers";
+	public static final String NAME = "pliers";
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override

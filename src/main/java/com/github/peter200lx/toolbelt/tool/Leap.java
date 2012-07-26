@@ -23,7 +23,7 @@ public class Leap extends Tool {
 		super(gc);
 	}
 
-	public static String name = "leap";
+	public static final String NAME = "leap";
 
 	private boolean leapTeleport;
 
@@ -41,7 +41,7 @@ public class Leap extends Tool {
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
@@ -194,27 +194,27 @@ public class Leap extends Tool {
 			return false;
 		}
 
-		leapTeleport = conf.getBoolean(tSet + "." + name + ".teleport", false);
+		leapTeleport = conf.getBoolean(tSet + "." + NAME + ".teleport", false);
 		if (isDebug()) {
 			log.info("[" + gc.modName + "][loadConf] Teleport leaping"
 					+ " is set to " + leapTeleport);
 		}
-		leapFly = conf.getBoolean(tSet + "." + name + ".fly", true);
+		leapFly = conf.getBoolean(tSet + "." + NAME + ".fly", true);
 		if (isDebug()) {
 			log.info("[" + gc.modName + "][loadConf] Creative flying"
 					+ " is set to " + leapFly);
 		}
-		leapThrust = conf.getInt(tSet + "." + name + ".thrust", 8);
+		leapThrust = conf.getInt(tSet + "." + NAME + ".thrust", 8);
 		if (isDebug()) {
 			log.info("[" + gc.modName + "][loadConf] Flap thrust"
 					+ " is set to " + leapThrust);
 		}
-		leapCruise = conf.getInt(tSet + "." + name + ".cruise", 110);
+		leapCruise = conf.getInt(tSet + "." + NAME + ".cruise", 110);
 		if (isDebug()) {
 			log.info("[" + gc.modName + "][loadConf] Cruising altitude"
 					+ " is set to " + leapCruise);
 		}
-		leapInvuln = conf.getDouble(tSet + "." + name + ".invuln", -1);
+		leapInvuln = conf.getDouble(tSet + "." + NAME + ".invuln", -1);
 		if (isDebug()) {
 			if (leapInvuln < 0) {
 				log.info("[" + gc.modName + "][loadConf] Fall damage"

@@ -20,14 +20,14 @@ public class Chainsaw extends Tool {
 		super(gc);
 	}
 
-	public static String name = "saw";
+	public static final String NAME = "saw";
 
 	private int widthCube;
 	private double radiusSphere;
 
 	@Override
 	public String getToolName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
@@ -134,8 +134,8 @@ public class Chainsaw extends Tool {
 			return false;
 		}
 
-		widthCube = conf.getInt(tSet + "." + name + ".widthCube", 3);
-		radiusSphere = conf.getDouble(tSet + "." + name + ".radiusSphere", 2.5);
+		widthCube = conf.getInt(tSet + "." + NAME + ".widthCube", 3);
+		radiusSphere = conf.getDouble(tSet + "." + NAME + ".radiusSphere", 2.5);
 		if (isDebug()) {
 			log.info("[" + gc.modName + "][loadConf] Chainsaw Cube size set to "
 					+ widthCube);
