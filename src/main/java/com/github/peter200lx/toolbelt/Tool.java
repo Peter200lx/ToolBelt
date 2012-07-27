@@ -63,7 +63,8 @@ public abstract class Tool implements ToolInterface {
 
 	protected GlobalConf gc;
 
-	public static String NAME;
+	// String NAME was defined here, but it must be in the implementation.
+	// Defining it here makes no sense.
 
 	private Material type;
 
