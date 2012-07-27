@@ -164,10 +164,8 @@ public class ToolBelt extends JavaPlugin {
 	private Boolean hasAdminPerm(CommandSender p, String what) {
 		if (gc.perm) {
 			return p.hasPermission(what);
-		} else if (p.isOp()) {
-			return true;
 		} else {
-			return false;
+			return p.isOp();
 		}
 	}
 
