@@ -187,166 +187,11 @@ public class ToolBelt extends JavaPlugin {
 		// Reload and hold config for this function
 		FileConfiguration conf = this.getConfig();
 
-		// Check and set the debug printout flag
-		boolean debug = conf.getBoolean("debug", false);
-		if (debug) {
-			log.info("[" + cName + "][loadConf] Debugging is enabled");
-		}
-		if (((gc == null) ? false : gc.debug) && (!debug)) {
-			log.info("[" + cName + "][loadConf] Debugging has been disabled");
-		}
-
-		// Check and set the permissions flag
-		boolean permissions = conf.getBoolean("permissions", true);
-		if (debug) {
-			log.info("[" + cName + "][loadConf] permmissions are "
-					+ permissions);
-		}
-
-		// Check and set the useEvent flag
-		boolean useEvent = conf.getBoolean("useEvent", true);
-		if (debug) {
-			log.info("[" + cName
-					+ "][loadConf] The plugin will use Block Events: "
-					+ useEvent);
-		}
-
-		// Check and load the Ranks object
-		Ranks ranks = null;
-		try {
-			ranks = new Ranks(
-					permissions ? conf.getConfigurationSection("ranksDef")
-							: null, cName);
-		} catch (RuntimeException e) {
-			log.warning(e.getMessage());
+		// Load all global configuration settings
+		gc = loadGlobalConf(conf, tSet);
+		if (gc == null) {
 			return false;
 		}
-		if (debug) {
-			log.info("[" + cName
-					+ "][loadConf] Below is a listing of the defined ranks");
-			ranks.printRanks(log);
-		}
-		// Register permissions for newly loaded ranks (toolbelt.rank.rankname)
-		for (String rank : ranks.getRanks()) {
-			if (getServer().getPluginManager().getPermission(
-					ranks.getPrefix() + rank) == null) {
-				getServer().getPluginManager().addPermission(
-						new Permission(ranks.getPrefix() + rank,
-								"auto-gen rank perm: " + rank,
-								PermissionDefault.FALSE));
-			}
-		}
-
-		// Check and load the user print level from config
-		int printLevelInt = conf.getInt("userPrint", PrintEnum.DEBUG.getPri());
-		PrintEnum printLevel = null;
-		for (PrintEnum level : PrintEnum.values()) {
-			if (level.getPri() == printLevelInt) {
-				printLevel = level;
-			}
-		}
-		if (printLevel == null) {
-			log.warning("[" + cName + "][loadConf] " + printLevelInt
-					+ " is not a valid userPrint level.");
-			return false;
-		}
-		if (debug) {
-			log.info("[" + cName + "][loadConf] The current user print"
-					+ " level is " + printLevel);
-		}
-
-		String globalName = "global";
-
-		// Load Global repeat delay
-		String rankName = "ranks";
-		int repeatDelay;
-		repeatDelay = conf
-				.getInt(tSet + "." + globalName + ".repeatDelay", 125);
-		if (repeatDelay < 0) {
-			log.warning("[" + cName + "] " + tSet + "." + globalName
-					+ ".repeatDelay has an invalid value of " + repeatDelay);
-			log.warning("[" + cName + "] (The global delay must be greater"
-					+ " than or equal to zero)");
-			return false;
-		}
-		if (debug) {
-			log.info("[" + cName + "][loadConf] Global tool use repeat"
-					+ " delay is " + repeatDelay);
-		}
-
-		// Initialize global protection lists
-		SetMat onlyAllow = new SetMat(log, cName, "onlyAllow");
-		SetMat stopCopy = new SetMat(log, cName, "stopCopy");
-		SetMat stopOverwrite = new SetMat(log, cName, "stopOverwrite");
-
-		// Pull in global protection lists ranked section
-		ConfigurationSection rankConf = conf.getConfigurationSection(tSet + "."
-				+ globalName + "." + rankName);
-
-		// Load onlyAllow global protection list
-		List<Integer> intL = conf.getIntegerList(tSet + "." + globalName
-				+ ".onlyAllow");
-
-		if (!onlyAllow.loadMatList(intL, false, tSet + "." + globalName)) {
-			return false;
-		}
-		if (debug) {
-			onlyAllow.logMatSet("loadConf", globalName);
-			if (onlyAllow.isEmpty()) {
-				log.info("[" + cName + "][loadConf] As onlyAllow is empty,"
-						+ " all non-restricted materials are allowed");
-			} else {
-				log.info("[" + cName + "][loadConf] As onlyAllow "
-						+ "has items, only those materials can be painted");
-			}
-		}
-		if (!onlyAllow.loadRankedMatLists(rankConf, ranks, globalName + "."
-				+ rankName)) {
-			return false;
-		}
-		if (debug) {
-			onlyAllow.logRankedMatSet("loadConf", globalName + "." + rankName);
-		}
-
-		// Load stopCopy global protection list
-		intL = conf.getIntegerList(tSet + "." + globalName + ".stopCopy");
-
-		if (!stopCopy.loadMatList(intL, true, tSet + "." + globalName)) {
-			return false;
-		}
-		if (debug) {
-			stopCopy.logMatSet("loadConf", globalName);
-		}
-		if (!stopCopy.loadRankedMatLists(rankConf, ranks, globalName + "."
-				+ rankName)) {
-			return false;
-		}
-		if (debug) {
-			stopCopy.logRankedMatSet("loadConf", globalName + "." + rankName);
-		}
-
-		// Load stopOverwrite global protection list
-		intL = conf.getIntegerList(tSet + "." + globalName + ".stopOverwrite");
-
-		if (!stopOverwrite.loadMatList(intL, true, tSet + "." + globalName)) {
-			return false;
-		}
-		if (debug) {
-			stopOverwrite.logMatSet("loadConf", globalName);
-		}
-		if (!stopOverwrite.loadRankedMatLists(rankConf, ranks, globalName + "."
-				+ rankName)) {
-			return false;
-		}
-		if (debug) {
-			stopOverwrite.logRankedMatSet("loadConf", globalName + "."
-					+ rankName);
-		}
-
-		// Store settings into global config for use outside of loadConf()
-		gc = new GlobalConf(cName, this.getServer(), debug, permissions,
-				useEvent, repeatDelay, onlyAllow, stopCopy, stopOverwrite,
-				ranks, printLevel);
 
 		// Initialize all available tools
 		HashMap<String, Tool> available = new HashMap<String, Tool>();
@@ -385,7 +230,7 @@ public class ToolBelt extends JavaPlugin {
 						if (!holdTool.contains(available.get(entry.getKey()))) {
 							available.get(entry.getKey()).setType(type);
 							holdTool.add(available.get(entry.getKey()));
-							if (debug) {
+							if (gc.debug) {
 								log.info("[" + cName + "][loadConf] tools: "
 										+ entry.getKey() + " is now " + type);
 							}
@@ -430,6 +275,184 @@ public class ToolBelt extends JavaPlugin {
 		// need to disable the plugin if they don't succeed.
 
 		return true;
+	}
+
+	private GlobalConf loadGlobalConf(ConfigurationSection conf, String tSet) {
+		// Check and set the debug printout flag
+		boolean debug = conf.getBoolean("debug", false);
+		if (debug) {
+			log.info("[" + cName + "][loadGlobalConf] Debugging is enabled");
+		} else if (((gc == null) ? false : gc.debug)) {
+			log.info("[" + cName + "][loadGlobalConf] Debugging is now"
+					+ " disabled");
+		}
+
+		// Check and set the permissions flag
+		boolean permissions = conf.getBoolean("permissions", true);
+		if (debug) {
+			log.info("[" + cName + "][loadGlobalConf] permmissions are "
+					+ permissions);
+		}
+
+		// Check and set the useEvent flag
+		boolean useEvent = conf.getBoolean("useEvent", true);
+		if (debug) {
+			log.info("[" + cName + "][loadGlobalConf] The plugin will use"
+					+ " Block Events: " + useEvent);
+		}
+
+		// Check and load the Ranks object
+		Ranks ranks = loadRanks(conf);
+		if (ranks == null) {
+			return null;
+		}
+
+		// Check and load the user print level from config
+		PrintEnum printLevel = loadUserPrint(conf);
+		if (printLevel == null) {
+			return null;
+		}
+
+		String globalName = "global";
+
+		// Load Global repeat delay
+		int repeatDelay;
+		repeatDelay = conf.getInt(tSet + "." + globalName + ".repeatDelay",
+				125);
+		if (repeatDelay < 0) {
+			log.warning("[" + cName + "] " + tSet + "." + globalName
+					+ ".repeatDelay has an invalid value of " + repeatDelay);
+			log.warning("[" + cName + "] (The global delay must be greater"
+					+ " than or equal to zero)");
+			return null;
+		}
+		if (debug) {
+			log.info("[" + cName + "][loadGlobalConf] Global tool use repeat"
+					+ " delay is " + repeatDelay);
+		}
+
+		// Initialize global protection lists
+		SetMat onlyAllow = new SetMat(log, cName, "onlyAllow");
+		SetMat stopCopy = new SetMat(log, cName, "stopCopy");
+		SetMat stopOverwrite = new SetMat(log, cName, "stopOverwrite");
+
+		// Pull in global protection lists ranked section
+		String rankName = "ranks";
+		ConfigurationSection rankConf = conf.getConfigurationSection(tSet + "."
+				+ globalName + "." + rankName);
+
+		// Load onlyAllow global protection list
+		List<Integer> intL = conf.getIntegerList(tSet + "." + globalName
+				+ ".onlyAllow");
+
+		if (!onlyAllow.loadMatList(intL, false, tSet + "." + globalName)) {
+			return null;
+		}
+		if (debug) {
+			onlyAllow.logMatSet("loadGlobalConf", globalName);
+			if (onlyAllow.isEmpty()) {
+				log.info("[" + cName + "][loadGlobalConf] As onlyAllow is"
+						+ " empty, all non-restricted materials are allowed");
+			} else {
+				log.info("[" + cName + "][loadGlobalConf] As onlyAllow "
+						+ "has items, only those materials can be painted");
+			}
+		}
+		if (!onlyAllow.loadRankedMatLists(rankConf, ranks, globalName + "."
+				+ rankName)) {
+			return null;
+		}
+		if (debug) {
+			onlyAllow.logRankedMatSet("loadGlobalConf",
+					globalName + "." + rankName);
+		}
+
+		// Load stopCopy global protection list
+		intL = conf.getIntegerList(tSet + "." + globalName + ".stopCopy");
+
+		if (!stopCopy.loadMatList(intL, true, tSet + "." + globalName)) {
+			return null;
+		}
+		if (debug) {
+			stopCopy.logMatSet("loadGlobalConf", globalName);
+		}
+		if (!stopCopy.loadRankedMatLists(rankConf, ranks, globalName + "."
+				+ rankName)) {
+			return null;
+		}
+		if (debug) {
+			stopCopy.logRankedMatSet("loadGlobalConf",
+					globalName + "." + rankName);
+		}
+
+		// Load stopOverwrite global protection list
+		intL = conf.getIntegerList(tSet + "." + globalName + ".stopOverwrite");
+
+		if (!stopOverwrite.loadMatList(intL, true, tSet + "." + globalName)) {
+			return null;
+		}
+		if (debug) {
+			stopOverwrite.logMatSet("loadGlobalConf", globalName);
+		}
+		if (!stopOverwrite.loadRankedMatLists(rankConf, ranks, globalName + "."
+				+ rankName)) {
+			return null;
+		}
+		if (debug) {
+			stopOverwrite.logRankedMatSet("loadGlobalConf",
+					globalName + "." + rankName);
+		}
+
+		// Store settings into global config for use outside of loadConf()
+		return new GlobalConf(cName, this.getServer(), debug, permissions,
+				useEvent, repeatDelay, onlyAllow, stopCopy, stopOverwrite,
+				ranks, printLevel);
+	}
+
+	private Ranks loadRanks(ConfigurationSection conf) {
+		Ranks ranks = null;
+		try {
+			ranks = new Ranks(gc.perm
+					? conf.getConfigurationSection("ranksDef") : null, cName);
+		} catch (RuntimeException e) {
+			log.warning(e.getMessage());
+			return null;
+		}
+		if (gc.debug) {
+			log.info("[" + cName
+					+ "][loadRanks] Below is a listing of the defined ranks");
+			ranks.printRanks(log);
+		}
+		// Register permissions for newly loaded ranks (toolbelt.rank.rankname)
+		for (String rank : ranks.getRanks()) {
+			if (getServer().getPluginManager().getPermission(
+					ranks.getPrefix() + rank) == null) {
+				getServer().getPluginManager().addPermission(new Permission(
+						ranks.getPrefix() + rank, "auto-gen rank perm: " + rank,
+								PermissionDefault.FALSE));
+			}
+		}
+		return ranks;
+	}
+
+	private PrintEnum loadUserPrint(ConfigurationSection conf) {
+		int printLevelInt = conf.getInt("userPrint", PrintEnum.DEBUG.getPri());
+		PrintEnum printLevel = null;
+		for (PrintEnum level : PrintEnum.values()) {
+			if (level.getPri() == printLevelInt) {
+				printLevel = level;
+			}
+		}
+		if (printLevel == null) {
+			log.warning("[" + cName + "][loadUserPrint] " + printLevelInt
+					+ " is not a valid userPrint level.");
+			return null;
+		}
+		if (gc.debug) {
+			log.info("[" + cName + "][loadUserPrint] The current user print"
+					+ " level is " + printLevel);
+		}
+		return printLevel;
 	}
 
 	private boolean printPerm(String outName, Ranks ranks) {
