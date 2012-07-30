@@ -75,155 +75,14 @@ public class Scroll extends Tool {
 				if (max != 0) {
 					data = simpScroll(event, data, max);
 				} else {
-					MaterialData b = clicked.getState().getData();
-					switch (type) {
-					case JUKEBOX:
-						uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
-								+ "Data value indicates contained record,"
-								+ " can't scroll");
-						return;
-					case SOIL:
-						uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
-								+ "Data value indicates dampness level,"
-								+ " can't scroll");
-						return;
-					case TORCH:
-					case REDSTONE_TORCH_OFF:
-					case REDSTONE_TORCH_ON:
-						data = simpScroll(event, data, 1, 6);
-						break;
-					case POWERED_RAIL:
-						data = simpScroll(event, (byte) (data & 0x07), 6);
-						if (((PoweredRail) b).isPowered()) {
-							data |= 0x08;
+					try {
+						data = specialCase(event, subject, act, clicked, type,
+								data);
+					} catch (UnsupportedOperationException error) {
+						if (error.getMessage() != null) {
+							uPrint(PrintEnum.DEBUG, subject,
+									error.getMessage());
 						}
-						break;
-					case DETECTOR_RAIL:
-						data = simpScroll(event, (byte) (data & 0x07), 6);
-						if (((DetectorRail) b).isPressed()) {
-							data |= 0x08;
-						}
-						break;
-					case LEVER:
-						data = simpScroll(event, (byte) (data & 0x07), 1, 7);
-						if (((Lever) b).isPowered()) {
-							data |= 0x08;
-						}
-						break;
-					case WOODEN_DOOR:
-					case IRON_DOOR_BLOCK:
-						if (((Door) b).isTopHalf()) {
-							uPrint(PrintEnum.INFO, subject, "Clicking the top "
-									+ "half of a door can't scroll the"
-									+ " rotation corner.");
-							return;
-						}
-						data = simpScroll(event, (byte) (data & 0x07), 4);
-						if (((Door) b).isOpen()) {
-							data |= 0x04;
-						}
-						uPrint(PrintEnum.HINT, subject, "Top door half now "
-								+ " looks funny, open/close door to fix");
-						break;
-					case STONE_BUTTON:
-						data = simpScroll(event, (byte) (data & 0x07), 1, 5);
-						break;
-					case LADDER:
-					case WALL_SIGN:
-					case FURNACE:
-					case DISPENSER:
-						data = simpScroll(event, (byte) (data & 0x07), 2, 6);
-						break;
-					case CHEST:
-						// CHEST can not be safely scrolled because of double
-						// chests.
-						uPrint(PrintEnum.DEBUG, subject, "" + ChatColor.GOLD
-								+ type + ChatColor.DARK_PURPLE
-								+ " is not scrollable");
-						return;
-					case STONE_PLATE:
-					case WOOD_PLATE:
-						uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
-								+ "There is no useful data to scroll");
-						return;
-					case STEP:
-						boolean inverted = (data & 0x8) == 0x8;
-						int stepMax = 7;
-						data = (byte) (data & 0x7);
-						if (act.equals(Action.LEFT_CLICK_BLOCK)) {
-							if (!inverted) {
-								if ((data - 1) < 0) {
-									data = (byte) (stepMax - 1);
-								} else {
-									data = (byte) ((data - 1) % stepMax);
-								}
-							}
-							inverted = !inverted;
-						} else if (act.equals(Action.RIGHT_CLICK_BLOCK)) {
-							if (inverted) {
-								data = (byte) ((data + 1) % stepMax);
-							}
-							inverted = !inverted;
-						}
-						if (inverted) {
-							data |= 0x8;
-						} else {
-							data &= 0x7;
-						}
-						break;
-					case BED_BLOCK:
-						// TODO More research into modifying foot and head of
-						// bed at once
-						uPrint(PrintEnum.DEBUG, subject, "" + ChatColor.GOLD
-								+ type + ChatColor.DARK_PURPLE
-								+ " is not yet scrollable");
-						return;
-					case DIODE_BLOCK_OFF:
-					case DIODE_BLOCK_ON:
-						byte tick = (byte) (data & (0x08 | 0x04));
-						data = simpScroll(event, (byte) (data & 0x03), 4);
-						data |= tick;
-						break;
-					case REDSTONE_WIRE:
-						uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
-								+ "There is no useful data to scroll");
-						return;
-					case TRAP_DOOR:
-						data = simpScroll(event, (byte) (data & 0x03), 4);
-						if (((TrapDoor) b).isOpen()) {
-							data |= 0x04;
-						}
-						break;
-					case PISTON_BASE:
-					case PISTON_STICKY_BASE:
-						if (((PistonBaseMaterial) b).isPowered()) {
-							uPrint(PrintEnum.INFO, subject,
-									"The piston will not "
-											+ "be scrolled while extended");
-							return;
-						}
-						data = simpScroll(event, (byte) (data & 0x07), 6);
-						break;
-					case PISTON_EXTENSION:
-						uPrint(PrintEnum.HINT, subject,
-								"The piston extension should "
-										+ "not be scrolled");
-						return;
-					case FENCE_GATE:
-						data = simpScroll(event, (byte) (data & 0x03), 4);
-						if ((b.getData() & 0x04) == 0x04) {
-							data |= 0x04;
-						}
-						break;
-					case BREWING_STAND:
-						uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
-								+ "Stand data just is for visual "
-								+ "indication of placed glass bottles");
-						return;
-					default:
-						uPrint(PrintEnum.DEBUG, subject, "" + ChatColor.GOLD
-								+ type + ChatColor.DARK_PURPLE
-								+ " is not yet scrollable");
 						return;
 					}
 				}
@@ -252,6 +111,145 @@ public class Scroll extends Tool {
 				}
 			}
 		}
+	}
+
+	private byte specialCase(PlayerInteractEvent event, Player subject,
+			Action act, Block clicked, Material type, byte data) {
+		MaterialData b = clicked.getState().getData();
+		switch (type) {
+		case JUKEBOX:
+			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
+					+ "Data value indicates contained record, can't scroll");
+		case SOIL:
+			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
+					+ "Data value indicates dampness level, can't scroll");
+		case TORCH:
+		case REDSTONE_TORCH_OFF:
+		case REDSTONE_TORCH_ON:
+			data = simpScroll(event, data, 1, 6);
+			break;
+		case POWERED_RAIL:
+			data = simpScroll(event, (byte) (data & 0x07), 6);
+			if (((PoweredRail) b).isPowered()) {
+				data |= 0x08;
+			}
+			break;
+		case DETECTOR_RAIL:
+			data = simpScroll(event, (byte) (data & 0x07), 6);
+			if (((DetectorRail) b).isPressed()) {
+				data |= 0x08;
+			}
+			break;
+		case LEVER:
+			data = simpScroll(event, (byte) (data & 0x07), 1, 7);
+			if (((Lever) b).isPowered()) {
+				data |= 0x08;
+			}
+			break;
+		case WOODEN_DOOR:
+		case IRON_DOOR_BLOCK:
+			if (((Door) b).isTopHalf()) {
+				uPrint(PrintEnum.INFO, subject, "Clicking the top half of a"
+						+ " door can't scroll the rotation corner.");
+				throw new UnsupportedOperationException();
+			}
+			data = simpScroll(event, (byte) (data & 0x07), 4);
+			if (((Door) b).isOpen()) {
+				data |= 0x04;
+			}
+			uPrint(PrintEnum.HINT, subject, "Top door half now "
+					+ " looks funny, open/close door to fix");
+			break;
+		case STONE_BUTTON:
+			data = simpScroll(event, (byte) (data & 0x07), 1, 5);
+			break;
+		case LADDER:
+		case WALL_SIGN:
+		case FURNACE:
+		case DISPENSER:
+			data = simpScroll(event, (byte) (data & 0x07), 2, 6);
+			break;
+		case CHEST:
+			// CHEST can not be scrolled because of double chests.
+			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
+					+ ChatColor.DARK_PURPLE + " is not scrollable");
+		case STONE_PLATE:
+		case WOOD_PLATE:
+			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
+					+ "There is no useful data to scroll");
+		case STEP:
+			boolean inverted = (data & 0x8) == 0x8;
+			int stepMax = 7;
+			data = (byte) (data & 0x7);
+			if (act.equals(Action.LEFT_CLICK_BLOCK)) {
+				if (!inverted) {
+					if ((data - 1) < 0) {
+						data = (byte) (stepMax - 1);
+					} else {
+						data = (byte) ((data - 1) % stepMax);
+					}
+				}
+				inverted = !inverted;
+			} else if (act.equals(Action.RIGHT_CLICK_BLOCK)) {
+				if (inverted) {
+					data = (byte) ((data + 1) % stepMax);
+				}
+				inverted = !inverted;
+			}
+			if (inverted) {
+				data |= 0x8;
+			} else {
+				data &= 0x7;
+			}
+			break;
+		case BED_BLOCK:
+			// TODO More research into modifying foot and head of
+			// bed at once
+			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
+					+ ChatColor.DARK_PURPLE + " is not yet scrollable");
+		case DIODE_BLOCK_OFF:
+		case DIODE_BLOCK_ON:
+			byte tick = (byte) (data & (0x08 | 0x04));
+			data = simpScroll(event, (byte) (data & 0x03), 4);
+			data |= tick;
+			break;
+		case REDSTONE_WIRE:
+			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
+					+ "There is no useful data to scroll");
+		case TRAP_DOOR:
+			data = simpScroll(event, (byte) (data & 0x03), 4);
+			if (((TrapDoor) b).isOpen()) {
+				data |= 0x04;
+			}
+			break;
+		case PISTON_BASE:
+		case PISTON_STICKY_BASE:
+			if (((PistonBaseMaterial) b).isPowered()) {
+				uPrint(PrintEnum.INFO, subject, "The piston will not be"
+						+ " scrolled while extended");
+				throw new UnsupportedOperationException();
+			}
+			data = simpScroll(event, (byte) (data & 0x07), 6);
+			break;
+		case PISTON_EXTENSION:
+			uPrint(PrintEnum.HINT, subject, "The piston extension should "
+							+ "not be scrolled");
+			throw new UnsupportedOperationException();
+		case FENCE_GATE:
+			data = simpScroll(event, (byte) (data & 0x03), 4);
+			if ((b.getData() & 0x04) == 0x04) {
+				data |= 0x04;
+			}
+			break;
+		case BREWING_STAND:
+			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
+					+ "Stand data just is for visual "
+					+ "indication of placed glass bottles");
+		default:
+			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
+					+ ChatColor.DARK_PURPLE + " is not yet scrollable");
+		}
+		return data;
 	}
 
 	// Note that min is inclusive and max is exclusive.
