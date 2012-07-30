@@ -300,13 +300,13 @@ public class ToolBelt extends JavaPlugin {
 		}
 
 		// Check and load the Ranks object
-		Ranks ranks = loadRanks(conf);
+		Ranks ranks = loadRanks(conf, debug, permissions);
 		if (ranks == null) {
 			return null;
 		}
 
 		// Check and load the user print level from config
-		PrintEnum printLevel = loadUserPrint(conf);
+		PrintEnum printLevel = loadUserPrint(conf, debug);
 		if (printLevel == null) {
 			return null;
 		}
@@ -407,16 +407,17 @@ public class ToolBelt extends JavaPlugin {
 				ranks, printLevel);
 	}
 
-	private Ranks loadRanks(ConfigurationSection conf) {
+	private Ranks loadRanks(ConfigurationSection conf, boolean debug,
+			boolean permissions) {
 		Ranks ranks = null;
 		try {
-			ranks = new Ranks(gc.perm
+			ranks = new Ranks(permissions
 					? conf.getConfigurationSection("ranksDef") : null, cName);
 		} catch (RuntimeException e) {
 			log.warning(e.getMessage());
 			return null;
 		}
-		if (gc.debug) {
+		if (debug) {
 			log.info("[" + cName
 					+ "][loadRanks] Below is a listing of the defined ranks");
 			ranks.printRanks(log);
@@ -433,7 +434,7 @@ public class ToolBelt extends JavaPlugin {
 		return ranks;
 	}
 
-	private PrintEnum loadUserPrint(ConfigurationSection conf) {
+	private PrintEnum loadUserPrint(ConfigurationSection conf, boolean debug) {
 		int printLevelInt = conf.getInt("userPrint", PrintEnum.DEBUG.getPri());
 		PrintEnum printLevel = null;
 		for (PrintEnum level : PrintEnum.values()) {
@@ -446,7 +447,7 @@ public class ToolBelt extends JavaPlugin {
 					+ " is not a valid userPrint level.");
 			return null;
 		}
-		if (gc.debug) {
+		if (debug) {
 			log.info("[" + cName + "][loadUserPrint] The current user print"
 					+ " level is " + printLevel);
 		}
