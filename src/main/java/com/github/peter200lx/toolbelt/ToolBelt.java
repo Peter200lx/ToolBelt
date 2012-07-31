@@ -42,9 +42,17 @@ public class ToolBelt extends JavaPlugin {
 
 	private GlobalConf gc;
 
-	public List<ToolInterface> tools;
+	private List<ToolInterface> tools;
 
-	public HashSet<String> tbDisabled;
+	private HashSet<String> tbDisabled;
+
+	public List<ToolInterface> getTools() {
+		return tools;
+	}
+
+	public HashSet<String> getTbDisabled() {
+		return tbDisabled;
+	}
 
 	@Override
 	public void onDisable() {
