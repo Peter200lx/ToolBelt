@@ -2,6 +2,8 @@ package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -35,9 +37,9 @@ public class Leap extends AbstractTool {
 
 	private double leapInvuln;
 
-	private HashMap<String, Long> pInvuln = new HashMap<String, Long>();
+	private final Map<String, Long> pInvuln = new HashMap<String, Long>();
 
-	private HashSet<String> pFlight = new HashSet<String>();
+	private final Set<String> pFlight = new HashSet<String>();
 
 	@Override
 	public String getToolName() {
@@ -46,8 +48,8 @@ public class Leap extends AbstractTool {
 
 	@Override
 	public void handleInteract(PlayerInteractEvent event) {
-		Action act = event.getAction();
-		Player subject = event.getPlayer();
+		final Action act = event.getAction();
+		final Player subject = event.getPlayer();
 		if (!delayElapsed(subject.getName())) {
 			return;
 		}
@@ -59,11 +61,11 @@ public class Leap extends AbstractTool {
 			if (cProt > 0.0D) {
 				cProt -= 720.0D;
 			}
-			double pRot = Math.abs(cProt % 360.0D);
+			final double pRot = Math.abs(cProt % 360.0D);
 			double pX = 0.0D;
 			double pZ = 0.0D;
 			double pY = 0.0D;
-			double pPit = subject.getLocation().getPitch();
+			final double pPit = subject.getLocation().getPitch();
 			double pyY = 0.0D;
 			if ((pPit < 21.0D) && (pPit > -21.0D)) {
 				pX = Math.sin(Math.toRadians(pRot)) * 10.0D;
@@ -113,30 +115,29 @@ public class Leap extends AbstractTool {
 			if (leapInvuln > 0) {
 				pInvuln.put(subject.getName(), System.currentTimeMillis());
 			}
-		} else if (act.equals(Action.LEFT_CLICK_AIR)
-				|| act.equals(Action.LEFT_CLICK_BLOCK)) {
-			if (leapFly && hasCFlyPerm(subject)) {
-				if (subject.isFlying()) {
-					subject.setFlying(false);
-					if (leapInvuln > 0) {
-						pInvuln.put(subject.getName(),
-								System.currentTimeMillis());
-					}
-					if (pFlight.contains(subject.getName())) {
-						subject.setAllowFlight(false);
-						uPrint(PrintEnum.INFO, subject,
-								"Creative mode flying disabled");
-						pFlight.remove(subject.getName());
-					}
-				} else {
-					if (!subject.getAllowFlight()) {
-						pFlight.add(subject.getName());
-						subject.setAllowFlight(true);
-						uPrint(PrintEnum.INFO, subject,
-								"Creative mode flying enabled");
-					}
-					subject.setFlying(true);
+		} else if ((act.equals(Action.LEFT_CLICK_AIR)
+				|| act.equals(Action.LEFT_CLICK_BLOCK))
+				&& leapFly && hasCFlyPerm(subject)) {
+			if (subject.isFlying()) {
+				subject.setFlying(false);
+				if (leapInvuln > 0) {
+					pInvuln.put(subject.getName(),
+							System.currentTimeMillis());
 				}
+				if (pFlight.contains(subject.getName())) {
+					subject.setAllowFlight(false);
+					uPrint(PrintEnum.INFO, subject,
+							"Creative mode flying disabled");
+					pFlight.remove(subject.getName());
+				}
+			} else {
+				if (!subject.getAllowFlight()) {
+					pFlight.add(subject.getName());
+					subject.setAllowFlight(true);
+					uPrint(PrintEnum.INFO, subject,
+							"Creative mode flying enabled");
+				}
+				subject.setFlying(true);
 			}
 		}
 	}
@@ -162,7 +163,7 @@ public class Leap extends AbstractTool {
 		if (event.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
 			// Safe to cast to Player because catchDamage() in ToolListener has
 			// already verified that the entity in question is a Player
-			String pName = ((Player) event.getEntity()).getName();
+			final String pName = ((Player) event.getEntity()).getName();
 			if ((leapInvuln < 0) || pInvuln.containsKey(pName)
 					&& (System.currentTimeMillis()
 							<= (pInvuln.get(pName) + leapInvuln * 1000))) {

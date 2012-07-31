@@ -30,7 +30,7 @@ public class Pliers extends AbstractTool {
 
 	@Override
 	public void handleInteract(PlayerInteractEvent event) {
-		Player subject = event.getPlayer();
+		final Player subject = event.getPlayer();
 		Block clicked, target;
 		if (!delayElapsed(subject.getName())) {
 			return;
@@ -54,7 +54,7 @@ public class Pliers extends AbstractTool {
 			return;
 		}
 
-		List<String> subRanks = gc.ranks.getUserRank(subject);
+		final List<String> subRanks = gc.ranks.getUserRank(subject);
 		if (subRanks != null) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Your ranks are: " + ChatColor.GOLD + subRanks);
@@ -80,7 +80,7 @@ public class Pliers extends AbstractTool {
 		}
 
 		if (spawnBuild(clicked, subject) && spawnBuild(target, subject)) {
-			MaterialData set = clicked.getState().getData();
+			final MaterialData set = clicked.getState().getData();
 			if (isUseEvent()) {
 				if (safeReplace(set, target, subject, true)) {
 					this.updateUser(subject, target.getLocation(), set);

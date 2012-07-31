@@ -1,6 +1,8 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.CropState;
 import org.bukkit.DyeColor;
@@ -34,7 +36,7 @@ public class Scroll extends AbstractTool {
 
 	public static final String NAME = "scroll";
 
-	private HashMap<Material, Integer> dataMap;
+	private Map<Material, Integer> dataMap;
 
 	@Override
 	public String getToolName() {
@@ -43,16 +45,16 @@ public class Scroll extends AbstractTool {
 
 	@Override
 	public void handleInteract(PlayerInteractEvent event) {
-		Player subject = event.getPlayer();
+		final Player subject = event.getPlayer();
 		if (!delayElapsed(subject.getName())) {
 			return;
 		}
 
-		Action act = event.getAction();
+		final Action act = event.getAction();
 		if (act.equals(Action.LEFT_CLICK_BLOCK)
 				|| (act.equals(Action.RIGHT_CLICK_BLOCK))) {
-			Block clicked = event.getClickedBlock();
-			Material type = clicked.getType();
+			final Block clicked = event.getClickedBlock();
+			final Material type = clicked.getType();
 			if (!dataMap.containsKey(type)) {
 				uPrint(PrintEnum.DEBUG, subject, "" + ChatColor.GOLD + type
 						+ ChatColor.DARK_PURPLE
@@ -69,7 +71,7 @@ public class Scroll extends AbstractTool {
 							+ " the server, it is just client side");
 				}
 
-				int max = dataMap.get(type);
+				final int max = dataMap.get(type);
 				byte data = clicked.getData();
 
 				if (max != 0) {
@@ -87,7 +89,7 @@ public class Scroll extends AbstractTool {
 					}
 				}
 
-				MaterialData newInfo = clicked.getState().getData();
+				final MaterialData newInfo = clicked.getState().getData();
 				newInfo.setData(data);
 				if (spawnBuild(clicked, subject)) {
 					if (isUseEvent()) {
@@ -114,8 +116,9 @@ public class Scroll extends AbstractTool {
 	}
 
 	private byte specialCase(PlayerInteractEvent event, Player subject,
-			Action act, Block clicked, Material type, byte data) {
-		MaterialData b = clicked.getState().getData();
+			Action act, Block clicked, Material type, byte oldData) {
+		byte data = oldData;
+		final MaterialData b = clicked.getState().getData();
 		switch (type) {
 		case JUKEBOX:
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
@@ -179,7 +182,7 @@ public class Scroll extends AbstractTool {
 					+ "There is no useful data to scroll");
 		case STEP:
 			boolean inverted = (data & 0x8) == 0x8;
-			int stepMax = 7;
+			final int stepMax = 7;
 			data = (byte) (data & 0x7);
 			if (act.equals(Action.LEFT_CLICK_BLOCK)) {
 				if (!inverted) {
@@ -209,7 +212,7 @@ public class Scroll extends AbstractTool {
 					+ ChatColor.DARK_PURPLE + " is not yet scrollable");
 		case DIODE_BLOCK_OFF:
 		case DIODE_BLOCK_ON:
-			byte tick = (byte) (data & (0x08 | 0x04));
+			final byte tick = (byte) (data & (0x08 | 0x04));
 			data = simpScroll(event, (byte) (data & 0x03), 4);
 			data |= tick;
 			break;
@@ -260,7 +263,8 @@ public class Scroll extends AbstractTool {
 	}
 
 	// Note that max is exclusive, to scroll through 0,1,2 set max to 3
-	private byte simpScroll(PlayerInteractEvent event, byte data, int max) {
+	private byte simpScroll(PlayerInteractEvent event, byte oldData, int max) {
+		byte data = oldData;
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			if ((data - 1) < 0) {
 				data = (byte) (max - 1);
@@ -306,8 +310,8 @@ public class Scroll extends AbstractTool {
 		return true;
 	}
 
-	private HashMap<Material, Integer> defDataMap() {
-		HashMap<Material, Integer> dm = new HashMap<Material, Integer>();
+	private Map<Material, Integer> defDataMap() {
+		final Map<Material, Integer> dm = new HashMap<Material, Integer>();
 		// If the integer is 0, that means that a simple numerical shift won't
 		// work
 		dm.put(Material.LOG, TreeSpecies.values().length);

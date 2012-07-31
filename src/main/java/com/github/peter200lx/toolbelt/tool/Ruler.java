@@ -2,6 +2,7 @@ package com.github.peter200lx.toolbelt.tool;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -20,7 +21,7 @@ public class Ruler extends AbstractTool {
 		super(gc);
 	}
 
-	private HashMap<String, Location[]> pCube = new HashMap<String,
+	private final Map<String, Location[]> pCube = new HashMap<String,
 			Location[]>();
 
 	public static final String NAME = "ruler";
@@ -32,8 +33,8 @@ public class Ruler extends AbstractTool {
 
 	@Override
 	public void handleInteract(PlayerInteractEvent event) {
-		Player subject = event.getPlayer();
-		String playerName = subject.getName();
+		final Player subject = event.getPlayer();
+		final String playerName = subject.getName();
 		if (!delayElapsed(subject.getName())) {
 			return;
 		}
@@ -85,16 +86,16 @@ public class Ruler extends AbstractTool {
 		pCube.put(playerName, ptArray);
 
 		// Display data or help
-		Location pt1 = ptArray[0];
-		Location pt2 = ptArray[1];
+		final Location pt1 = ptArray[0];
+		final Location pt2 = ptArray[1];
 		if ((pt1 != null) && (pt2 != null)
 				&& (pt1.getWorld() == pt2.getWorld())) {
-			int widthX = 1 + Math.abs(pt1.getBlockX() - pt2.getBlockX());
-			int widthY = 1 + Math.abs(pt1.getBlockY() - pt2.getBlockY());
-			int widthZ = 1 + Math.abs(pt1.getBlockZ() - pt2.getBlockZ());
-			int vol = widthX * widthY * widthZ;
-			double dist = pt1.distance(pt2);
-			DecimalFormat df = new DecimalFormat("#.##");
+			final int widthX = 1 + Math.abs(pt1.getBlockX() - pt2.getBlockX());
+			final int widthY = 1 + Math.abs(pt1.getBlockY() - pt2.getBlockY());
+			final int widthZ = 1 + Math.abs(pt1.getBlockZ() - pt2.getBlockZ());
+			final int vol = widthX * widthY * widthZ;
+			final double dist = pt1.distance(pt2);
+			final DecimalFormat df = new DecimalFormat("#.##");
 			uPrint(PrintEnum.IMPORT, subject, ChatColor.GREEN
 					+ "The width in (x,y,z) is: " + ChatColor.GOLD + "("
 					+ widthX + "," + widthY + "," + widthZ + ")"

@@ -34,13 +34,13 @@ public class Shovel extends AbstractTool {
 	@Override
 	public void handleInteract(PlayerInteractEvent event) {
 		List<Block> toChange;
-		Player subject = event.getPlayer();
+		final Player subject = event.getPlayer();
 		if (!delayElapsed(subject.getName())) {
 			return;
 		}
 		Block target;
 
-		List<String> subRanks = gc.ranks.getUserRank(subject);
+		final List<String> subRanks = gc.ranks.getUserRank(subject);
 		if (subRanks != null) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Your ranks are: " + ChatColor.GOLD + subRanks);
@@ -85,12 +85,12 @@ public class Shovel extends AbstractTool {
 
 	private List<Block> getCube(Block center, int width,
 			List<String> subRanks) {
-		int bound = (width - 1) / 2;
-		List<Block> toRet = new ArrayList<Block>();
+		final int bound = (width - 1) / 2;
+		final List<Block> toRet = new ArrayList<Block>();
 		for (int x = -bound; x <= bound; ++x) {
 			for (int y = -bound; y <= bound; ++y) {
 				for (int z = -bound; z <= bound; ++z) {
-					Block loc = center.getRelative(x, y, z);
+					final Block loc = center.getRelative(x, y, z);
 					if (!noOverwrite(subRanks, loc.getType())) {
 						toRet.add(loc);
 					}
@@ -102,16 +102,15 @@ public class Shovel extends AbstractTool {
 
 	private List<Block> getDisk(Block center, double radius,
 			List<String> subRanks) {
-		List<Block> toRet = new ArrayList<Block>();
-		int round = (int) Math.round(radius - 0.001);
+		final List<Block> toRet = new ArrayList<Block>();
+		final int round = (int) Math.round(radius - 0.001);
 		for (int x = -round; x <= round; ++x) {
 			for (int z = -round; z <= round; ++z) {
-				Block loc = center.getRelative(x, 0, z);
+				final Block loc = center.getRelative(x, 0, z);
 				if (loc.getLocation().toVector().isInSphere(
-						center.getLocation().toVector(), radius)) {
-					if (!noOverwrite(subRanks, loc.getType())) {
-						toRet.add(loc);
-					}
+						center.getLocation().toVector(), radius)
+						&& !noOverwrite(subRanks, loc.getType())) {
+					toRet.add(loc);
 				}
 			}
 		}
@@ -120,17 +119,16 @@ public class Shovel extends AbstractTool {
 
 	private List<Block> getSphere(Block center, double radius,
 			List<String> subRanks) {
-		List<Block> toRet = new ArrayList<Block>();
-		int round = (int) Math.round(radius - 0.001);
+		final List<Block> toRet = new ArrayList<Block>();
+		final int round = (int) Math.round(radius - 0.001);
 		for (int x = -round; x <= round; ++x) {
 			for (int y = -round; y <= round; ++y) {
 				for (int z = -round; z <= round; ++z) {
-					Block loc = center.getRelative(x, y, z);
+					final Block loc = center.getRelative(x, y, z);
 					if (loc.getLocation().toVector().isInSphere(
-							center.getLocation().toVector(), radius)) {
-						if (!noOverwrite(subRanks, loc.getType())) {
-							toRet.add(loc);
-						}
+							center.getLocation().toVector(), radius)
+							&& !noOverwrite(subRanks, loc.getType())) {
+						toRet.add(loc);
 					}
 				}
 			}

@@ -2,6 +2,7 @@ package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
@@ -28,9 +29,9 @@ public class Duplicator extends AbstractTool {
 
 	public static final String NAME = "dupe";
 
-	private HashMap<Material, Material> dupeMap;
+	private Map<Material, Material> dupeMap;
 
-	private SetMat keepData = new SetMat(log, gc.modName, "keepData");
+	private final SetMat keepData = new SetMat(log, gc.modName, "keepData");
 
 	@Override
 	public String getToolName() {
@@ -41,14 +42,14 @@ public class Duplicator extends AbstractTool {
 	@SuppressWarnings("deprecation")
 	// TODO Investigate replacement .updateInventory()
 	public void handleInteract(PlayerInteractEvent event) {
-		Player subject = event.getPlayer();
+		final Player subject = event.getPlayer();
 		if (!delayElapsed(subject.getName())) {
 			return;
 		}
 
 		if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-			Block clicked = event.getClickedBlock();
-			Material type = clicked.getType();
+			final Block clicked = event.getClickedBlock();
+			final Material type = clicked.getType();
 
 			Material toUse = dupeMap.get(type);
 			if (toUse == null) {
@@ -114,7 +115,7 @@ public class Duplicator extends AbstractTool {
 			return false;
 		}
 
-		ConfigurationSection sect = conf.getConfigurationSection(
+		final ConfigurationSection sect = conf.getConfigurationSection(
 				tSet + "." + NAME + ".replace");
 
 		if (sect == null) {
@@ -123,15 +124,15 @@ public class Duplicator extends AbstractTool {
 			return false;
 		}
 
-		HashMap<Material, Material> holdDupeMap = defDupeMap();
+		final Map<Material, Material> holdDupeMap = defDupeMap();
 		for (Entry<String, Object> entry : sect.getValues(false).entrySet()) {
 			try {
-				int key = Integer.parseInt(entry.getKey());
+				final int key = Integer.parseInt(entry.getKey());
 				if (entry.getValue() instanceof Number) {
-					int val = ((Number) entry.getValue()).intValue();
+					final int val = ((Number) entry.getValue()).intValue();
 					if ((key > 0) && (val >= 0)) {
-						Material keyType = Material.getMaterial(key);
-						Material valType = Material.getMaterial(val);
+						final Material keyType = Material.getMaterial(key);
+						final Material valType = Material.getMaterial(val);
 						if ((keyType != null) && (valType != null)) {
 							holdDupeMap.put(keyType, valType);
 							if (isDebug()) {
@@ -156,7 +157,7 @@ public class Duplicator extends AbstractTool {
 		}
 		dupeMap = holdDupeMap;
 
-		List<Integer> intL = conf.getIntegerList(tSet + "." + NAME
+		final List<Integer> intL = conf.getIntegerList(tSet + "." + NAME
 				+ ".keepData");
 
 		if (!keepData.loadMatList(intL, false, tSet + "." + NAME)) {
@@ -170,8 +171,8 @@ public class Duplicator extends AbstractTool {
 		return true;
 	}
 
-	private HashMap<Material, Material> defDupeMap() {
-		HashMap<Material, Material> dm = new HashMap<Material, Material>();
+	private Map<Material, Material> defDupeMap() {
+		final Map<Material, Material> dm = new HashMap<Material, Material>();
 		// What about Material.GLOWING_REDSTONE_ORE ? It is safe to place
 		// TODO Investigate (Stationary)Water/Lava
 		// Material.STATIONARY_LAVA    Material.STATIONARY_WATER

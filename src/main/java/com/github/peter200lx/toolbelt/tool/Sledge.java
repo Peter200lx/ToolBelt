@@ -30,7 +30,7 @@ public class Sledge extends AbstractTool {
 
 	@Override
 	public void handleInteract(PlayerInteractEvent event) {
-		Player subject = event.getPlayer();
+		final Player subject = event.getPlayer();
 		Block clicked, target;
 		if (!delayElapsed(subject.getName())) {
 			return;
@@ -54,7 +54,7 @@ public class Sledge extends AbstractTool {
 			return;
 		}
 
-		List<String> subRanks = gc.ranks.getUserRank(subject);
+		final List<String> subRanks = gc.ranks.getUserRank(subject);
 		if (subRanks != null) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Your ranks are: " + ChatColor.GOLD + subRanks);
@@ -80,14 +80,13 @@ public class Sledge extends AbstractTool {
 		}
 
 		if (spawnBuild(clicked, subject) && spawnBuild(target, subject)) {
-			MaterialData set = clicked.getState().getData();
+			final MaterialData set = clicked.getState().getData();
 			if (isUseEvent()) {
-				if (safeReplace(set, target, subject, true)) {
-					if (safeBreak(clicked, subject, false)) {
-						this.updateUser(subject, clicked.getLocation(), 0,
-								(byte) 0);
-						this.updateUser(subject, target.getLocation(), set);
-					}
+				if (safeReplace(set, target, subject, true)
+						&& safeBreak(clicked, subject, false)) {
+					this.updateUser(subject, clicked.getLocation(), 0,
+							(byte) 0);
+					this.updateUser(subject, target.getLocation(), set);
 				}
 			} else {
 				clicked.setTypeId(0, false);

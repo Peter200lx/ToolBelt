@@ -1,6 +1,8 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,7 +23,7 @@ public class Pickhax extends AbstractTool {
 
 	public static final String NAME = "phax";
 
-	private HashMap<String, Long> pWarned = new HashMap<String, Long>();
+	private final Map<String, Long> pWarned = new HashMap<String, Long>();
 
 	private Integer range;
 
@@ -32,7 +34,7 @@ public class Pickhax extends AbstractTool {
 
 	@Override
 	public void handleInteract(PlayerInteractEvent event) {
-		Player subject = event.getPlayer();
+		final Player subject = event.getPlayer();
 		if (!delayElapsed(subject.getName())) {
 			return;
 		}

@@ -1,6 +1,7 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -22,7 +23,7 @@ public class Watch extends AbstractTool {
 
 	private int timeNight;
 
-	private HashSet<String> pNotSync = new HashSet<String>();
+	private final Set<String> pNotSync = new HashSet<String>();
 
 	public static final String NAME = "watch";
 
@@ -33,7 +34,7 @@ public class Watch extends AbstractTool {
 
 	@Override
 	public void handleInteract(PlayerInteractEvent event) {
-		Player subject = event.getPlayer();
+		final Player subject = event.getPlayer();
 		int time;
 		if (!delayElapsed(subject.getName())) {
 			return;

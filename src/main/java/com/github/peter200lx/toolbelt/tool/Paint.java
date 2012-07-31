@@ -1,6 +1,8 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -28,7 +30,7 @@ public class Paint extends AbstractTool {
 	private Integer rangeDef = 0;
 	private Integer rangeCrouch = 25;
 
-	private HashMap<String, HashMap<Integer, MaterialData>> pPalette =
+	private final Map<String, HashMap<Integer, MaterialData>> pPalette =
 			new HashMap<String, HashMap<Integer, MaterialData>>();
 
 	@Override
@@ -38,7 +40,7 @@ public class Paint extends AbstractTool {
 
 	@Override
 	public void handleInteract(PlayerInteractEvent event) {
-		Player subject = event.getPlayer();
+		final Player subject = event.getPlayer();
 		if (!delayElapsed(subject.getName())) {
 			return;
 		}
@@ -73,7 +75,7 @@ public class Paint extends AbstractTool {
 				uPrint(PrintEnum.IMPORT, subject,
 						paintFormat("Paint is now ", mdTarget));
 			} else {
-				MaterialData old = pPalette.get(subject.getName()).get(
+				final MaterialData old = pPalette.get(subject.getName()).get(
 						subject.getInventory().getHeldItemSlot());
 				uPrint(PrintEnum.IMPORT, subject, ChatColor.RED
 						+ "No paint aquired, "
@@ -83,7 +85,7 @@ public class Paint extends AbstractTool {
 		case RIGHT_CLICK_BLOCK:
 		case RIGHT_CLICK_AIR:
 			// Draw paint
-			MaterialData set = pPalette.get(subject.getName()).get(
+			final MaterialData set = pPalette.get(subject.getName()).get(
 					subject.getInventory().getHeldItemSlot());
 			if (set != null) {
 				Block bTarget = null;
@@ -158,13 +160,13 @@ public class Paint extends AbstractTool {
 
 	@Override
 	public void handleItemChange(PlayerItemHeldEvent event) {
-		Player subject = event.getPlayer();
+		final Player subject = event.getPlayer();
 		if (pPalette.containsKey(subject.getName())
 				&& (pPalette.get(subject.getName()).size() > 1)) {
-			MaterialData c = pPalette.get(subject.getName()).get(
-					event.getNewSlot());
+			final MaterialData slot = pPalette.get(
+					subject.getName()).get(event.getNewSlot());
 			uPrint(PrintEnum.IMPORT, subject,
-					paintFormat("Paint in this slot is ", c));
+					paintFormat("Paint in this slot is ", slot));
 		}
 	}
 
