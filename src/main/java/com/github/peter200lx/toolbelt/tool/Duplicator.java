@@ -18,9 +18,9 @@ import org.bukkit.inventory.ItemStack;
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.SetMat;
-import com.github.peter200lx.toolbelt.Tool;
+import com.github.peter200lx.toolbelt.AbstractTool;
 
-public class Duplicator extends Tool {
+public class Duplicator extends AbstractTool {
 
 	public Duplicator(GlobalConf gc) {
 		super(gc);

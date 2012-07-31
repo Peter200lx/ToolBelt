@@ -192,7 +192,8 @@ public class ToolBelt extends JavaPlugin {
 		}
 
 		// Initialize all available tools
-		HashMap<String, Tool> available = new HashMap<String, Tool>();
+		HashMap<String, AbstractTool> available =
+				new HashMap<String, AbstractTool>();
 		available.put(Duplicator.NAME, new Duplicator(gc));
 		available.put(Scroll.NAME, new Scroll(gc));
 		available.put(Paint.NAME, new Paint(gc));

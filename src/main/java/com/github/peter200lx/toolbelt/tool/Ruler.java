@@ -12,9 +12,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
-import com.github.peter200lx.toolbelt.Tool;
+import com.github.peter200lx.toolbelt.AbstractTool;
 
-public class Ruler extends Tool {
+public class Ruler extends AbstractTool {
 
 	public Ruler(GlobalConf gc) {
 		super(gc);

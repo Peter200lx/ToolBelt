@@ -10,9 +10,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
-import com.github.peter200lx.toolbelt.Tool;
+import com.github.peter200lx.toolbelt.AbstractTool;
 
-public class Watch extends Tool {
+public class Watch extends AbstractTool {
 
 	public Watch(GlobalConf gc) {
 		super(gc);

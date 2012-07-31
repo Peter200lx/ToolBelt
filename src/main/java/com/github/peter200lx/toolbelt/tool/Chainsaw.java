@@ -12,9 +12,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
-import com.github.peter200lx.toolbelt.Tool;
+import com.github.peter200lx.toolbelt.AbstractTool;
 
-public class Chainsaw extends Tool {
+public class Chainsaw extends AbstractTool {
 
 	public Chainsaw(GlobalConf gc) {
 		super(gc);

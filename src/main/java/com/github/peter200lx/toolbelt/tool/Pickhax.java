@@ -11,9 +11,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
-import com.github.peter200lx.toolbelt.Tool;
+import com.github.peter200lx.toolbelt.AbstractTool;
 
-public class Pickhax extends Tool {
+public class Pickhax extends AbstractTool {
 
 	public Pickhax(GlobalConf gc) {
 		super(gc);

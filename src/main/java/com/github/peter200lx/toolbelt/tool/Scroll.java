@@ -24,9 +24,9 @@ import org.bukkit.material.TrapDoor;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
-import com.github.peter200lx.toolbelt.Tool;
+import com.github.peter200lx.toolbelt.AbstractTool;
 
-public class Scroll extends Tool {
+public class Scroll extends AbstractTool {
 
 	public Scroll(GlobalConf gc) {
 		super(gc);

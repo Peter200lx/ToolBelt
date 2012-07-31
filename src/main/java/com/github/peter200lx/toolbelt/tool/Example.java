@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
-import com.github.peter200lx.toolbelt.Tool;
+import com.github.peter200lx.toolbelt.AbstractTool;
 
 //Instructions for setting up a new tool:
 
@@ -24,7 +24,7 @@ import com.github.peter200lx.toolbelt.Tool;
 /**
  * A basic tool definition provided to assist others to build tools.
  */
-public class Example extends Tool  {
+public class Example extends AbstractTool  {
 
 	/**
 	 * Pass the global config object into Tool's constructor.

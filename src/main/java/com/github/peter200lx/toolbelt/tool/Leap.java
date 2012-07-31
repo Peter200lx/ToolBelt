@@ -15,9 +15,9 @@ import org.bukkit.util.Vector;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
-import com.github.peter200lx.toolbelt.Tool;
+import com.github.peter200lx.toolbelt.AbstractTool;
 
-public class Leap extends Tool {
+public class Leap extends AbstractTool {
 
 	public Leap(GlobalConf gc) {
 		super(gc);

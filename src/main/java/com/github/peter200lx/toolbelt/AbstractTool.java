@@ -49,9 +49,9 @@ import org.bukkit.material.Tree;
 import org.bukkit.material.Wool;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public abstract class Tool implements ToolInterface {
+public abstract class AbstractTool implements ToolInterface {
 
-	public Tool(GlobalConf gc) {
+	public AbstractTool(GlobalConf gc) {
 		this.gc = gc;
 		onlyAllow = gc.onlyAllow.copy();
 		stopCopy = gc.stopCopy.copy();

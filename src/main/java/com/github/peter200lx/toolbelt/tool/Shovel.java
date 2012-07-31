@@ -12,9 +12,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
-import com.github.peter200lx.toolbelt.Tool;
+import com.github.peter200lx.toolbelt.AbstractTool;
 
-public class Shovel extends Tool {
+public class Shovel extends AbstractTool {
 
 	public Shovel(GlobalConf gc) {
 		super(gc);

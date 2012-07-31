@@ -13,9 +13,9 @@ import org.bukkit.material.MaterialData;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
-import com.github.peter200lx.toolbelt.Tool;
+import com.github.peter200lx.toolbelt.AbstractTool;
 
-public class Pliers extends Tool {
+public class Pliers extends AbstractTool {
 
 	public Pliers(GlobalConf gc) {
 		super(gc);
