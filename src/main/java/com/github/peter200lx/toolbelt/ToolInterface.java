@@ -2,7 +2,7 @@ package com.github.peter200lx.toolbelt;
 
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -92,7 +92,7 @@ interface ToolInterface {
 	 * @param conf configuration object representing config.yml
 	 * @return true if no errors processing conf, false if errors occur
 	 */
-	boolean loadConf(String tSet, FileConfiguration conf);
+	boolean loadConf(String tSet, ConfigurationSection conf);
 
 	/**
 	 * If the tool has its own area in config.yml, then this is

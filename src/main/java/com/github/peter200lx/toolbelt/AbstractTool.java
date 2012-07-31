@@ -12,7 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
@@ -129,7 +128,7 @@ public abstract class AbstractTool implements ToolInterface {
 
 	// All tools must override this, however they can just return true; if
 	// they have no data to load.
-	public abstract boolean loadConf(String tSet, FileConfiguration conf);
+	public abstract boolean loadConf(String tSet, ConfigurationSection conf);
 
 	public void saveHelp(JavaPlugin host) {
 		if (isDebug()) {
@@ -346,7 +345,7 @@ public abstract class AbstractTool implements ToolInterface {
 		subject.sendBlockChange(loc, newType, data);
 	}
 
-	protected boolean loadRepeatDelay(String tSet, FileConfiguration conf,
+	protected boolean loadRepeatDelay(String tSet, ConfigurationSection conf,
 			int def) {
 
 		int localDelay = conf.getInt(tSet + "." + getToolName()
@@ -377,7 +376,7 @@ public abstract class AbstractTool implements ToolInterface {
 		return true;
 	}
 
-	protected boolean loadOnlyAllow(String tSet, FileConfiguration conf) {
+	protected boolean loadOnlyAllow(String tSet, ConfigurationSection conf) {
 		List<Integer> intL = conf.getIntegerList(tSet + "." + getToolName()
 				+ ".onlyAllow");
 
@@ -419,7 +418,7 @@ public abstract class AbstractTool implements ToolInterface {
 		return true;
 	}
 
-	protected boolean loadStopCopy(String tSet, FileConfiguration conf) {
+	protected boolean loadStopCopy(String tSet, ConfigurationSection conf) {
 		List<Integer> intL = conf.getIntegerList(tSet + "." + getToolName()
 				+ ".stopCopy");
 
@@ -454,7 +453,7 @@ public abstract class AbstractTool implements ToolInterface {
 		return true;
 	}
 
-	protected boolean loadStopOverwrite(String tSet, FileConfiguration conf) {
+	protected boolean loadStopOverwrite(String tSet, ConfigurationSection conf) {
 		List<Integer> intL = conf.getIntegerList(tSet + "." + getToolName()
 				+ ".stopOverwrite");
 

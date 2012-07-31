@@ -2,7 +2,7 @@ package com.github.peter200lx.toolbelt.tool;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
@@ -67,7 +67,7 @@ public class Example extends AbstractTool  {
 	}
 
 	@Override
-	public final boolean loadConf(String tSet, FileConfiguration conf) {
+	public final boolean loadConf(String tSet, ConfigurationSection conf) {
 		//There only needs to be logic in here if you have tool specific
 		// data you want to load. This function should always be present.
 		//This function should return true if all data loaded successfully

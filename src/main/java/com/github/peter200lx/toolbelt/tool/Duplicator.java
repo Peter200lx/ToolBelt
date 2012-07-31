@@ -10,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -108,7 +107,7 @@ public class Duplicator extends AbstractTool {
 	}
 
 	@Override
-	public boolean loadConf(String tSet, FileConfiguration conf) {
+	public boolean loadConf(String tSet, ConfigurationSection conf) {
 
 		// Load the repeat delay
 		if (!loadRepeatDelay(tSet, conf, 0)) {

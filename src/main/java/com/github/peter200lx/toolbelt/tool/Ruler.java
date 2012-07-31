@@ -7,7 +7,7 @@ import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -140,7 +140,7 @@ public class Ruler extends AbstractTool {
 		return false;
 	}
 
-	public boolean loadConf(String tSet, FileConfiguration conf) {
+	public boolean loadConf(String tSet, ConfigurationSection conf) {
 
 		// Load the repeat delay
 		if (!loadRepeatDelay(tSet, conf, 0)) {

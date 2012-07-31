@@ -16,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -191,7 +190,7 @@ public class ToolBelt extends JavaPlugin {
 		tbDisabled = new HashSet<String>();
 
 		// Reload and hold config for this function
-		FileConfiguration conf = this.getConfig();
+		ConfigurationSection conf = this.getConfig();
 
 		// Load all global configuration settings
 		gc = loadGlobalConf(conf, tSet);
