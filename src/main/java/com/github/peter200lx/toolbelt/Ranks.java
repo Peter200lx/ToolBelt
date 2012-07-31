@@ -43,11 +43,11 @@ public class Ranks {
 		//1) Sanitize our input into list of String names
 		for (Entry<String, Object> entry :sect.getValues(false).entrySet()) {
 			if ((entry.getKey().toLowerCase().equals(global))) {
-				throw new RuntimeException("Can't declare a rank with a "
+				throw new ArrayStoreException("Can't declare a rank with a "
 						+ "reserved name: " + entry.getKey());
 			}
 			if (posNames.contains(entry.getKey().toLowerCase())) {
-				throw new RuntimeException("More then one rank '"
+				throw new ArrayStoreException("More then one rank '"
 						+ entry.getKey() + "' have been declared");
 			}
 			posNames.add(entry.getKey().toLowerCase());
@@ -206,14 +206,14 @@ public class Ranks {
 		if (fallback.equals(global)) {
 			posNodes.add(new RankNode(newName));
 		} else if (!posNames.contains(fallback)) {
-			throw new RuntimeException("Rank >" + newName
+			throw new ArrayStoreException("Rank >" + newName
 					+ "< is trying to fallback to >" + fallback
 					+ "< Which is not a defined rank");
 		} else {
 			if (entryName == null) {
 				entryName = newName;
 			} else if (entryName.equals(newName)) {
-				throw new RuntimeException("Loop detected in fallbacks, >"
+				throw new ArrayStoreException("Loop detected in fallbacks, >"
 						+ newName + "< falls back to itself through some "
 						+ "level of children");
 			}
@@ -246,7 +246,7 @@ public class Ranks {
 		RankNode(String name, RankNode next) {
 			this.name = name;
 			if (!setNext(next)) {
-				throw new RuntimeException("Loop detected in fallbacks, >"
+				throw new ArrayStoreException("Loop detected in fallbacks, >"
 						+ this.name + "< falls back to itself through some "
 						+ "level of children");
 			}

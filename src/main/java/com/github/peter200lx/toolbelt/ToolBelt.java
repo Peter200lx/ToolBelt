@@ -422,7 +422,7 @@ public class ToolBelt extends JavaPlugin {
 		try {
 			ranks = new Ranks(permissions
 					? conf.getConfigurationSection("ranksDef") : null, cName);
-		} catch (RuntimeException e) {
+		} catch (ArrayStoreException e) {
 			log.warning(e.getMessage());
 			return null;
 		}
