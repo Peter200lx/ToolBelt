@@ -3,6 +3,8 @@ package com.github.peter200lx.toolbelt;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -69,7 +71,7 @@ public abstract class AbstractTool implements ToolInterface {
 
 	private int repeatDelay;
 
-	private HashMap<String, Long> pCooldown = new HashMap<String, Long>();
+	private final Map<String, Long> pCooldown = new HashMap<String, Long>();
 
 	protected SetMat onlyAllow;
 
@@ -77,7 +79,7 @@ public abstract class AbstractTool implements ToolInterface {
 
 	protected SetMat stopOverwrite;
 
-	protected static HashSet<Material> printData = new HashSet<Material>();
+	protected static Set<Material> printData = new HashSet<Material>();
 
 	public Material getType() {
 		return type;
@@ -167,14 +169,14 @@ public abstract class AbstractTool implements ToolInterface {
 	}
 
 	protected boolean spawnBuild(Block target, Player subject) {
-		int spawnSize = gc.server.getSpawnRadius();
+		final int spawnSize = gc.server.getSpawnRadius();
 		if (subject.isOp()) {
 			return true;
 		} else if (spawnSize <= 0) {
 			return true;
 		} else {
-			Location spawn = target.getWorld().getSpawnLocation();
-			int distanceFromSpawn = (int) Math.max(
+			final Location spawn = target.getWorld().getSpawnLocation();
+			final int distanceFromSpawn = (int) Math.max(
 					Math.abs(target.getX() - spawn.getX()),
 					Math.abs(target.getZ() - spawn.getZ()));
 			if (distanceFromSpawn > spawnSize) {
@@ -190,8 +192,8 @@ public abstract class AbstractTool implements ToolInterface {
 	// This is needed if breaking a block and not replacing it with a new block
 	protected boolean safeBreak(Block target, Player subject,
 			boolean applyPhysics) {
-		ItemStack hand = subject.getItemInHand();
-		BlockDamageEvent canDamage = new BlockDamageEvent(subject, target,
+		final ItemStack hand = subject.getItemInHand();
+		final BlockDamageEvent canDamage = new BlockDamageEvent(subject, target,
 				hand, true);
 		gc.server.getPluginManager().callEvent(canDamage);
 		if (canDamage.isCancelled()) {
@@ -336,10 +338,9 @@ public abstract class AbstractTool implements ToolInterface {
 		int horSqr = horizon * horizon;
 		Player[] online = gc.server.getOnlinePlayers();
 		for (Player other : online) {
-			if (loc.getWorld().equals(other.getWorld())) {
-				if (loc.distanceSquared(other.getLocation()) < horSqr) {
-					other.sendBlockChange(loc, newType, data);
-				}
+			if (loc.getWorld().equals(other.getWorld())
+					&& loc.distanceSquared(other.getLocation()) < horSqr) {
+				other.sendBlockChange(loc, newType, data);
 			}
 		}
 		subject.sendBlockChange(loc, newType, data);
@@ -453,7 +454,8 @@ public abstract class AbstractTool implements ToolInterface {
 		return true;
 	}
 
-	protected boolean loadStopOverwrite(String tSet, ConfigurationSection conf) {
+	protected boolean loadStopOverwrite(String tSet,
+			ConfigurationSection conf) {
 		List<Integer> intL = conf.getIntegerList(tSet + "." + getToolName()
 				+ ".stopOverwrite");
 

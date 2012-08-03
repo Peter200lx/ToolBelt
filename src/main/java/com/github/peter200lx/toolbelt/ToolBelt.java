@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -35,21 +36,21 @@ import com.github.peter200lx.toolbelt.tool.Sledge;
 import com.github.peter200lx.toolbelt.tool.Watch;
 
 public class ToolBelt extends JavaPlugin {
-	private Logger log = Logger.getLogger("Minecraft");
+	private static final Logger LOG = Logger.getLogger("Minecraft");
 
-	private String cName = "ToolBelt";
+	private static final String MODNAME = "ToolBelt";
 
 	private GlobalConf gc;
 
 	private List<ToolInterface> tools;
 
-	private HashSet<String> tbDisabled;
+	private Set<String> tbDisabled;
 
 	public List<ToolInterface> getTools() {
 		return tools;
 	}
 
-	public HashSet<String> getTbDisabled() {
+	public Set<String> getTbDisabled() {
 		return tbDisabled;
 	}
 
@@ -67,12 +68,12 @@ public class ToolBelt extends JavaPlugin {
 
 			// Print ToolBelt loaded message
 			if (gc.debug) {
-				PluginDescriptionFile pdfFile = this.getDescription();
-				log.info("[" + cName + "] version " + pdfFile.getVersion()
+				final PluginDescriptionFile pdfFile = this.getDescription();
+				LOG.info("[" + MODNAME + "] version " + pdfFile.getVersion()
 						+ " is now loaded with debug enabled");
 			}
 		} else {
-			log.warning("[" + cName + "] had an error loading config.yml and"
+			LOG.warning("[" + MODNAME + "] had an error loading config.yml and"
 					+ " is now disabled");
 			this.setEnabled(false);
 		}
@@ -89,9 +90,9 @@ public class ToolBelt extends JavaPlugin {
 		if ((cmd.getName().equalsIgnoreCase("ToolBelt") || cmd.getName()
 				.equalsIgnoreCase("tb")) && (args.length == 1)) {
 			if (args[0].contentEquals("reload")) {
-				if (hasAdminPerm(sender, cName.toLowerCase() + ".reload")) {
+				if (hasAdminPerm(sender, MODNAME.toLowerCase() + ".reload")) {
 					if (!console) {
-						log.info("[" + cName + "] " + sender.getName()
+						LOG.info("[" + MODNAME + "] " + sender.getName()
 								+ " Just ran /toolbelt reload");
 					}
 					this.reloadConfig();
@@ -105,7 +106,7 @@ public class ToolBelt extends JavaPlugin {
 						sender.sendMessage("[WARNING] Tools have been disabled"
 								+ " until a valid config file is loaded");
 						if (!console) {
-							log.warning(" Tools have been disabled until "
+							LOG.warning(" Tools have been disabled until "
 									+ "a valid config file is loaded");
 						}
 					}
@@ -168,20 +169,20 @@ public class ToolBelt extends JavaPlugin {
 		return false;
 	}
 
-	private Boolean hasAdminPerm(CommandSender p, String what) {
+	private Boolean hasAdminPerm(CommandSender person, String what) {
 		if (gc.perm) {
-			return p.hasPermission(what);
+			return person.hasPermission(what);
 		} else {
-			return p.isOp();
+			return person.isOp();
 		}
 	}
 
 	private boolean loadConf() {
-		String tSet = "tools";
+		final String tSet = "tools";
 		// Load and/or initialize configuration file
 		if (!this.getConfig().isSet(tSet)) {
 			this.saveDefaultConfig();
-			log.info("[" + cName + "][loadConf] config.yml copied from .jar"
+			LOG.info("[" + MODNAME + "][loadConf] config.yml copied from .jar"
 					+ " (likely first run)");
 			this.reloadConfig();
 		}
@@ -190,7 +191,7 @@ public class ToolBelt extends JavaPlugin {
 		tbDisabled = new HashSet<String>();
 
 		// Reload and hold config for this function
-		ConfigurationSection conf = this.getConfig();
+		final ConfigurationSection conf = this.getConfig();
 
 		// Load all global configuration settings
 		gc = loadGlobalConf(conf, tSet);
@@ -199,7 +200,7 @@ public class ToolBelt extends JavaPlugin {
 		}
 
 		// Initialize all available tools
-		HashMap<String, AbstractTool> available =
+		final HashMap<String, AbstractTool> available =
 				new HashMap<String, AbstractTool>();
 		available.put(Duplicator.NAME, new Duplicator(gc));
 		available.put(Scroll.NAME, new Scroll(gc));
@@ -214,21 +215,22 @@ public class ToolBelt extends JavaPlugin {
 		available.put(Chainsaw.NAME, new Chainsaw(gc));
 
 		// Pull in config.yml .bind section for desired tools and bindings.
-		ConfigurationSection sect = conf.getConfigurationSection(
+		final ConfigurationSection sect = conf.getConfigurationSection(
 				tSet + ".bind");
 
 		if (sect == null) {
-			log.warning("[" + cName + "] " + tSet + ".bind is returning null");
+			LOG.warning("[" + MODNAME + "] " + tSet
+					+ ".bind is returning null");
 			return false;
 		}
 
 		// Read what tools the admin wants, and what items to bind them to.
-		List<ToolInterface> holdTool = new ArrayList<ToolInterface>();
+		final List<ToolInterface> holdTool = new ArrayList<ToolInterface>();
 		for (Entry<String, Object> entry : sect.getValues(false).entrySet()) {
 			if (entry.getValue() instanceof Number) {
-				int id = ((Number) entry.getValue()).intValue();
-				if (id > 0) {
-					Material type = Material.getMaterial(id);
+				final int materialId = ((Number) entry.getValue()).intValue();
+				if (materialId > 0) {
+					final Material type = Material.getMaterial(materialId);
 					if ((type != null)
 							&& (available.containsKey(entry.getKey()))) {
 						// At this point we know we have a valid bind item, and
@@ -237,24 +239,24 @@ public class ToolBelt extends JavaPlugin {
 							available.get(entry.getKey()).setType(type);
 							holdTool.add(available.get(entry.getKey()));
 							if (gc.debug) {
-								log.info("[" + cName + "][loadConf] tools: "
+								LOG.info("[" + MODNAME + "][loadConf] tools: "
 										+ entry.getKey() + " is now " + type);
 							}
 							continue;
 						} else {
-							log.warning("[" + cName + "] " + tSet + ".bind."
+							LOG.warning("[" + MODNAME + "] " + tSet + ".bind."
 									+ entry.getKey() + ": '" + entry.getValue()
 									+ "' has a duplicate id of another tool");
 							return false;
 						}
 					}
 					if (!available.containsKey(entry.getKey())) {
-						log.warning("[" + cName + "] " + tSet + ".bind."
+						LOG.warning("[" + MODNAME + "] " + tSet + ".bind."
 								+ entry.getKey() + ": Is not a known tool");
 					}
 				}
 			}
-			log.warning("[" + cName + "] " + tSet + ".bind." + entry.getKey()
+			LOG.warning("[" + MODNAME + "] " + tSet + ".bind." + entry.getKey()
 					+ ": '" + entry.getValue() + "' is not a Material type");
 			// No return false; here so that an admin can disable tools
 			// by setting them to zero and such
@@ -285,67 +287,67 @@ public class ToolBelt extends JavaPlugin {
 
 	private GlobalConf loadGlobalConf(ConfigurationSection conf, String tSet) {
 		// Check and set the debug printout flag
-		boolean debug = conf.getBoolean("debug", false);
+		final boolean debug = conf.getBoolean("debug", false);
 		if (debug) {
-			log.info("[" + cName + "][loadGlobalConf] Debugging is enabled");
+			LOG.info("[" + MODNAME + "][loadGlobalConf] Debugging is enabled");
 		} else if (((gc == null) ? false : gc.debug)) {
-			log.info("[" + cName + "][loadGlobalConf] Debugging is now"
+			LOG.info("[" + MODNAME + "][loadGlobalConf] Debugging is now"
 					+ " disabled");
 		}
 
 		// Check and set the permissions flag
-		boolean permissions = conf.getBoolean("permissions", true);
+		final boolean permissions = conf.getBoolean("permissions", true);
 		if (debug) {
-			log.info("[" + cName + "][loadGlobalConf] permmissions are "
+			LOG.info("[" + MODNAME + "][loadGlobalConf] permmissions are "
 					+ permissions);
 		}
 
 		// Check and set the useEvent flag
-		boolean useEvent = conf.getBoolean("useEvent", true);
+		final boolean useEvent = conf.getBoolean("useEvent", true);
 		if (debug) {
-			log.info("[" + cName + "][loadGlobalConf] The plugin will use"
+			LOG.info("[" + MODNAME + "][loadGlobalConf] The plugin will use"
 					+ " Block Events: " + useEvent);
 		}
 
 		// Check and load the Ranks object
-		Ranks ranks = loadRanks(conf, debug, permissions);
+		final Ranks ranks = loadRanks(conf, debug, permissions);
 		if (ranks == null) {
 			return null;
 		}
 
 		// Check and load the user print level from config
-		PrintEnum printLevel = loadUserPrint(conf, debug);
+		final PrintEnum printLevel = loadUserPrint(conf, debug);
 		if (printLevel == null) {
 			return null;
 		}
 
-		String globalName = "global";
+		final String globalName = "global";
 
 		// Load Global repeat delay
 		int repeatDelay;
 		repeatDelay = conf.getInt(tSet + "." + globalName + ".repeatDelay",
 				125);
 		if (repeatDelay < 0) {
-			log.warning("[" + cName + "] " + tSet + "." + globalName
+			LOG.warning("[" + MODNAME + "] " + tSet + "." + globalName
 					+ ".repeatDelay has an invalid value of " + repeatDelay);
-			log.warning("[" + cName + "] (The global delay must be greater"
+			LOG.warning("[" + MODNAME + "] (The global delay must be greater"
 					+ " than or equal to zero)");
 			return null;
 		}
 		if (debug) {
-			log.info("[" + cName + "][loadGlobalConf] Global tool use repeat"
+			LOG.info("[" + MODNAME + "][loadGlobalConf] Global tool use repeat"
 					+ " delay is " + repeatDelay);
 		}
 
 		// Initialize global protection lists
-		SetMat onlyAllow = new SetMat(log, cName, "onlyAllow");
-		SetMat stopCopy = new SetMat(log, cName, "stopCopy");
-		SetMat stopOverwrite = new SetMat(log, cName, "stopOverwrite");
+		final SetMat onlyAllow = new SetMat(LOG, MODNAME, "onlyAllow");
+		final SetMat stopCopy = new SetMat(LOG, MODNAME, "stopCopy");
+		final SetMat stopOverwrite = new SetMat(LOG, MODNAME, "stopOverwrite");
 
 		// Pull in global protection lists ranked section
-		String rankName = "ranks";
-		ConfigurationSection rankConf = conf.getConfigurationSection(tSet + "."
-				+ globalName + "." + rankName);
+		final String rankName = "ranks";
+		final ConfigurationSection rankConf = conf.getConfigurationSection(
+				tSet + "." + globalName + "." + rankName);
 
 		// Load onlyAllow global protection list
 		List<Integer> intL = conf.getIntegerList(tSet + "." + globalName
@@ -357,10 +359,10 @@ public class ToolBelt extends JavaPlugin {
 		if (debug) {
 			onlyAllow.logMatSet("loadGlobalConf", globalName);
 			if (onlyAllow.isEmpty()) {
-				log.info("[" + cName + "][loadGlobalConf] As onlyAllow is"
+				LOG.info("[" + MODNAME + "][loadGlobalConf] As onlyAllow is"
 						+ " empty, all non-restricted materials are allowed");
 			} else {
-				log.info("[" + cName + "][loadGlobalConf] As onlyAllow "
+				LOG.info("[" + MODNAME + "][loadGlobalConf] As onlyAllow "
 						+ "has items, only those materials can be painted");
 			}
 		}
@@ -410,7 +412,7 @@ public class ToolBelt extends JavaPlugin {
 		}
 
 		// Store settings into global config for use outside of loadConf()
-		return new GlobalConf(cName, this.getServer(), debug, permissions,
+		return new GlobalConf(MODNAME, this.getServer(), debug, permissions,
 				useEvent, repeatDelay, onlyAllow, stopCopy, stopOverwrite,
 				ranks, printLevel);
 	}
@@ -420,15 +422,15 @@ public class ToolBelt extends JavaPlugin {
 		Ranks ranks = null;
 		try {
 			ranks = new Ranks(permissions
-					? conf.getConfigurationSection("ranksDef") : null, cName);
+					? conf.getConfigurationSection("ranksDef") : null, MODNAME);
 		} catch (ArrayStoreException e) {
-			log.warning(e.getMessage());
+			LOG.warning(e.getMessage());
 			return null;
 		}
 		if (debug) {
-			log.info("[" + cName
+			LOG.info("[" + MODNAME
 					+ "][loadRanks] Below is a listing of the defined ranks");
-			ranks.printRanks(log);
+			ranks.printRanks(LOG);
 		}
 		// Register permissions for newly loaded ranks (toolbelt.rank.rankname)
 		for (String rank : ranks.getRanks()) {
@@ -443,7 +445,8 @@ public class ToolBelt extends JavaPlugin {
 	}
 
 	private PrintEnum loadUserPrint(ConfigurationSection conf, boolean debug) {
-		int printLevelInt = conf.getInt("userPrint", PrintEnum.DEBUG.getPri());
+		final int printLevelInt = conf.getInt("userPrint",
+				PrintEnum.DEBUG.getPri());
 		PrintEnum printLevel = null;
 		for (PrintEnum level : PrintEnum.values()) {
 			if (level.getPri() == printLevelInt) {
@@ -451,26 +454,26 @@ public class ToolBelt extends JavaPlugin {
 			}
 		}
 		if (printLevel == null) {
-			log.warning("[" + cName + "][loadUserPrint] " + printLevelInt
+			LOG.warning("[" + MODNAME + "][loadUserPrint] " + printLevelInt
 					+ " is not a valid userPrint level.");
 			return null;
 		}
 		if (debug) {
-			log.info("[" + cName + "][loadUserPrint] The current user print"
+			LOG.info("[" + MODNAME + "][loadUserPrint] The current user print"
 					+ " level is " + printLevel);
 		}
 		return printLevel;
 	}
 
 	private boolean printPerm(String outName, Ranks ranks) {
-		List<Permission> perms = this.getDescription().getPermissions();
-		File outFile = new File(this.getDataFolder(), outName);
+		final List<Permission> perms = this.getDescription().getPermissions();
+		final File outFile = new File(this.getDataFolder(), outName);
 		try {
 			if (!outFile.getParentFile().exists()) {
 				outFile.getParentFile().mkdirs();
 			}
 
-			PrintWriter out = new PrintWriter(outFile);
+			final PrintWriter out = new PrintWriter(outFile);
 
 			for (Permission perm : perms) {
 				out.write(perm.getName() + "\n\t" + perm.getDescription()
@@ -485,7 +488,7 @@ public class ToolBelt extends JavaPlugin {
 					break;
 				default:
 				}
-				Map<String, Boolean> children = perm.getChildren();
+				final Map<String, Boolean> children = perm.getChildren();
 				if (!children.isEmpty()) {
 					out.write("\t\tHas Children:\n");
 					for (Entry<String, Boolean> child : children.entrySet()) {
@@ -495,14 +498,14 @@ public class ToolBelt extends JavaPlugin {
 				}
 			}
 			for (String rank : ranks.getRanks()) {
-				Permission perm = this.getServer().getPluginManager()
+				final Permission perm = this.getServer().getPluginManager()
 						.getPermission(ranks.getPrefix() + rank);
 				out.write(perm.getName() + "\n\t" + perm.getDescription()
 						+ "\n");
 			}
 			out.close();
 		} catch (IOException e) {
-			log.warning("[" + cName + "] Was not able to save"
+			LOG.warning("[" + MODNAME + "] Was not able to save"
 					+ " help/Permissions.txt");
 			return false;
 		}
@@ -510,15 +513,15 @@ public class ToolBelt extends JavaPlugin {
 	}
 
 	private boolean printCommands(String outName) {
-		Map<String, Map<String, Object>> commands =
+		final Map<String, Map<String, Object>> commands =
 				this.getDescription().getCommands();
-		File outFile = new File(this.getDataFolder(), outName);
+		final File outFile = new File(this.getDataFolder(), outName);
 		try {
 			if (!outFile.getParentFile().exists()) {
 				outFile.getParentFile().mkdirs();
 			}
 
-			PrintWriter out = new PrintWriter(outFile);
+			final PrintWriter out = new PrintWriter(outFile);
 
 			for (Entry<String, Map<String, Object>> entry : commands
 					.entrySet()) {
@@ -528,7 +531,7 @@ public class ToolBelt extends JavaPlugin {
 							+ entry.getValue().get("description") + "\n");
 				}
 				if (entry.getValue().containsKey("usage")) {
-					String use = (String) entry.getValue().get("usage");
+					final String use = (String) entry.getValue().get("usage");
 					out.write("\nusage:\n");
 					if (use.length() > 0) {
 						for (String line : use.replace("<command>",
@@ -545,7 +548,7 @@ public class ToolBelt extends JavaPlugin {
 			}
 			out.close();
 		} catch (IOException e) {
-			log.warning("[" + cName + "] Was not able to save"
+			LOG.warning("[" + MODNAME + "] Was not able to save"
 					+ " help/Commands.txt");
 			return false;
 		}

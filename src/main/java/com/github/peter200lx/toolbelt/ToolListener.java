@@ -72,7 +72,7 @@ public class ToolListener implements Listener {
 		if (master.getTbDisabled().contains(event.getPlayer().getName())) {
 			return;
 		}
-		ItemStack cur = event.getPlayer().getInventory().getItem(
+		final ItemStack cur = event.getPlayer().getInventory().getItem(
 				event.getNewSlot());
 		if (cur != null) {
 			for (ToolInterface tool:master.getTools()) {

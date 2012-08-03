@@ -3,7 +3,9 @@ package com.github.peter200lx.toolbelt;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
@@ -50,13 +52,13 @@ public class SetMat {
 	/**
 	 * unranked Material list.
 	 */
-	private HashSet<Material> list = null;
+	private Set<Material> list = null;
 	/**
 	 * ranked Material lists.
 	 * A mapping of rank name -> Material list for that rank
 	 */
-	private HashMap<String, HashSet<Material>> ranked =
-			new HashMap<String, HashSet<Material>>();
+	private Map<String, Set<Material>> ranked =
+			new HashMap<String, Set<Material>>();
 
 	/**
 	 * Check if unranked list is empty.
@@ -80,7 +82,7 @@ public class SetMat {
 	 * @return true if matching list is empty, false otherwise
 	 */
 	public final boolean isEmpty(List<String> ranks) {
-		HashSet<Material> checkList = list;
+		Set<Material> checkList = list;
 		if (ranks != null) {
 			for (String rank:ranks) {
 				if (ranked.containsKey(rank)) {
@@ -120,7 +122,7 @@ public class SetMat {
 	 * @return true if any
 	 */
 	public final boolean contains(List<String> ranks, Material mat) {
-		HashSet<Material> checkList = list;
+		Set<Material> checkList = list;
 		if (ranks != null) {
 			for (String rank:ranks) {
 				if (ranked.containsKey(rank)) {
@@ -164,9 +166,9 @@ public class SetMat {
 	 * @param baseName base string from config.yml (used for logging warnings)
 	 * @return Material list containing mapped items from Integer list
 	 */
-	private HashSet<Material> intL2matHS(List<Integer> input,
+	private Set<Material> intL2matHS(List<Integer> input,
 			boolean useDefStop, String baseName) {
-		HashSet<Material> ret = new HashSet<Material>();
+		final Set<Material> ret = new HashSet<Material>();
 		if (input == null) {
 			log.warning("[" + modName + "] " + baseName + "." + listName
 					+ " is returning null");
@@ -184,7 +186,7 @@ public class SetMat {
 		}
 		for (Integer entry : input) {
 			if (entry > 0) {
-				Material type = Material.getMaterial(entry);
+				final Material type = Material.getMaterial(entry);
 				if (type != null) {
 					ret.add(type);
 					continue;
@@ -214,18 +216,17 @@ public class SetMat {
 			return true;
 		}
 		for (String rank:ranks.getRanks()) {
-			if (sect.contains(rank)) {
-				if (sect.isList(rank + "." + listName)) {
-					List<Integer> intL = sect.getIntegerList(
-							rank + "." + listName);
+			if (sect.contains(rank)
+					&& sect.isList(rank + "." + listName)) {
+				final List<Integer> intL = sect.getIntegerList(
+						rank + "." + listName);
 
-					HashSet<Material> temp = intL2matHS(intL, false,
-							baseName + "." + rank);
-					if (temp == null) {
-						return false;
-					}
-					ranked.put(rank, temp);
+				final Set<Material> temp = intL2matHS(intL, false,
+						baseName + "." + rank);
+				if (temp == null) {
+					return false;
 				}
+				ranked.put(rank, temp);
 			}
 		}
 		return true;
@@ -256,7 +257,7 @@ public class SetMat {
 	 * @param baseName base string from config.yml (portion before list name)
 	 */
 	public final void logRankedMatSet(String func, String baseName) {
-		for (Entry<String, HashSet<Material>> rank:ranked.entrySet()) {
+		for (Entry<String, Set<Material>> rank:ranked.entrySet()) {
 			for (Material mat: rank.getValue()) {
 				log.info("[" + modName + "][" + func + "] " + baseName + "."
 						+ rank.getKey() + "." + listName + ": "
@@ -274,7 +275,7 @@ public class SetMat {
 	 *
 	 * @param newList unranked Material list to write
 	 */
-	public final void setList(HashSet<Material> newList) {
+	public final void setList(Set<Material> newList) {
 		this.list = newList;
 	}
 
@@ -283,7 +284,7 @@ public class SetMat {
 	 *
 	 * @param newMap ranked lists object to write
 	 */
-	public final void setRankedList(HashMap<String, HashSet<Material>> newMap) {
+	public final void setRankedList(Map<String, Set<Material>> newMap) {
 		this.ranked = newMap;
 	}
 
@@ -293,12 +294,12 @@ public class SetMat {
 	 * @return a new deep copy of the original object
 	 */
 	public final SetMat copy() {
-		SetMat newVersion = new SetMat(log, modName, listName);
+		final SetMat newVersion = new SetMat(log, modName, listName);
 		if (list != null) {
 			newVersion.setList(new HashSet<Material>(list));
 		}
 		newVersion.setRankedList(
-				new HashMap<String, HashSet<Material>>(ranked));
+				new HashMap<String, Set<Material>>(ranked));
 		return newVersion;
 	}
 }

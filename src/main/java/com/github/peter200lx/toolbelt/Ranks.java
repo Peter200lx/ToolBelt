@@ -38,11 +38,11 @@ public class Ranks {
 		if (sect == null) {
 			return;
 		}
-		List<String> posNames = new LinkedList<String>();
-		LinkedList<RankNode> posNodes = new LinkedList<RankNode>();
+		final List<String> posNames = new LinkedList<String>();
+		final LinkedList<RankNode> posNodes = new LinkedList<RankNode>();
 		//1) Sanitize our input into list of String names
 		for (Entry<String, Object> entry :sect.getValues(false).entrySet()) {
-			if ((entry.getKey().toLowerCase().equals(global))) {
+			if (entry.getKey().equalsIgnoreCase(global)) {
 				throw new ArrayStoreException("Can't declare a rank with a "
 						+ "reserved name: " + entry.getKey());
 			}
@@ -97,7 +97,7 @@ public class Ranks {
 	 * Ordered list of starting nodes. When checking to see if a user has a
 	 *     specific rank, this list will be searched in a depth-first approach.
 	 */
-	private List<RankNode> entryPoints;
+	private final List<RankNode> entryPoints;
 
 	/**
 	 * Get the shared portion of the permission string for rank checking.
@@ -119,7 +119,7 @@ public class Ranks {
 		if (entryPoints.isEmpty()) {
 			return null;
 		}
-		List<String> ret = new LinkedList<String>();
+		final List<String> ret = new LinkedList<String>();
 		RankNode node = null;
 		for (RankNode entry:entryPoints) {
 			node = entry;
@@ -152,7 +152,7 @@ public class Ranks {
 	 * @return List of all possible Ranks, empty list if none defined.
 	 */
 	public List<String> getRanks() {
-		List<String> ret = new LinkedList<String>();
+		final List<String> ret = new LinkedList<String>();
 		for (RankNode entry:entryPoints) {
 			for (RankNode node:entry) {
 				if (!ret.contains(node.getName())) {
@@ -202,7 +202,8 @@ public class Ranks {
 				return;
 			}
 		}
-		String fallback = sect.getString(newName + "." + fbName).toLowerCase();
+		final String fallback = sect.getString(
+				newName + "." + fbName).toLowerCase();
 		if (fallback.equals(global)) {
 			posNodes.add(new RankNode(newName));
 		} else if (!posNames.contains(fallback)) {
@@ -264,7 +265,7 @@ public class Ranks {
 		/**
 		 * User specified name of RankNode. Specified in ranksDef in config.yml
 		 */
-		private String name;
+		private final String name;
 		/**
 		 * Reference to next node in list.
 		 */
@@ -275,7 +276,7 @@ public class Ranks {
 		 *
 		 * @return name of node
 		 */
-		public String getName() {
+		public final String getName() {
 			return this.name;
 		}
 
@@ -285,7 +286,7 @@ public class Ranks {
 		 * @param nextNode next RankNode to reference.
 		 * @return true of reference set, false if param is already present
 		 */
-		public boolean setNext(RankNode nextNode) {
+		public final boolean setNext(RankNode nextNode) {
 			if (contains(nextNode)) {
 				return false;
 			}
@@ -298,7 +299,7 @@ public class Ranks {
 		 *
 		 * @return next RankNode in list
 		 */
-		public RankNode getNext() {
+		public final RankNode getNext() {
 			return this.next;
 		}
 
@@ -308,10 +309,10 @@ public class Ranks {
 		 * @param node node to find
 		 * @return true if node is linked from starting node, false otherwise
 		 */
-		public boolean contains(RankNode node) {
+		public final boolean contains(RankNode node) {
 			if (next == null) {
 				return false;
-			} else if (next == node) {
+			} else if (next.equals(node)) {
 				return true;
 			} else {
 				return next.contains(node);
@@ -323,7 +324,7 @@ public class Ranks {
 		 *
 		 * @return RankNode Iterator object
 		 */
-		public Iterator<RankNode> iterator() {
+		public final Iterator<RankNode> iterator() {
 			return new RankNodeIter(this);
 		}
 
@@ -340,17 +341,17 @@ public class Ranks {
 			 * @param first starting node
 			 */
 			RankNodeIter(RankNode first) {
-				next = first;
+				nextNode = first;
 			}
 
 			/**
 			 * Reference to next node for Iterator.
 			 */
-			private RankNode next;
+			private RankNode nextNode;
 
 			@Override
 			public boolean hasNext() {
-				if (next == null) {
+				if (nextNode == null) {
 					return false;
 				}
 				return true;
@@ -358,11 +359,11 @@ public class Ranks {
 
 			@Override
 			public RankNode next() {
-				if (next == null) {
+				if (nextNode == null) {
 		            throw new NoSuchElementException();
 			    }
-				RankNode cur = next;
-				next = cur.getNext();
+				final RankNode cur = nextNode;
+				nextNode = cur.getNext();
 			    return cur;
 			}
 
