@@ -40,6 +40,9 @@ permissions:
     toolbelt.print.important:
         default: false
         description: Print important messages, such as loaded paint material and such.
+    toolbelt.print.cmd:
+        default: false
+        description: Print only responses to user typed commands.
     toolbelt.tool.*:
         description: Gives access to the tool specific permissions for toolbelt
         default: op
