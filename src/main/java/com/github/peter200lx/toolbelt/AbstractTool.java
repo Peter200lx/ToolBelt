@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -26,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.material.Cake;
 import org.bukkit.material.Coal;
+import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.Crops;
 import org.bukkit.material.DetectorRail;
 import org.bukkit.material.Diode;
@@ -47,6 +49,8 @@ import org.bukkit.material.Step;
 import org.bukkit.material.Torch;
 import org.bukkit.material.TrapDoor;
 import org.bukkit.material.Tree;
+import org.bukkit.material.TripwireHook;
+import org.bukkit.material.WoodenStep;
 import org.bukkit.material.Wool;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -495,6 +499,19 @@ public abstract class AbstractTool implements ToolInterface {
 		byte data = b.getData();
 		switch (b.getItemType()) {
 		case LOG:
+			String species = "";
+			if (((Tree) b).getSpecies() != null) {
+				species = ((Tree) b).getSpecies().toString();
+			}
+			if ((data & 0x0C) == 0x0) {
+				return species + " is Vertical";
+			} else if ((data & 0x0C) == 0x4) {
+				return species + " is East-West";
+			} else if ((data & 0x0C) == 0x8) {
+				return species + " is North-South";
+			} else {
+				return species + " is Directionless";
+			}
 		case WOOD:
 		case LEAVES:
 		case SAPLING:
@@ -555,6 +572,10 @@ public abstract class AbstractTool implements ToolInterface {
 		case NETHER_BRICK_STAIRS:
 		case BRICK_STAIRS:
 		case SMOOTH_STAIRS:
+		case SPRUCE_WOOD_STAIRS:
+		case BIRCH_WOOD_STAIRS:
+		case JUNGLE_WOOD_STAIRS:
+		case SANDSTONE_STAIRS:
 			String append = "";
 			if ((data & 0x4) == 0x4) {
 				append = " and UPSIDE-DOWN";
@@ -570,7 +591,21 @@ public abstract class AbstractTool implements ToolInterface {
 			}
 			return "" + data;
 		case LEVER:
-			return ((Lever) b).getAttachedFace().toString();
+			if (((Lever) b).getAttachedFace().equals(BlockFace.DOWN)) {
+				if ((data & 0x07) == 0x5) {
+					return "FLOOR EAST-WEST";
+				} else {
+					return "FLOOR NORTH-SOUTH";
+				}
+			} else if (((Lever) b).getAttachedFace().equals(BlockFace.UP)) {
+				if ((data & 0x07) == 0x7) {
+					return "CEILING EAST-WEST";
+				} else {
+					return "CEILING NORTH-SOUTH";
+				}
+			} else {
+				return ((Lever) b).getAttachedFace().toString();
+			}
 		case WOODEN_DOOR:
 		case IRON_DOOR_BLOCK:
 			if (((Door) b).isTopHalf()) {
@@ -606,22 +641,21 @@ public abstract class AbstractTool implements ToolInterface {
 			if ((data & 0x8) == 0x8) {
 				append = " TOP-HALF";
 			}
-			if ((data & 0x7) == 0x0) {
-				return Material.STONE.toString() + append;
-			} else if ((data & 0x7) == 0x1) {
-				return Material.SANDSTONE.toString() + append;
-			} else if ((data & 0x7) == 0x2) {
-				return Material.WOOD.toString() + append;
-			} else if ((data & 0x7) == 0x3) {
-				return Material.COBBLESTONE.toString() + append;
-			} else if ((data & 0x7) == 0x4) {
-				return Material.BRICK.toString() + append;
-			} else if ((data & 0x7) == 0x5) {
-				return Material.SMOOTH_BRICK.toString() + append;
+			if ((data & 0x7) != 0x6) {
+				return ((Step) b).getMaterial().toString() + append;
+			} else {
+				return "" + data;
 			}
-			return "" + data;
 		case DOUBLE_STEP:
 			return ((Step) b).getMaterial().toString();
+		case WOOD_STEP:
+			append = " BOTTOM-HALF";
+			if ((data & 0x8) == 0x8) {
+				append = " TOP-HALF";
+			}
+			return ((WoodenStep) b).getSpecies().toString() + append;
+		case WOOD_DOUBLE_STEP:
+			return ((WoodenStep) b).getSpecies().toString();
 		case SNOW:
 			if (data == 0x0) {
 				return "1/8 HEIGHT";
@@ -809,6 +843,13 @@ public abstract class AbstractTool implements ToolInterface {
 		case EGG:
 			// TODO Is there anywhere we can get a mapping of entity id to name?
 			return "" + data;
+		case COCOA:
+			return ((CocoaPlant) b).getFacing() + " "
+					+ ((CocoaPlant) b).getSize();
+		case TRIPWIRE_HOOK:
+			return ((TripwireHook) b).getFacing()
+					+ (((TripwireHook) b).isActivated() ? " Activated" : "")
+					+ (((TripwireHook) b).isConnected() ? " Connected" : "");
 		default:
 			return "" + data;
 		}
