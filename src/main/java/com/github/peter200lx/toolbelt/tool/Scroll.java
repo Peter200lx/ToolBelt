@@ -22,7 +22,10 @@ import org.bukkit.material.Lever;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.PistonBaseMaterial;
 import org.bukkit.material.PoweredRail;
+import org.bukkit.material.Step;
 import org.bukkit.material.TrapDoor;
+import org.bukkit.material.TripwireHook;
+import org.bukkit.material.WoodenStep;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
@@ -143,7 +146,7 @@ public class Scroll extends AbstractTool {
 			}
 			break;
 		case LEVER:
-			data = simpScroll(act, (byte) (data & 0x07), 1, 7);
+			data = simpScroll(act, (byte) (data & 0x07), 0, 8);
 			if (((Lever) b).isPowered()) {
 				data |= 0x08;
 			}
@@ -172,6 +175,8 @@ public class Scroll extends AbstractTool {
 			data = simpScroll(act, (byte) (data & 0x07), 2, 6);
 			break;
 		case CHEST:
+		case LOCKED_CHEST:
+		case ENDER_CHEST:
 			// CHEST can not be scrolled because of double chests.
 			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
 					+ ChatColor.DARK_PURPLE + " is not scrollable");
@@ -180,33 +185,13 @@ public class Scroll extends AbstractTool {
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "There is no useful data to scroll");
 		case STEP:
-			boolean inverted = (data & 0x8) == 0x8;
-			final int stepMax = 7;
-			data = (byte) (data & 0x7);
-			if (act.equals(Action.LEFT_CLICK_BLOCK)) {
-				if (!inverted) {
-					if ((data - 1) < 0) {
-						data = (byte) (stepMax - 1);
-					} else {
-						data = (byte) ((data - 1) % stepMax);
-					}
-				}
-				inverted = !inverted;
-			} else if (act.equals(Action.RIGHT_CLICK_BLOCK)) {
-				if (inverted) {
-					data = (byte) ((data + 1) % stepMax);
-				}
-				inverted = !inverted;
-			}
-			if (inverted) {
-				data |= 0x8;
-			} else {
-				data &= 0x7;
-			}
+			data = handleStep(act, b, data, 7, 0x7);
+			break;
+		case WOOD_STEP:
+			data = handleStep(act, b, data, 4, 0x3);
 			break;
 		case BED_BLOCK:
-			// TODO More research into modifying foot and head of
-			// bed at once
+			// TODO More research into modifying foot and head of  bed at once
 			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
 					+ ChatColor.DARK_PURPLE + " is not yet scrollable");
 		case DIODE_BLOCK_OFF:
@@ -247,9 +232,58 @@ public class Scroll extends AbstractTool {
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "Stand data just is for visual "
 					+ "indication of placed glass bottles");
+		case TRIPWIRE_HOOK:
+			data = simpScroll(act, (byte) (data & 0x03), 4);
+			if (((TripwireHook) b).isConnected()) {
+				data |= 0x04;
+			}
+			if (((TripwireHook) b).isActivated()) {
+				data |= 0x08;
+			}
+			break;
+		case TRIPWIRE:
+			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
+					+ "There is no useful data to scroll");
 		default:
 			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
 					+ ChatColor.DARK_PURPLE + " is not yet scrollable");
+		}
+		return data;
+	}
+
+	private byte handleStep(Action act, MaterialData b, byte oldData,
+			int stepMax, int mask) {
+		byte data = oldData;
+		boolean inverted;
+		if (b instanceof Step) {
+			inverted = ((Step) b).isInverted();
+		} else if (b instanceof WoodenStep) {
+			inverted = ((WoodenStep) b).isInverted();
+		} else {
+			// If more Step classes are added, they will need to be added here.
+			inverted = false;
+		}
+
+		data = (byte) (data & mask);
+		if (act.equals(Action.LEFT_CLICK_BLOCK)) {
+			if (!inverted) {
+				if ((data - 1) < 0) {
+					data = (byte) (stepMax - 1);
+				} else {
+					data = (byte) ((data - 1) % stepMax);
+				}
+			}
+			inverted = !inverted;
+		} else if (act.equals(Action.RIGHT_CLICK_BLOCK)) {
+			if (inverted) {
+				data = (byte) ((data + 1) % stepMax);
+			}
+			inverted = !inverted;
+		}
+		if (inverted) {
+			data |= 0x8;
+		} else {
+			data &= 0x7;
 		}
 		return data;
 	}
@@ -312,7 +346,7 @@ public class Scroll extends AbstractTool {
 		final Map<Material, Integer> dm = new HashMap<Material, Integer>();
 		// If the integer is 0, that means that a simple numerical shift won't
 		// work
-		dm.put(Material.LOG, TreeSpecies.values().length);
+		dm.put(Material.LOG, 16);
 		dm.put(Material.WOOD, TreeSpecies.values().length);
 		dm.put(Material.LEAVES, TreeSpecies.values().length);
 		dm.put(Material.JUKEBOX, 0);
@@ -338,6 +372,10 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.BRICK_STAIRS, 8);
 		dm.put(Material.SMOOTH_STAIRS, 8);
 		dm.put(Material.NETHER_BRICK_STAIRS, 8);
+		dm.put(Material.SPRUCE_WOOD_STAIRS, 8);
+		dm.put(Material.BIRCH_WOOD_STAIRS, 8);
+		dm.put(Material.JUNGLE_WOOD_STAIRS, 8);
+		dm.put(Material.SANDSTONE_STAIRS, 8);
 		dm.put(Material.LEVER, 0);
 		dm.put(Material.WOODEN_DOOR, 0);
 		dm.put(Material.IRON_DOOR_BLOCK, 0);
@@ -348,6 +386,8 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.FURNACE, 0);
 		dm.put(Material.DISPENSER, 0);
 		dm.put(Material.CHEST, 0);
+		dm.put(Material.LOCKED_CHEST, 0);
+		dm.put(Material.ENDER_CHEST, 0);
 		dm.put(Material.PUMPKIN, 4);
 		dm.put(Material.JACK_O_LANTERN, 4);
 		dm.put(Material.STONE_PLATE, 0);
@@ -356,6 +396,8 @@ public class Scroll extends AbstractTool {
 		// Add Tools & Armor? No block to click
 		dm.put(Material.STEP, 0);
 		dm.put(Material.DOUBLE_STEP, 7);
+		dm.put(Material.WOOD_STEP, 0);
+		dm.put(Material.WOOD_DOUBLE_STEP, 4);
 		dm.put(Material.SNOW, 8);
 		dm.put(Material.CAKE_BLOCK, 6);
 		dm.put(Material.BED_BLOCK, 0);
@@ -373,12 +415,15 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.HUGE_MUSHROOM_2, 11);
 		dm.put(Material.VINE, 16);
 		dm.put(Material.FENCE_GATE, 0);
+		dm.put(Material.COCOA, 12);
 		// Add Potions? No block to click
 		dm.put(Material.MONSTER_EGGS, 3);
 		dm.put(Material.BREWING_STAND, 0);
 		dm.put(Material.CAULDRON, 4);
 		dm.put(Material.ENDER_PORTAL_FRAME, 4);
 		// Add EGG? No block to click
+		dm.put(Material.TRIPWIRE_HOOK, 0);
+		dm.put(Material.TRIPWIRE, 0);
 		return dm;
 	}
 
