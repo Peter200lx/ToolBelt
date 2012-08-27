@@ -6,4 +6,4 @@
 
 tools:
   bind:
-    ruler: 287  # STRING
+    ruler: 339  # PAPER
