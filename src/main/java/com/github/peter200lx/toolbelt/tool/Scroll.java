@@ -75,11 +75,10 @@ public class Scroll extends AbstractTool {
 				byte data = clicked.getData();
 
 				if (max != 0) {
-					data = simpScroll(event, data, max);
+					data = simpScroll(act, data, max);
 				} else {
 					try {
-						data = specialCase(event, subject, act, clicked, type,
-								data);
+						data = specialCase(subject, act, clicked, type, data);
 					} catch (UnsupportedOperationException error) {
 						if (error.getMessage() != null) {
 							uPrint(PrintEnum.DEBUG, subject,
@@ -115,8 +114,8 @@ public class Scroll extends AbstractTool {
 		}
 	}
 
-	private byte specialCase(PlayerInteractEvent event, Player subject,
-			Action act, Block clicked, Material type, byte oldData) {
+	private byte specialCase(Player subject, Action act, Block clicked,
+			Material type, byte oldData) {
 		byte data = oldData;
 		final MaterialData b = clicked.getState().getData();
 		switch (type) {
@@ -129,22 +128,22 @@ public class Scroll extends AbstractTool {
 		case TORCH:
 		case REDSTONE_TORCH_OFF:
 		case REDSTONE_TORCH_ON:
-			data = simpScroll(event, data, 1, 6);
+			data = simpScroll(act, data, 1, 6);
 			break;
 		case POWERED_RAIL:
-			data = simpScroll(event, (byte) (data & 0x07), 6);
+			data = simpScroll(act, (byte) (data & 0x07), 6);
 			if (((PoweredRail) b).isPowered()) {
 				data |= 0x08;
 			}
 			break;
 		case DETECTOR_RAIL:
-			data = simpScroll(event, (byte) (data & 0x07), 6);
+			data = simpScroll(act, (byte) (data & 0x07), 6);
 			if (((DetectorRail) b).isPressed()) {
 				data |= 0x08;
 			}
 			break;
 		case LEVER:
-			data = simpScroll(event, (byte) (data & 0x07), 1, 7);
+			data = simpScroll(act, (byte) (data & 0x07), 1, 7);
 			if (((Lever) b).isPowered()) {
 				data |= 0x08;
 			}
@@ -156,7 +155,7 @@ public class Scroll extends AbstractTool {
 						+ " door can't scroll the rotation corner.");
 				throw new UnsupportedOperationException();
 			}
-			data = simpScroll(event, (byte) (data & 0x07), 4);
+			data = simpScroll(act, (byte) (data & 0x07), 4);
 			if (((Door) b).isOpen()) {
 				data |= 0x04;
 			}
@@ -164,13 +163,13 @@ public class Scroll extends AbstractTool {
 					+ " looks funny, open/close door to fix");
 			break;
 		case STONE_BUTTON:
-			data = simpScroll(event, (byte) (data & 0x07), 1, 5);
+			data = simpScroll(act, (byte) (data & 0x07), 1, 5);
 			break;
 		case LADDER:
 		case WALL_SIGN:
 		case FURNACE:
 		case DISPENSER:
-			data = simpScroll(event, (byte) (data & 0x07), 2, 6);
+			data = simpScroll(act, (byte) (data & 0x07), 2, 6);
 			break;
 		case CHEST:
 			// CHEST can not be scrolled because of double chests.
@@ -213,14 +212,14 @@ public class Scroll extends AbstractTool {
 		case DIODE_BLOCK_OFF:
 		case DIODE_BLOCK_ON:
 			final byte tick = (byte) (data & (0x08 | 0x04));
-			data = simpScroll(event, (byte) (data & 0x03), 4);
+			data = simpScroll(act, (byte) (data & 0x03), 4);
 			data |= tick;
 			break;
 		case REDSTONE_WIRE:
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "There is no useful data to scroll");
 		case TRAP_DOOR:
-			data = simpScroll(event, (byte) (data & 0x03), 4);
+			data = simpScroll(act, (byte) (data & 0x03), 4);
 			if (((TrapDoor) b).isOpen()) {
 				data |= 0x04;
 			}
@@ -232,14 +231,14 @@ public class Scroll extends AbstractTool {
 						+ " scrolled while extended");
 				throw new UnsupportedOperationException();
 			}
-			data = simpScroll(event, (byte) (data & 0x07), 6);
+			data = simpScroll(act, (byte) (data & 0x07), 6);
 			break;
 		case PISTON_EXTENSION:
 			uPrint(PrintEnum.HINT, subject, "The piston extension should "
 							+ "not be scrolled");
 			throw new UnsupportedOperationException();
 		case FENCE_GATE:
-			data = simpScroll(event, (byte) (data & 0x03), 4);
+			data = simpScroll(act, (byte) (data & 0x03), 4);
 			if ((b.getData() & 0x04) == 0x04) {
 				data |= 0x04;
 			}
@@ -257,21 +256,20 @@ public class Scroll extends AbstractTool {
 
 	// Note that min is inclusive and max is exclusive.
 	// So to scroll through 1,2,3,4 set min to 1 and max to 5
-	private byte simpScroll(PlayerInteractEvent event, byte data, int min,
-			int max) {
-		return (byte) (simpScroll(event, (byte) (data - min), max - min) + min);
+	private byte simpScroll(Action act, byte data, int min, int max) {
+		return (byte) (simpScroll(act, (byte) (data - min), max - min) + min);
 	}
 
 	// Note that max is exclusive, to scroll through 0,1,2 set max to 3
-	private byte simpScroll(PlayerInteractEvent event, byte oldData, int max) {
+	private byte simpScroll(Action act, byte oldData, int max) {
 		byte data = oldData;
-		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+		if (act.equals(Action.LEFT_CLICK_BLOCK)) {
 			if ((data - 1) < 0) {
 				data = (byte) (max - 1);
 			} else {
 				data = (byte) ((data - 1) % max);
 			}
-		} else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+		} else if (act.equals(Action.RIGHT_CLICK_BLOCK)) {
 			data = (byte) ((data + 1) % max);
 		}
 		return data;
