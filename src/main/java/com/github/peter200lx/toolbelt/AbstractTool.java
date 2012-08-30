@@ -54,8 +54,19 @@ import org.bukkit.material.WoodenStep;
 import org.bukkit.material.Wool;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * @author peter200lx
+ *
+ * Base class which holds a lot of shared code between tools. Tools should
+ *     extend this and add the particular functionally they want on top.
+ */
 public abstract class AbstractTool implements ToolInterface {
 
+	/**
+	 * Initialize a tool by loading in the shared settings.
+	 *
+	 * @param gc global (shared) settings between all tools.
+	 */
 	public AbstractTool(GlobalConf gc) {
 		this.gc = gc;
 		onlyAllow = gc.onlyAllow.copy();
@@ -64,63 +75,152 @@ public abstract class AbstractTool implements ToolInterface {
 		setPrintData();
 	}
 
+	/**
+	 * Reference to Minecraft logger for printing to the console.
+	 */
 	protected final Logger log = Logger.getLogger("Minecraft");
 
+	/**
+	 * Storage of global (shared) settings between all tools.
+	 */
 	protected GlobalConf gc;
 
 	// String NAME was defined here, but it must be in the implementation.
 	// Defining it here makes no sense.
 
+	/**
+	 * Material that this tool is bound to. This material will be prevented from
+	 *     interaction with the world around it, and as such it should be chosen
+	 *     carefully to prevent blocking basic functionality.
+	 */
 	private Material type;
 
+	/**
+	 * Delay between how often a given user can use this tool. This is in milli-
+	 *     seconds, and is used to prevent multiple actions on a single click.
+	 *     If this is set to zero, then all repeat protection is removed.
+	 */
 	private int repeatDelay;
 
+	/**
+	 * Storage for how recently a given user has used this tool, used to
+	 *     limit performing multiple actions for a single click. If the
+	 *     repeatDelay value non-zero.
+	 */
 	private final Map<String, Long> pCooldown = new HashMap<String, Long>();
 
+	/**
+	 * Whitelist of what material types are allowed to be changed/placed.
+	 */
 	protected SetMat onlyAllow;
 
+	/**
+	 * Blacklist of what material types can't be placed.
+	 */
 	protected SetMat stopCopy;
 
+	/**
+	 * Blacklist of what material types can't be removed/changed.
+	 */
 	protected SetMat stopOverwrite;
 
+	/**
+	 * Collection of what material types have data values to print to user.
+	 */
 	protected static Set<Material> printData = new HashSet<Material>();
 
+	/**
+	 * Tells caller the Material this tool maps to.
+	 *
+	 * @return Material this tool overloads
+	 */
 	public Material getType() {
 		return type;
 	}
 
+	/**
+	 * Sets the Material that this tool overloads in-game.
+	 *     This should only ever be set in ToolBelt.loadConf()
+	 *
+	 * @param newType Material this tool should overload
+	 */
 	public void setType(Material newType) {
 		this.type = newType;
 	}
 
-	// Each tool must implement this so that the tool specific name is returned
+	/**
+	 * Tells the caller the tool name. This should be used instead of calling
+	 *      "name" directly. Each tool must implement this, so that the tool
+	 *      specific name is in-scope.
+	 *
+	 * @return Name of to tool.
+	 */
 	public abstract String getToolName();
 
+	/**
+	 * Check for whether console debugging is enabled.
+	 *
+	 * @return true if debug mode is enable, false otherwise.
+	 */
 	protected boolean isDebug() {
 		return gc.debug;
 	}
 
+	/**
+	 * Check for whether safeBreak/safeReplace should be used, or if blocks
+	 *     should be modified without protection.
+	 *
+	 * @return true if safe* functions should be used, false otherwise
+	 */
 	protected boolean isUseEvent() {
 		return gc.useEvent;
 	}
 
+	/**
+	 * Combine the plugin name, ".tool." and the tool name to give the
+	 *     permission string for the tool.
+	 *
+	 * @return permission string representing use of this tool
+	 */
 	protected String getPermStr() {
 		return gc.modName.toLowerCase() + ".tool." + getToolName();
 	}
 
-	// This catches left/right click events
+	/**
+	 * This catches left/right click events. This function is where most of the
+	 *     magic happens with tools.
+	 *
+	 * @param event Bukkit PlayerInteractEvent to handle
+	 */
 	public abstract void handleInteract(PlayerInteractEvent event);
 
+	/**
+	 * This catches the event when a player changes the item in their hand. Only
+	 *     some tools will override this, most will just leave this as a no-op.
+	 *
+	 * @param event Bukkit PlayerItemHeldEvent to handle
+	 */
 	public void handleItemChange(PlayerItemHeldEvent event) {
-		// Only some tools will override this, it is the
-		// change selected item bar event catch
 	}
 
+	/**
+	 * This catches when a player receives damage. Only some tools will
+	 *     override this, most will just leave this as a no-op.
+	 * As we have to know the player is holding the correct tool, this
+	 *     should only be called after verifying that the Entity in question
+	 *     is a Player.
+	 *
+	 * @param event Bukkit EntityDamageEvent to handle
+	 */
 	public void handleDamage(EntityDamageEvent event) {
-		// Only some tools will override this, it is used
-		// if a tool wants to protect a user from damage.
 	}
 
+	/**
+	 * Return true if "sender" has permission to use this tool.
+	 *
+	 * @param sender Person to check if they have permission
+	 * @return true if they can use tool, false otherwise
+	 */
 	public boolean hasPerm(CommandSender sender) {
 		if (gc.perm) {
 			return sender.hasPermission(getPermStr());
@@ -129,13 +229,31 @@ public abstract class AbstractTool implements ToolInterface {
 		}
 	}
 
-	// This is for printing use instructions for a player
+	/**
+	 * This is for printing use instructions for a player.
+	 *
+	 * @param sender Person to display instructions for
+	 * @return true if anything is printed to the user, false otherwise.
+	 */
 	public abstract boolean printUse(CommandSender sender);
 
-	// All tools must override this, however they can just return true; if
-	// they have no data to load.
+	/**
+	 * Load the tool specific configuration settings. All tools must implement
+	 *     this, even if they don't have any settings to load. If that is the
+	 *     case, just return true;
+	 *
+	 * @param tSet name of the first level of the config.yml "tools"
+	 * @param conf configuration object representing config.yml
+	 * @return true if no errors processing conf, false if errors occur
+	 */
 	public abstract boolean loadConf(String tSet, ConfigurationSection conf);
 
+	/**
+	 * If the tool has its own area in config.yml, then this is
+	 *     what will set up the help file for configuration.
+	 *
+	 * @param host reference to plugin object, used to access saveResource()
+	 */
 	public void saveHelp(JavaPlugin host) {
 		if (isDebug()) {
 			log.info("[" + gc.modName + "] Help saved for: " + getToolName());
@@ -143,6 +261,16 @@ public abstract class AbstractTool implements ToolInterface {
 		host.saveResource("help/" + getToolName() + ".txt", true);
 	}
 
+	/**
+	 * Personal version of .sendMessage() supporting multiple levels of print
+	 *     messages. This allows an admin to configure a default level of print
+	 *     spam to users, and if permissions are being used, a per-user level of
+	 *     print spam.
+	 *
+	 * @param pri verbosity level this message is aimed at
+	 * @param subject tool user to send message to (if the priority is correct)
+	 * @param message string to stuff into .sendMessage(message)
+	 */
 	protected void uPrint(PrintEnum pri, CommandSender subject,
 			String message) {
 		if (gc.perm) {
@@ -172,6 +300,14 @@ public abstract class AbstractTool implements ToolInterface {
 		}
 	}
 
+	/**
+	 * Check to make sure block is outside of spawn protection, or the tool
+	 *     user is an op.
+	 *
+	 * @param target block that is being checked (to get location)
+	 * @param subject tool user attempting to change block
+	 * @return true if user can change block, false otherwise
+	 */
 	protected boolean spawnBuild(Block target, Player subject) {
 		final int spawnSize = gc.server.getSpawnRadius();
 		if (subject.isOp()) {
@@ -193,7 +329,24 @@ public abstract class AbstractTool implements ToolInterface {
 		}
 	}
 
-	// This is needed if breaking a block and not replacing it with a new block
+	/**
+	 * Delete a block in the world while respecting all build rights and region
+	 *     protection settings. This function calls both BlockDamageEvent and
+	 *     BlockBreakEvent in order to discover if the block in question can be
+	 *     removed. If the event is canceled by any other plugin, the block
+	 *     remains untouched.
+	 * The BlockDamageEvent is thrown first as the VoxelGuest region protection
+	 *     plugin does not catch the BlockBreakEvent that this function throws.
+	 *     Thus to provide compatibility with as many plugins as possible, both
+	 *     are thrown.
+	 * This function is used instead of safeReplace() if breaking a block and
+	 *     not replacing it with a new block.
+	 *
+	 * @param target block to remove (break)
+	 * @param subject tool user attempting to remove the block
+	 * @param applyPhysics set false to cancel physics check on block removal
+	 * @return true if block has been removed, false otherwise
+	 */
 	protected boolean safeBreak(Block target, Player subject,
 			boolean applyPhysics) {
 		final ItemStack hand = subject.getItemInHand();
@@ -219,6 +372,27 @@ public abstract class AbstractTool implements ToolInterface {
 		}
 	}
 
+	/**
+	 * Change a block in the world while respecting all build rights and region
+	 *     protection settings. This function throws a BlockPlaceEvent which all
+	 *     protection plugins should be listening for. If any other plugin
+	 *     cancels the event, then we know that the user shouldn't be able to
+	 *     change the block in question. In that case we revert so nothing has
+	 *     changed.
+	 * There is an issue with blocks that interact with the minecraft map meta-
+	 *     data storage. Because the block is changed for BlockPlaceEvent, the
+	 *     metadata can be lost when reverting the block if the event is
+	 *     canceled. Because of this, blocks with metadata are tested for and
+	 *     the tools are prevented from changing the blocks in question.
+	 *     Hopefully at some point a way around this issue will be discovered
+	 *     and the tool restrictions will be removed.
+	 *
+	 * @param newInfo type and data for new block to place
+	 * @param old object for block we wish to replace
+	 * @param subject tool user attempting to replace the block
+	 * @param canBuild passed into BlockPlaceEvent, always true?
+	 * @return true of block has been replaced, false otherwise
+	 */
 	protected boolean safeReplace(MaterialData newInfo, Block old,
 			Player subject, boolean canBuild) {
 		BlockState oldInfo = old.getState();
@@ -284,6 +458,16 @@ public abstract class AbstractTool implements ToolInterface {
 		}
 	}
 
+	/**
+	 * Test to see if a block type can be placed into the world by a Player.
+	 *     The test is done when a ToolBelt tool is loading a material type
+	 *     for placing with a tool. Before it tries, it checks to see if the
+	 *     admin has prevented that block type from being changed.
+	 *
+	 * @param subject tool user to test permissions for (if Ranks are used)
+	 * @param toTest block type to test for loading into the tool for placing
+	 * @return true if block type is prevented from being loaded/placed
+	 */
 	protected boolean noCopy(Player subject, Material toTest) {
 		List<String> ranks = gc.ranks.getUserRank(subject);
 		if (ranks != null) {
@@ -293,12 +477,35 @@ public abstract class AbstractTool implements ToolInterface {
 		return noCopy(ranks, toTest);
 	}
 
+	/**
+	 * Test to see if a block type can be placed into the world.
+	 *     The test is done when a ToolBelt tool is loading a material type
+	 *     for placing with a tool. Before it tries, it checks to see if the
+	 *     admin has prevented that block type from being changed.
+	 * The list of rank names is for if the admin has configured multiple ranks
+	 *     on the server that have differing restrictions as to which material
+	 *     types they can alter.
+	 *
+	 * @param subRanks a list of what rank names to check (or null if no ranks)
+	 * @param toTest block type to test for loading into the tool for placing
+	 * @return true if block type is prevented from being loaded/placed
+	 */
 	protected boolean noCopy(List<String> subRanks, Material toTest) {
 		return stopCopy.contains(subRanks, toTest)
 				|| !(onlyAllow.isEmpty(subRanks)
 				|| onlyAllow.contains(subRanks, toTest));
 	}
 
+	/**
+	 * Test to see if a block in the world can be overwritten by the Player.
+	 *     The test is done when a ToolBelt tool would be placing a block.
+	 *     Before it tries, it checks to see if the admin has prevented that
+	 *     block from being changed.
+	 *
+	 * @param subject tool user to test permissions for (if Ranks are used)
+	 * @param toTest block type currently in the world that would be overwritten
+	 * @return true if block type is prevented from being overwritten
+	 */
 	protected boolean noOverwrite(Player subject, Material toTest) {
 		List<String> ranks = gc.ranks.getUserRank(subject);
 		if (ranks != null) {
@@ -308,12 +515,33 @@ public abstract class AbstractTool implements ToolInterface {
 		return noOverwrite(ranks, toTest);
 	}
 
+	/**
+	 * Test to see if a block in the world can be overwritten.
+	 *     The test is done when a ToolBelt tool would be placing a block.
+	 *     Before it tries, it checks to see if the admin has prevented that
+	 *     block from being changed.
+	 * The list of rank names is for if the admin has configured multiple ranks
+	 *     on the server that have differing restrictions as to which material
+	 *     types they can alter.
+	 *
+	 * @param subRanks a list of what rank names to check (or null if no ranks)
+	 * @param toTest block type currently in the world that would be overwritten
+	 * @return true if block type is prevented from being overwritten
+	 */
 	protected boolean noOverwrite(List<String> subRanks, Material toTest) {
 		return stopOverwrite.contains(subRanks, toTest)
 				|| !(onlyAllow.isEmpty(subRanks)
 				|| onlyAllow.contains(subRanks, toTest));
 	}
 
+	/**
+	 * Check to determine if the user has waited longer then repeatDelay since
+	 *     the last use. This is used to prevent a tool from effecting several
+	 *     blocks at once, such as when clicking on grass and such.
+	 *
+	 * @param userName user to check time difference for
+	 * @return true if last check > then repeatDelay, false otherwise
+	 */
 	protected boolean delayElapsed(String userName) {
 		if (repeatDelay == 0) {
 			return true; // Don't fill pCooldown with data when not used
@@ -326,16 +554,42 @@ public abstract class AbstractTool implements ToolInterface {
 		return true;
 	}
 
+	/**
+	 * Update the tool user (and those in the immediate area) with the block
+	 *     that just changed.
+	 *
+	 * @param subject tool user
+	 * @param loc location of changed block
+	 * @param info new information for the changed block
+	 */
 	protected void updateUser(Player subject, Location loc,
 			MaterialData info) {
 		updateUser(subject, loc, info.getItemTypeId(), info.getData());
 	}
 
+	/**
+	 * Update the tool user (and those in the immediate area) with the block
+	 *     that just changed.
+	 *
+	 * @param subject tool user
+	 * @param loc location of changed block
+	 * @param newType new material type for the changed block
+	 * @param data new data value for the changed block
+	 */
 	protected void updateUser(Player subject, Location loc, Material newType,
 			byte data) {
 		updateUser(subject, loc, newType.getId(), data);
 	}
 
+	/**
+	 * Update the tool user (and those in the immediate area) with the block
+	 *     that just changed.
+	 *
+	 * @param subject tool user
+	 * @param loc location of changed block
+	 * @param newType new int ID of material type for the changed block
+	 * @param data new data value for the changed block
+	 */
 	protected void updateUser(Player subject, Location loc, int newType,
 			byte data) {
 		int horizon = (gc.server.getViewDistance() + 1) * 16;
@@ -350,6 +604,15 @@ public abstract class AbstractTool implements ToolInterface {
 		subject.sendBlockChange(loc, newType, data);
 	}
 
+	/**
+	 * Load tools repeatDelay from config.yml . If tool's value is -1,
+	 *     then revert to using the global value.
+	 *
+	 * @param tSet name of base section in config.yml (tools)
+	 * @param conf representation of config.yml
+	 * @param def value to use if repeatDelay not specified in config.yml
+	 * @return true if no errors occurred, false otherwise
+	 */
 	protected boolean loadRepeatDelay(String tSet, ConfigurationSection conf,
 			int def) {
 
@@ -381,6 +644,13 @@ public abstract class AbstractTool implements ToolInterface {
 		return true;
 	}
 
+	/**
+	 * Load tools onlyAllow list from config.yml .
+	 *
+	 * @param tSet name of base section in config.yml (tools)
+	 * @param conf representation of config.yml
+	 * @return true if no errors occurred, false otherwise
+	 */
 	protected boolean loadOnlyAllow(String tSet, ConfigurationSection conf) {
 		List<Integer> intL = conf.getIntegerList(tSet + "." + getToolName()
 				+ ".onlyAllow");
@@ -423,6 +693,13 @@ public abstract class AbstractTool implements ToolInterface {
 		return true;
 	}
 
+	/**
+	 * Load tools stopCopy list from config.yml .
+	 *
+	 * @param tSet name of base section in config.yml (tools)
+	 * @param conf representation of config.yml
+	 * @return true if no errors occurred, false otherwise
+	 */
 	protected boolean loadStopCopy(String tSet, ConfigurationSection conf) {
 		List<Integer> intL = conf.getIntegerList(tSet + "." + getToolName()
 				+ ".stopCopy");
@@ -458,6 +735,13 @@ public abstract class AbstractTool implements ToolInterface {
 		return true;
 	}
 
+	/**
+	 * Load tools stopOverwrite list from config.yml .
+	 *
+	 * @param tSet name of base section in config.yml (tools)
+	 * @param conf representation of config.yml
+	 * @return true if no errors occurred, false otherwise
+	 */
 	protected boolean loadStopOverwrite(String tSet,
 			ConfigurationSection conf) {
 		List<Integer> intL = conf.getIntegerList(tSet + "." + getToolName()
@@ -495,6 +779,12 @@ public abstract class AbstractTool implements ToolInterface {
 		return true;
 	}
 
+	/**
+	 * Convert Material's data value to user-friendly String.
+	 *
+	 * @param b object containing a block's Material type and data value
+	 * @return user-friendly String representing blocks data value
+	 */
 	protected String data2Str(MaterialData b) {
 		byte data = b.getData();
 		switch (b.getItemType()) {
@@ -855,6 +1145,10 @@ public abstract class AbstractTool implements ToolInterface {
 		}
 	}
 
+	/**
+	 * Initialize printData structure with all supported Material types for
+	 *     printing data values.
+	 */
 	private static void setPrintData() {
 		printData.add(Material.LOG);
 		printData.add(Material.WOOD);
