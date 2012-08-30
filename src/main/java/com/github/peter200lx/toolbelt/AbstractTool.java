@@ -1169,6 +1169,10 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.NETHER_BRICK_STAIRS);
 		printData.add(Material.BRICK_STAIRS);
 		printData.add(Material.SMOOTH_STAIRS);
+		printData.add(Material.SPRUCE_WOOD_STAIRS);
+		printData.add(Material.BIRCH_WOOD_STAIRS);
+		printData.add(Material.JUNGLE_WOOD_STAIRS);
+		printData.add(Material.SANDSTONE_STAIRS);
 		printData.add(Material.LEVER);
 		printData.add(Material.WOODEN_DOOR);
 		printData.add(Material.IRON_DOOR_BLOCK);
@@ -1185,6 +1189,8 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.COAL);
 		printData.add(Material.STEP);
 		printData.add(Material.DOUBLE_STEP);
+		printData.add(Material.WOOD_STEP);
+		printData.add(Material.WOOD_DOUBLE_STEP);
 		printData.add(Material.SNOW);
 		printData.add(Material.CAKE_BLOCK);
 		printData.add(Material.DIODE_BLOCK_OFF);
@@ -1204,6 +1210,8 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.CAULDRON);
 		printData.add(Material.ENDER_PORTAL_FRAME);
 		printData.add(Material.EGG);
+		printData.add(Material.COCOA);
+		printData.add(Material.TRIPWIRE_HOOK);
 	}
 
 }
