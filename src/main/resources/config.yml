@@ -139,6 +139,7 @@ tools:
     teleport: false
     cFly: true
     invuln: 1
+    cost: 0
   phax:
     range: 25
     onlyAllow: []

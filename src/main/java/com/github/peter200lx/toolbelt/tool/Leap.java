@@ -1,6 +1,8 @@
 package com.github.peter200lx.toolbelt.tool;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -11,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
@@ -35,9 +38,13 @@ public class Leap extends AbstractTool {
 
 	private double leapInvuln;
 
+	private int leapCost;
+
 	private final Set<String> pLept = new HashSet<String>();
 
 	private final Set<String> pFlight = new HashSet<String>();
+
+	private final Map<String, Integer> pFlap = new HashMap<String, Integer>();
 
 	@Override
 	public String getToolName() {
@@ -111,6 +118,28 @@ public class Leap extends AbstractTool {
 			} else {
 				subject.setVelocity(new Vector(pX, pY / 2.5D, pZ));
 			}
+			if (leapCost > 0 && !hasFreePerm(subject)) {
+				int cost = 1;
+				if (pFlap.containsKey(name)) {
+					cost = pFlap.get(name);
+				}
+				if (cost < leapCost) {
+					pFlap.put(name, cost + 1);
+				} else {
+					ItemStack stack = subject.getItemInHand();
+					if (stack.getAmount() > 1) {
+						stack.setAmount(stack.getAmount() - 1);
+					} else {
+						subject.getInventory().clear(
+								subject.getInventory().getHeldItemSlot());
+					}
+					uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+							+ "One " + ChatColor.GOLD + this.getType()
+							+ ChatColor.DARK_PURPLE
+							+ " has been removed from your inventory.");
+					pFlap.remove(name);
+				}
+			}
 			if (leapInvuln > 0) {
 				pLept.add(name);
 			}
@@ -153,6 +182,15 @@ public class Leap extends AbstractTool {
 			return subject.hasPermission(getPermStr() + ".fly");
 		} else {
 			return true;
+		}
+	}
+
+	private boolean hasFreePerm(CommandSender subject) {
+		if (gc.perm) {
+			return subject.hasPermission(getPermStr() + ".free");
+		} else {
+			// false so that cost can apply when permissions are disabled.
+			return false;
 		}
 	}
 
@@ -223,6 +261,17 @@ public class Leap extends AbstractTool {
 			} else {
 				log.info("[" + gc.modName + "][loadConf]"
 						+ " Next fall damage after leaping is disabled");
+			}
+		}
+		leapCost = conf.getInt(tSet + "." + NAME + ".cost", 0);
+		if (isDebug()) {
+			if (leapCost == 0) {
+				log.info("[" + gc.modName
+						+ "][loadConf] No cost for using the leap tool");
+			} else {
+				log.info("[" + gc.modName + "][loadConf] Leaping will remove "
+						+ "one " + this.getType() + " every " + leapCost
+						+ " uses");
 			}
 		}
 		return true;

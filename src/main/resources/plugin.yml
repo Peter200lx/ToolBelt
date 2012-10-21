@@ -55,6 +55,7 @@ permissions:
             toolbelt.tool.leap: true
             toolbelt.tool.leap.tel: true
             toolbelt.tool.leap.fly: true
+            toolbelt.tool.leap.free: true
             toolbelt.tool.phax: true
             toolbelt.tool.phax.range: true
             toolbelt.tool.ruler: true
@@ -78,6 +79,8 @@ permissions:
         description: Allows the player to teleport by crouching while leaping.
     toolbelt.tool.leap.fly:
         description: Allows the player to enter creative flying mode.
+    toolbelt.tool.leap.free:
+        description: Allows the player to leap without cost (Only needed if tools.leap.cost > 0)
     toolbelt.tool.phax:
         description: Allows the player to remove blocks in one click, with or without physics applied.
     toolbelt.tool.phax.range:

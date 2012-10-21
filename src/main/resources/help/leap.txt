@@ -36,6 +36,14 @@
 #    no fall damage is prevented at all. With a value of 1,
 #    the next instance of fall damage after leaping will be
 #    canceled.
+# 
+# tools: leap: cost: <Number of leaps per (feather)>
+#    On a semi-creative mode server, this can be used to limit
+#    the number of leaps that can be made with a single item.
+#    By default it is set to zero, which means there is no
+#    limit. If a positive integer is set, then after leaping
+#    that many times, one (item bound to leap tool) will be
+#    removed from the users inventory.
 
 
 tools:
@@ -47,3 +55,4 @@ tools:
     teleport: false
     cFly: true
     invuln: 1
+    cost: 0
