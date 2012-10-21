@@ -86,8 +86,10 @@ public class ToolListener implements Listener {
 
 	/**
 	 * Catch and pass valid player damage to available tools. Valid means that
-	 *     the entity in question is a Player, with a ToolBelt tool in hand,
-	 *     and has permission to use that tool.
+	 *     the entity in question is a Player.
+	 *
+	 * Item-in-hand is not checked, however a tool's handler will only be called
+	 *     if the player has the permission for that tool.
 	 *
 	 * @param event event when an entity takes damage
 	 */
@@ -99,9 +101,7 @@ public class ToolListener implements Listener {
 				return;
 			}
 			for (ToolInterface tool:master.getTools()) {
-				if (tool.getType().equals(((Player) event.getEntity()
-										 ).getItemInHand().getType())
-						&& tool.hasPerm((Player) event.getEntity())) {
+				if (tool.hasPerm((Player) event.getEntity())) {
 					tool.handleDamage(event);
 				}
 			}

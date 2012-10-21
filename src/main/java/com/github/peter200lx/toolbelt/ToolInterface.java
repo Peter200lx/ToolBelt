@@ -59,10 +59,8 @@ interface ToolInterface {
 	void handleItemChange(PlayerItemHeldEvent event);
 
 	/**
-	 * This catches when a player receives damage.
-	 * As we have to know the player is holding the correct tool, this
-	 * should only be called after verifying that the Entity in question
-	 * is a Player.
+	 * This catches when a player receives damage. This should only be called
+	 * after verifying that the Entity in question is a Player.
 	 *
 	 * @param event Bukkit EntityDamageEvent to handle
 	 */

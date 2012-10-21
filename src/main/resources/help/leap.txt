@@ -29,17 +29,13 @@
 #    are enabled, it can be controlled per user by:
 #    toolbelt.tool.leap.fly
 # 
-# tools: leap: invuln: <Number of seconds>
-#    This controls how long the user of the leap tool is
-#    protected from fall damage after using the leap tool. By
-#    default, as long as the user has permission to use the
-#    leap tool and is holding it, they don't have fall damage
-#    at all. This is defined by having a negative value (-1).
-#    Setting this to zero will remove all protection from fall
-#    damage, and setting it to any other positive number will
-#    protect them from fall damage for that length of time.
-#    (Suggested value is 10 seconds if you want limited
-#    invulnerability)
+# tools: leap: invuln: < -1 | 0 | 1 >
+#    This controls what type of fall damage protection the
+#    leap tool provides. With a value of -1, all fall damage
+#    for players on the server is disabled. With a value of 0
+#    no fall damage is prevented at all. With a value of 1,
+#    the next instance of fall damage after leaping will be
+#    canceled.
 
 
 tools:
@@ -50,4 +46,4 @@ tools:
     cruise: 110
     teleport: false
     cFly: true
-    invuln: -1
+    invuln: 1

@@ -138,7 +138,7 @@ tools:
     cruise: 110
     teleport: false
     cFly: true
-    invuln: -1
+    invuln: 1
   phax:
     range: 25
     onlyAllow: []

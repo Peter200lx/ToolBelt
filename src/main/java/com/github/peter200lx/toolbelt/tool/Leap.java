@@ -1,8 +1,6 @@
 package com.github.peter200lx.toolbelt.tool;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -37,7 +35,7 @@ public class Leap extends AbstractTool {
 
 	private double leapInvuln;
 
-	private final Map<String, Long> pInvuln = new HashMap<String, Long>();
+	private final Set<String> pLept = new HashSet<String>();
 
 	private final Set<String> pFlight = new HashSet<String>();
 
@@ -114,7 +112,7 @@ public class Leap extends AbstractTool {
 				subject.setVelocity(new Vector(pX, pY / 2.5D, pZ));
 			}
 			if (leapInvuln > 0) {
-				pInvuln.put(name, System.currentTimeMillis());
+				pLept.add(name);
 			}
 		} else if ((act.equals(Action.LEFT_CLICK_AIR)
 				|| act.equals(Action.LEFT_CLICK_BLOCK))
@@ -122,7 +120,7 @@ public class Leap extends AbstractTool {
 			if (subject.isFlying()) {
 				subject.setFlying(false);
 				if (leapInvuln > 0) {
-					pInvuln.put(name, System.currentTimeMillis());
+					pLept.add(name);
 				}
 				if (pFlight.contains(name)) {
 					subject.setAllowFlight(false);
@@ -163,11 +161,10 @@ public class Leap extends AbstractTool {
 		if (event.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
 			// Safe to cast to Player because catchDamage() in ToolListener has
 			// already verified that the entity in question is a Player
-			final String pName = ((Player) event.getEntity()).getName();
-			if ((leapInvuln < 0) || pInvuln.containsKey(pName)
-					&& (System.currentTimeMillis()
-							<= (pInvuln.get(pName) + leapInvuln * 1000))) {
+			if ((leapInvuln < 0)
+					|| pLept.contains(((Player) event.getEntity()).getName())) {
 				event.setCancelled(true);
+				pLept.remove(((Player) event.getEntity()).getName());
 			}
 		}
 	}
@@ -220,10 +217,12 @@ public class Leap extends AbstractTool {
 			if (leapInvuln < 0) {
 				log.info("[" + gc.modName + "][loadConf] Fall damage"
 						+ " is disabled");
+			} else if (leapInvuln == 0) {
+				log.info("[" + gc.modName + "][loadConf]"
+						+ " Fall damage not disabled at all by leap tool");
 			} else {
 				log.info("[" + gc.modName + "][loadConf]"
-						+ " Fall damage is disabled for " + leapInvuln
-						+ " seconds after using leap tool");
+						+ " Next fall damage after leaping is disabled");
 			}
 		}
 		return true;
