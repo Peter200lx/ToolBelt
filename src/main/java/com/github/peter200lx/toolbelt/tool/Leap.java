@@ -50,7 +50,8 @@ public class Leap extends AbstractTool {
 	public void handleInteract(PlayerInteractEvent event) {
 		final Action act = event.getAction();
 		final Player subject = event.getPlayer();
-		if (!delayElapsed(subject.getName())) {
+		final String name = subject.getName();
+		if (!delayElapsed(name)) {
 			return;
 		}
 		if (act.equals(Action.RIGHT_CLICK_AIR)
@@ -113,7 +114,7 @@ public class Leap extends AbstractTool {
 				subject.setVelocity(new Vector(pX, pY / 2.5D, pZ));
 			}
 			if (leapInvuln > 0) {
-				pInvuln.put(subject.getName(), System.currentTimeMillis());
+				pInvuln.put(name, System.currentTimeMillis());
 			}
 		} else if ((act.equals(Action.LEFT_CLICK_AIR)
 				|| act.equals(Action.LEFT_CLICK_BLOCK))
@@ -121,18 +122,17 @@ public class Leap extends AbstractTool {
 			if (subject.isFlying()) {
 				subject.setFlying(false);
 				if (leapInvuln > 0) {
-					pInvuln.put(subject.getName(),
-							System.currentTimeMillis());
+					pInvuln.put(name, System.currentTimeMillis());
 				}
-				if (pFlight.contains(subject.getName())) {
+				if (pFlight.contains(name)) {
 					subject.setAllowFlight(false);
 					uPrint(PrintEnum.INFO, subject,
 							"Creative mode flying disabled");
-					pFlight.remove(subject.getName());
+					pFlight.remove(name);
 				}
 			} else {
 				if (!subject.getAllowFlight()) {
-					pFlight.add(subject.getName());
+					pFlight.add(name);
 					subject.setAllowFlight(true);
 					uPrint(PrintEnum.INFO, subject,
 							"Creative mode flying enabled");
