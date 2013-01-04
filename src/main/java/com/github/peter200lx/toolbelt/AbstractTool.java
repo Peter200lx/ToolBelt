@@ -60,6 +60,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * Base class which holds a lot of shared code between tools. Tools should
  *     extend this and add the particular functionally they want on top.
  */
+@SuppressWarnings("deprecation") // org.bukkit.material.Door (no new api yet)
 public abstract class AbstractTool implements ToolInterface {
 
 	/**

@@ -31,6 +31,7 @@ import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.AbstractTool;
 
+@SuppressWarnings("deprecation") // org.bukkit.material.Door (no new api yet)
 public class Scroll extends AbstractTool {
 
 	public Scroll(GlobalConf gc) {
