@@ -953,7 +953,7 @@ public abstract class AbstractTool implements ToolInterface {
 			} else if (data == 0x1) {
 				return "2/8 HEIGHT";
 			} else if (data == 0x2) {
-				return "3/8 HEIGHT (STEP)";
+				return "3/8 HEIGHT";
 			} else if (data == 0x3) {
 				return "4/8 HEIGHT (STEP)";
 			} else if (data == 0x4) {
