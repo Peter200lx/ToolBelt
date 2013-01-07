@@ -923,6 +923,7 @@ public abstract class AbstractTool implements ToolInterface {
 						+ " is " + (((Door) b).isOpen() ? "OPEN" : "CLOSED");
 			}
 		case STONE_BUTTON:
+		case WOOD_BUTTON:
 			return ((Button) b).getAttachedFace().toString();
 		case SIGN_POST:
 			return ((Sign) b).getFacing().toString();
@@ -1293,6 +1294,7 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.FLOWER_POT);
 		printData.add(Material.CARROT);
 		printData.add(Material.POTATO);
+		printData.add(Material.WOOD_BUTTON);
 	}
 
 }

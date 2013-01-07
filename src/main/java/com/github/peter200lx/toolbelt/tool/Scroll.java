@@ -167,6 +167,7 @@ public class Scroll extends AbstractTool {
 					+ " looks funny, open/close door to fix");
 			break;
 		case STONE_BUTTON:
+		case WOOD_BUTTON:
 			data = simpScroll(act, (byte) (data & 0x07), 1, 5);
 			break;
 		case LADDER:
@@ -438,6 +439,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.FLOWER_POT, 12);
 		dm.put(Material.CARROT, 8);
 		dm.put(Material.POTATO, 8);
+		dm.put(Material.WOOD_BUTTON, 0);
 		return dm;
 	}
 
