@@ -124,7 +124,7 @@ tools:
       105: 362  # MELON_STEM to MELON_SEEDS
       # Can't do COCOA PLANT to COCOA SEEDS as the seeds are INK:BROWN
       137: 0    # COMMAND to AIR (Disable duplication entirely)
-    keepData: [5, 6, 17, 18, 24, 31, 35, 43, 44, 78, 97, 98, 99, 100, 125, 126, 263, 351, 373, 383]
+    keepData: [5, 6, 17, 18, 24, 31, 35, 43, 44, 78, 97, 98, 99, 100, 125, 126, 139, 263, 351, 373, 383]
   scroll:
     onlyAllow: []
     stopOverwrite: []

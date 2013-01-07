@@ -1157,6 +1157,14 @@ public abstract class AbstractTool implements ToolInterface {
 			return ((TripwireHook) b).getFacing()
 					+ (((TripwireHook) b).isActivated() ? " Activated" : "")
 					+ (((TripwireHook) b).isConnected() ? " Connected" : "");
+		case COBBLE_WALL:
+			if (data == 0x0) {
+				return Material.COBBLESTONE.toString();
+			} else if (data == 0x1) {
+				return Material.MOSSY_COBBLESTONE.toString();
+			} else {
+				return "" + data;
+			}
 		default:
 			return "" + data;
 		}
@@ -1229,6 +1237,7 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.EGG);
 		printData.add(Material.COCOA);
 		printData.add(Material.TRIPWIRE_HOOK);
+		printData.add(Material.COBBLE_WALL);
 	}
 
 }

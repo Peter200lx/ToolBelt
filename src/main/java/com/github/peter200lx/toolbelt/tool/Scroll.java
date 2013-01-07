@@ -434,6 +434,7 @@ public class Scroll extends AbstractTool {
 		// Add EGG? No block to click
 		dm.put(Material.TRIPWIRE_HOOK, 0);
 		dm.put(Material.TRIPWIRE, 0);
+		dm.put(Material.COBBLE_WALL, 2);
 		return dm;
 	}
 
