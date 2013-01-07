@@ -976,7 +976,8 @@ public abstract class AbstractTool implements ToolInterface {
 		case LONG_GRASS:
 			return ((LongGrass) b).getSpecies().toString();
 		case TRAP_DOOR:
-			return ((TrapDoor) b).getAttachedFace().toString() + " is "
+			return ((TrapDoor) b).getAttachedFace().toString()
+					+ (((data & 0x08) == 0x08) ? " INVERTED" : "") + " is "
 					+ (((TrapDoor) b).isOpen() ? "OPEN" : "CLOSED");
 		case PISTON_BASE:
 		case PISTON_STICKY_BASE:

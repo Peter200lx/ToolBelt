@@ -205,9 +205,18 @@ public class Scroll extends AbstractTool {
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "There is no useful data to scroll");
 		case TRAP_DOOR:
+			Boolean inverted = ((data & 0x08) == 0x08);
+			if (act.equals(Action.LEFT_CLICK_BLOCK) && ((data & 0x03) == 0x0)
+					|| (act.equals(Action.RIGHT_CLICK_BLOCK)
+							&& ((data & 0x03) == 0x03))) {
+				inverted = !inverted;
+			}
 			data = simpScroll(act, (byte) (data & 0x03), 4);
 			if (((TrapDoor) b).isOpen()) {
 				data |= 0x04;
+			}
+			if (inverted) {
+				data |= 0x08;
 			}
 			break;
 		case PISTON_BASE:
