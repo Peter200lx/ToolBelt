@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.TreeSpecies;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -1165,6 +1166,39 @@ public abstract class AbstractTool implements ToolInterface {
 			} else {
 				return "" + data;
 			}
+		case FLOWER_POT:
+			switch (data) {
+			case 0:
+				return "Empty";
+			case 1:
+				return Material.RED_ROSE.toString();
+			case 2:
+				return Material.YELLOW_FLOWER.toString();
+			case 3:
+				return TreeSpecies.GENERIC.toString() + " "
+						+ Material.SAPLING.toString();
+			case 4:
+				return TreeSpecies.REDWOOD.toString() + " "
+						+ Material.SAPLING.toString();
+			case 5:
+				return TreeSpecies.BIRCH.toString() + " "
+						+ Material.SAPLING.toString();
+			case 6:
+				return TreeSpecies.JUNGLE.toString() + " "
+						+ Material.SAPLING.toString();
+			case 7:
+				return Material.RED_MUSHROOM.toString();
+			case 8:
+				return Material.BROWN_MUSHROOM.toString();
+			case 9:
+				return Material.CACTUS.toString();
+			case 10:
+				return Material.DEAD_BUSH.toString();
+			case 11:
+				return "FERN";
+			default:
+				return "" + data;
+			}
 		default:
 			return "" + data;
 		}
@@ -1238,6 +1272,7 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.COCOA);
 		printData.add(Material.TRIPWIRE_HOOK);
 		printData.add(Material.COBBLE_WALL);
+		printData.add(Material.FLOWER_POT);
 	}
 
 }

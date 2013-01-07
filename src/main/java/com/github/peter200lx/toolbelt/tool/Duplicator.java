@@ -202,6 +202,7 @@ public class Duplicator extends AbstractTool {
 		// Do we want to block Material.ENDER_PORTAL_FRAME ?
 		dm.put(Material.REDSTONE_LAMP_ON, Material.REDSTONE_LAMP_OFF);
 		dm.put(Material.TRIPWIRE, Material.STRING);
+		dm.put(Material.FLOWER_POT, Material.FLOWER_POT_ITEM);
 		return dm;
 	}
 
