@@ -46,6 +46,7 @@ import org.bukkit.material.Pumpkin;
 import org.bukkit.material.Rails;
 import org.bukkit.material.RedstoneTorch;
 import org.bukkit.material.Sign;
+import org.bukkit.material.Skull;
 import org.bukkit.material.Step;
 import org.bukkit.material.Torch;
 import org.bukkit.material.TrapDoor;
@@ -1218,6 +1219,8 @@ public abstract class AbstractTool implements ToolInterface {
 			default:
 				return "" + data;
 			}
+		case SKULL:
+			return ((Skull) b).getFacing().toString();
 		default:
 			return "" + data;
 		}
@@ -1295,6 +1298,7 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.CARROT);
 		printData.add(Material.POTATO);
 		printData.add(Material.WOOD_BUTTON);
+		printData.add(Material.SKULL);
 	}
 
 }

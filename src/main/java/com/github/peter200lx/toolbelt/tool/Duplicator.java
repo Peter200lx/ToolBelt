@@ -203,6 +203,7 @@ public class Duplicator extends AbstractTool {
 		dm.put(Material.REDSTONE_LAMP_ON, Material.REDSTONE_LAMP_OFF);
 		dm.put(Material.TRIPWIRE, Material.STRING);
 		dm.put(Material.FLOWER_POT, Material.FLOWER_POT_ITEM);
+		dm.put(Material.SKULL, Material.SKULL_ITEM);
 		return dm;
 	}
 
