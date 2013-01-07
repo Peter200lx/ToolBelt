@@ -1221,6 +1221,12 @@ public abstract class AbstractTool implements ToolInterface {
 			}
 		case SKULL:
 			return ((Skull) b).getFacing().toString();
+		case ANVIL:
+			if ((data & 0x01) == 0x0) {
+				return "North-South";
+			} else {
+				return "East-West";
+			}
 		default:
 			return "" + data;
 		}
@@ -1299,6 +1305,7 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.POTATO);
 		printData.add(Material.WOOD_BUTTON);
 		printData.add(Material.SKULL);
+		printData.add(Material.ANVIL);
 	}
 
 }

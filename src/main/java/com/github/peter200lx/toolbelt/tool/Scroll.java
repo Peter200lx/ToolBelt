@@ -259,6 +259,10 @@ public class Scroll extends AbstractTool {
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "Direction partly controlled by Tile Entity, "
 					+ "unsupported");
+		case ANVIL:
+			data = (byte) (simpScroll(act, (byte) (data & 0x01), 2)
+					| (data & ~0x01));
+			break;
 		default:
 			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
 					+ ChatColor.DARK_PURPLE + " is not yet scrollable");
@@ -445,6 +449,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.POTATO, 8);
 		dm.put(Material.WOOD_BUTTON, 0);
 		dm.put(Material.SKULL, 0);
+		dm.put(Material.ANVIL, 0);
 		return dm;
 	}
 
