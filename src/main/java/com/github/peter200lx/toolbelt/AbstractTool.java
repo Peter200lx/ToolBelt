@@ -1199,6 +1199,24 @@ public abstract class AbstractTool implements ToolInterface {
 			default:
 				return "" + data;
 			}
+		case CARROT:
+		case POTATO:
+			switch (data) {
+			case 0:
+			case 1:
+				return "SEEDED (" + data + ")";
+			case 2:
+			case 3:
+				return "SMALL (" + data + ")";
+			case 4:
+			case 5:
+			case 6:
+				return "LARGE (" + data + ")";
+			case 7:
+				return "RIPE (" + data + ")";
+			default:
+				return "" + data;
+			}
 		default:
 			return "" + data;
 		}
@@ -1273,6 +1291,8 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.TRIPWIRE_HOOK);
 		printData.add(Material.COBBLE_WALL);
 		printData.add(Material.FLOWER_POT);
+		printData.add(Material.CARROT);
+		printData.add(Material.POTATO);
 	}
 
 }
