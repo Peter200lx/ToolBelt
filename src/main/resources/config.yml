@@ -108,8 +108,8 @@ tools:
     saw: 286    # GOLD_AXE
   global:
     onlyAllow: []
-    stopCopy: [7, 8, 9, 10, 11, 46, 64, 71, 75, 90, 92, 93, 94, 95, 119]
-    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119]
+    stopCopy: [7, 8, 9, 10, 11, 46, 64, 71, 75, 90, 92, 93, 94, 95, 119, 137]
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119, 137]
     repeatDelay: 125
   dupe:
     replace:
@@ -123,6 +123,7 @@ tools:
       104: 361  # PUMPKIN_STEM to PUMPKIN_SEEDS
       105: 362  # MELON_STEM to MELON_SEEDS
       # Can't do COCOA PLANT to COCOA SEEDS as the seeds are INK:BROWN
+      137: 0    # COMMAND to AIR (Disable duplication entirely)
     keepData: [5, 6, 17, 18, 24, 31, 35, 43, 44, 78, 97, 98, 99, 100, 125, 126, 263, 351, 373, 383]
   scroll:
     onlyAllow: []

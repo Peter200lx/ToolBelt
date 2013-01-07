@@ -434,6 +434,21 @@ public abstract class AbstractTool implements ToolInterface {
 					+ "Plugin doesn't support overwriting "
 					+ ChatColor.GOLD + "CreatureSpawners");
 			return false;
+		} else if (oldInfo.getType().equals(Material.COMMAND)) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Plugin doesn't support overwriting "
+					+ ChatColor.GOLD + "CommandBlocks");
+			return false;
+		} else if (oldInfo.getType().equals(Material.BEACON)) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Plugin doesn't support overwriting "
+					+ ChatColor.GOLD + "Beacons");
+			return false;
+		} else if (oldInfo.getType().equals(Material.SKULL)) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Plugin doesn't support overwriting "
+					+ ChatColor.GOLD + "Skulls");
+			return false;
 		} else {
 			old.setTypeIdAndData(newInfo.getItemTypeId(), newInfo.getData(),
 					false);
