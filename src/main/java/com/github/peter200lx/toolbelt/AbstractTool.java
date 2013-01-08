@@ -811,13 +811,14 @@ public abstract class AbstractTool implements ToolInterface {
 			if (((Tree) b).getSpecies() != null) {
 				species = ((Tree) b).getSpecies().toString();
 			}
-			if ((data & 0x0C) == 0x0) {
+			switch (data & 0x0C) {
+			case 0x0:
 				return species + " is Vertical";
-			} else if ((data & 0x0C) == 0x4) {
+			case 0x4:
 				return species + " is East-West";
-			} else if ((data & 0x0C) == 0x8) {
+			case 0x8:
 				return species + " is North-South";
-			} else {
+			default:
 				return species + " is Directionless";
 			}
 		case WOOD:
@@ -893,16 +894,18 @@ public abstract class AbstractTool implements ToolInterface {
 			if ((data & 0x4) == 0x4) {
 				append = " and UPSIDE-DOWN";
 			}
-			if ((data & 0x3) == 0x0) {
+			switch (data & 0x3) {
+			case 0x0:
 				return "NORTH" + append;
-			} else if ((data & 0x3) == 0x1) {
+			case 0x1:
 				return "SOUTH" + append;
-			} else if ((data & 0x3) == 0x2) {
+			case 0x2:
 				return "EAST" + append;
-			} else if ((data & 0x3) == 0x3) {
+			case 0x3:
 				return "WEST" + append;
+			default:
+				return "" + data;
 			}
-			return "" + data;
 		case LEVER:
 			if (((Lever) b).getAttachedFace().equals(BlockFace.DOWN)) {
 				if ((data & 0x07) == 0x5) {
@@ -971,23 +974,24 @@ public abstract class AbstractTool implements ToolInterface {
 		case WOOD_DOUBLE_STEP:
 			return ((WoodenStep) b).getSpecies().toString();
 		case SNOW:
-			if (data == 0x0) {
+			switch (data) {
+			case 0x0:
 				return "1/8 HEIGHT";
-			} else if (data == 0x1) {
+			case 0x1:
 				return "2/8 HEIGHT";
-			} else if (data == 0x2) {
+			case 0x2:
 				return "3/8 HEIGHT";
-			} else if (data == 0x3) {
+			case 0x3:
 				return "4/8 HEIGHT (STEP)";
-			} else if (data == 0x4) {
+			case 0x4:
 				return "5/8 HEIGHT (STEP)";
-			} else if (data == 0x5) {
+			case 0x5:
 				return "6/8 HEIGHT (STEP)";
-			} else if (data == 0x6) {
+			case 0x6:
 				return "7/8 HEIGHT (STEP)";
-			} else if (data == 0x7) {
+			case 0x7:
 				return "FULL HEIGHT (STEP)";
-			} else {
+			default:
 				return "" + data;
 			}
 		case CAKE_BLOCK:
@@ -1006,52 +1010,59 @@ public abstract class AbstractTool implements ToolInterface {
 		case PISTON_STICKY_BASE:
 			return ((PistonBaseMaterial) b).getFacing().toString();
 		case SANDSTONE:
-			if (data == 0x0) {
+			switch (data) {
+			case 0x0:
 				return "CRACKED";
-			} else if (data == 0x1) {
+			case 0x1:
 				return "GLYPHED";
-			} else if (data == 0x2) {
+			case 0x2:
 				return "SMOOTH";
-			} else {
+			default:
 				return "" + data;
 			}
 		case SMOOTH_BRICK:
-			if (data == 0x0) {
+			switch (data) {
+			case 0x0:
 				return "NORMAL";
-			} else if (data == 0x1) {
+			case 0x1:
 				return "MOSSY";
-			} else if (data == 0x2) {
+			case 0x2:
 				return "CRACKED";
-			} else if (data == 0x3) {
+			case 0x3:
 				return "CIRCLE";
-			} else {
+			default:
 				return "" + data;
 			}
 		case HUGE_MUSHROOM_1:
 		case HUGE_MUSHROOM_2:
-			if (data == 0x0) {
+			switch (data) {
+			case 0:
 				return "FLESHY PIECE";
-			} else if (data == 0x1) {
+			case 1:
 				return "CAP ON TOP & W & N";
-			} else if (data == 0x2) {
+			case 2:
 				return "CAP ON TOP & N";
-			} else if (data == 0x3) {
+			case 3:
 				return "CAP ON TOP & N & E";
-			} else if (data == 0x4) {
+			case 4:
 				return "CAP ON TOP & W";
-			} else if (data == 0x5) {
+			case 5:
 				return "CAP ON TOP";
-			} else if (data == 0x6) {
+			case 6:
 				return "CAP ON TOP & E";
-			} else if (data == 0x7) {
+			case 7:
 				return "CAP ON TOP & S & W";
-			} else if (data == 0x8) {
+			case 8:
 				return "CAP ON TOP & S";
-			} else if (data == 0x9) {
+			case 9:
 				return "CAP ON TOP & E & S";
-			} else if (data == 0x10) {
+			case 10:
 				return "STEM";
-			} else {
+			case 14:
+				return "ALL CAP";
+			case 15:
+				return "ALL STEM";
+			default:
 				return "" + data;
 			}
 		case VINE:
@@ -1093,24 +1104,27 @@ public abstract class AbstractTool implements ToolInterface {
 			if ((data & 0x4) == 0x4) {
 				append = " is OPEN";
 			}
-			if ((data & 0x3) == 0x0) {
+			switch (data & 0x3) {
+			case 0x0:
 				return "SOUTH" + append;
-			} else if ((data & 0x3) == 0x1) {
+			case 0x1:
 				return "WEST" + append;
-			} else if ((data & 0x3) == 0x2) {
+			case 0x2:
 				return "NORTH" + append;
-			} else if ((data & 0x3) == 0x3) {
+			case 0x3:
 				return "EAST" + append;
+			default:
+				return "" + data;
 			}
-			return "" + data;
 		case MONSTER_EGGS: // Hidden Silverfish
-			if (data == 0x0) {
+			switch (data) {
+			case 0x0:
 				return Material.STONE.toString();
-			} else if (data == 0x1) {
+			case 0x1:
 				return Material.COBBLESTONE.toString();
-			} else if (data == 0x2) {
+			case 0x2:
 				return Material.SMOOTH_BRICK.toString();
-			} else {
+			default:
 				return "" + data;
 			}
 		case BREWING_STAND:
@@ -1141,15 +1155,16 @@ public abstract class AbstractTool implements ToolInterface {
 			}
 			return ret;
 		case CAULDRON:
-			if (data == 0x0) {
+			switch (data) {
+			case 0x0:
 				return "EMPTY";
-			} else if (data == 0x1) {
+			case 0x1:
 				return "1/3 FILLED";
-			} else if (data == 0x2) {
+			case 0x2:
 				return "2/3 FILLED";
-			} else if (data == 0x3) {
+			case 0x3:
 				return "FULL";
-			} else {
+			default:
 				return "" + data;
 			}
 		case ENDER_PORTAL_FRAME:
@@ -1166,11 +1181,12 @@ public abstract class AbstractTool implements ToolInterface {
 					+ (((TripwireHook) b).isActivated() ? " Activated" : "")
 					+ (((TripwireHook) b).isConnected() ? " Connected" : "");
 		case COBBLE_WALL:
-			if (data == 0x0) {
+			switch (data) {
+			case 0x0:
 				return Material.COBBLESTONE.toString();
-			} else if (data == 0x1) {
+			case 0x1:
 				return Material.MOSSY_COBBLESTONE.toString();
-			} else {
+			default:
 				return "" + data;
 			}
 		case FLOWER_POT:
