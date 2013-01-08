@@ -829,30 +829,35 @@ public abstract class AbstractTool implements ToolInterface {
 				return "" + data;
 			}
 		case JUKEBOX:
-			if (data == 0x0) {
-				return "Empty";
-			} else if (data == 0x1) {
-				return "Record 13";
-			} else if (data == 0x2) {
-				return "Record cat";
-			} else if (data == 0x3) {
-				return "Record blocks";
-			} else if (data == 0x4) {
-				return "Record chrip";
-			} else if (data == 0x5) {
-				return "Record far";
-			} else if (data == 0x6) {
-				return "Record mall";
-			} else if (data == 0x7) {
-				return "Record melloci";
-			} else if (data == 0x8) {
-				return "Record stal";
-			} else if (data == 0x9) {
-				return "Record strad";
-			} else if (data == 0x10) {
-				return "Record ward";
-			} else {
-				return "Record " + data;
+			switch (data) {
+			case 0:
+				return "empty";
+			case 1:
+				return "Gold Disc (13)";
+			case 2:
+				return "Green Disc (cat)";
+			case 3:
+				return "Orange Disc (blocks)";
+			case 4:
+				return "Red Disc (chirp)";
+			case 5:
+				return "Lime Green Disc (far)";
+			case 6:
+				return "Purple Disc (mall)";
+			case 7:
+				return "Violet Disc (mellohi)";
+			case 8:
+				return "Black Disc (stal)";
+			case 9:
+				return "White Disc (strad)";
+			case 10:
+				return "Sea Green Disc (ward)";
+			case 11:
+				return "Broken Disc (11)";
+			case 12:
+				return "Blue Disc (wait)";
+			default:
+				return "Unknown Disk (" + data + ")";
 			}
 		case CROPS:
 			return ((Crops) b).getState().toString();
