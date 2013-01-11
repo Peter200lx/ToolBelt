@@ -21,8 +21,8 @@ tools:
     sledge: 285 # GOLD_PICKAXE
   global:
     onlyAllow: []
-    stopCopy: [7, 8, 9, 10, 11, 46, 75, 90, 92, 93, 94, 95, 119]
-    stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
+    stopCopy: [7, 8, 9, 10, 11, 46, 64, 71, 75, 90, 92, 93, 94, 95, 119, 137]
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119, 137]
   sledge:
     onlyAllow: []
     stopCopy: []

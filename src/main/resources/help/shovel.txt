@@ -31,7 +31,7 @@ tools:
     shovel: 284 # GOLD_SPADE
   global:
     onlyAllow: []
-    stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119, 137]
   shovel:
     widthCube: 3
     radiusDisk: 2.5
