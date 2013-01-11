@@ -27,7 +27,7 @@ tools:
     saw: 286    # GOLD_AXE
   global:
     onlyAllow: []
-    stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119, 137]
   saw:
     widthCube: 3
     radiusSphere: 2.5

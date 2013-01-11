@@ -24,7 +24,7 @@ tools:
     phax: 278   # DIAMOND_PICKAXE
   global:
     onlyAllow: []
-    stopOverwrite: [7, 8, 9, 10, 11, 90, 119]
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119, 137]
   phax:
     range: 25
     onlyAllow: []
