@@ -14,13 +14,14 @@ import com.github.peter200lx.toolbelt.AbstractTool;
 //Add permission node(s) to plugin.yml
 
 //Add configuration options (if any) to config.yml
+// This includes adding the entry in tools.bind.unique_lowercase_name: <id#>
 
 //Create a help file in src/help/unique_lowercase_name.txt
 
 //You will also need to add a line in ToolBelt.java in
 // the loadConf() function.
 //Put the following line (without the //) after the last similar line
-//available.put(Example.name, new Example(gc));
+//available.put(Example.NAME, new Example(gc));
 /**
  * A basic tool definition provided to assist others to build tools.
  */
