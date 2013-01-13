@@ -59,8 +59,9 @@ public class Leap extends AbstractTool {
 		if (!delayElapsed(name)) {
 			return;
 		}
-		if (act.equals(Action.RIGHT_CLICK_AIR)
-				|| act.equals(Action.RIGHT_CLICK_BLOCK)) {
+		switch (act) {
+		case RIGHT_CLICK_AIR:
+		case RIGHT_CLICK_BLOCK:
 			// This code block is copied from VoxelAir from FlyRidgeFly
 			// Further modifications by peter200lx
 			double cProt = subject.getLocation().getYaw() % 360.0F;
@@ -143,29 +144,33 @@ public class Leap extends AbstractTool {
 			if (leapInvuln > 0) {
 				pLept.add(name);
 			}
-		} else if ((act.equals(Action.LEFT_CLICK_AIR)
-				|| act.equals(Action.LEFT_CLICK_BLOCK))
-				&& leapFly && hasCFlyPerm(subject)) {
-			if (subject.isFlying()) {
-				subject.setFlying(false);
-				if (leapInvuln > 0) {
-					pLept.add(name);
+			break;
+		case LEFT_CLICK_AIR:
+		case LEFT_CLICK_BLOCK:
+			if (leapFly && hasCFlyPerm(subject)) {
+				if (subject.isFlying()) {
+					subject.setFlying(false);
+					if (leapInvuln > 0) {
+						pLept.add(name);
+					}
+					if (pFlight.contains(name)) {
+						subject.setAllowFlight(false);
+						uPrint(PrintEnum.INFO, subject,
+								"Creative mode flying disabled");
+						pFlight.remove(name);
+					}
+				} else {
+					if (!subject.getAllowFlight()) {
+						pFlight.add(name);
+						subject.setAllowFlight(true);
+						uPrint(PrintEnum.INFO, subject,
+								"Creative mode flying enabled");
+					}
+					subject.setFlying(true);
 				}
-				if (pFlight.contains(name)) {
-					subject.setAllowFlight(false);
-					uPrint(PrintEnum.INFO, subject,
-							"Creative mode flying disabled");
-					pFlight.remove(name);
-				}
-			} else {
-				if (!subject.getAllowFlight()) {
-					pFlight.add(name);
-					subject.setAllowFlight(true);
-					uPrint(PrintEnum.INFO, subject,
-							"Creative mode flying enabled");
-				}
-				subject.setFlying(true);
 			}
+		default:
+			break;
 		}
 	}
 
