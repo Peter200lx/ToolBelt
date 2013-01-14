@@ -34,12 +34,40 @@
 # under the "tools:" then "global:" section of the config.yml file. Same goes
 # for the tool specific ranks options (tools.sledge.ranks:).
 
-
-#**************************
-#* basic example of ranks *
-#**************************
+#***************************
+#* simple example of ranks *
+#***************************
 # 
-#Here is a basic representation of the inheritances of the ranks defined below.
+#This is a simple example with only one defined rank, mods. This allows the
+# server admin to restrict normal players, while still allowing mods to bypass
+# the constraints.
+# 
+#   mod
+# unranked
+# 
+#In this example anyone who isn't a mod can only scroll the two big mushroom
+# types, while mods don't have that same restriction. This can be used with any
+# tool that the admin wants to restrict for those without "toolbelt.rank.mod".
+# 
+#NOTE: Don't just paste the text below into the config file. Specifically,
+# don't create new tools or scroll sections. Just place onlyAllow and ranks
+# into the already present tools scroll section.
+
+ranksDef:
+  mod:
+    fallback: unranked
+tools:
+  scroll:
+    onlyAllow: [99,100]
+    ranks:
+      mod:
+        onlyAllow: []
+
+#********************
+#* example of ranks *
+#********************
+# 
+#Here is a representation of the inheritances of the ranks defined below.
 # This is read top->bottom.
 # 
 #  admin
@@ -121,9 +149,9 @@ tools:
         stopCopy: []
 
 
-#*************************************************************
-#* basic example extended to demonstrate tool specific lists *
-#*************************************************************
+#*******************************************************
+#* example extended to demonstrate tool specific lists *
+#*******************************************************
 # 
 #The ranks and lists are set up the same as the above example, except that now
 # there are now tool specific lists. A list defined under a tool specific
