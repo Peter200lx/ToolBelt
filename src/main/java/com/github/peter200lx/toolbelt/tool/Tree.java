@@ -54,12 +54,12 @@ public class Tree extends AbstractTool  {
 	            ts = selectedTreeType.get(event.getPlayer());
 	        }
 	        Block block =  event.getClickedBlock().getRelative(event.getBlockFace());
-	        if (block.isEmpty() && block.isLiquid()) {
+	        if (block.isEmpty() || block.isLiquid()) {
     	        block.getWorld().generateTree(block.getLocation(), ts.treeType);
 	        } else {
 	            p.sendMessage(ChatColor.RED + "Block is not empty!");
 	        }
-	        
+
 	    } else if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
 	        if (selectedTreeType.containsKey(event.getPlayer())) {
 	            // User has already used the Tree tool:
@@ -82,9 +82,12 @@ public class Tree extends AbstractTool  {
 	@Override
 	public final boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "(Right-,Left-,)Click with the "
+			uPrint(PrintEnum.CMD, sender, "Right-Click with the "
 					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to (description of tool action)");
+					+ " to place Tree");
+            uPrint(PrintEnum.CMD, sender, "Left-Click with the "
+                    + ChatColor.GOLD + getType() + ChatColor.WHITE
+                    + " to cycle through Tree Types");
 			//Also add any special case messages here
 			return true;
 		}
