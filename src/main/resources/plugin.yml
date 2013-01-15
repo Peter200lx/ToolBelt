@@ -65,6 +65,7 @@ permissions:
             toolbelt.tool.pliers: true
             toolbelt.tool.shovel: true
             toolbelt.tool.saw: true
+            toolbelt.tool.tree: true
     toolbelt.tool.dupe:
         description: Allows the player to use the duplicator tool.
     toolbelt.tool.scroll:
@@ -99,6 +100,8 @@ permissions:
         description: Allows the player to clear large amounts of (by default) stone, dirt, grass, sand and gravel.
     toolbelt.tool.saw:
         description: Allows the player to clear large amounts of (by default) logs, leaves and vines.
+    toolbelt.tool.tree:
+        description: Allows the player to plant various trees.
     toolbelt.rank.*:
         default: false
         description: (Do not use .rank.*) Optional functionality, read help/Ranks.txt for more information
