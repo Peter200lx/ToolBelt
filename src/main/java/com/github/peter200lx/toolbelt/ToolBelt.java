@@ -33,6 +33,7 @@ import com.github.peter200lx.toolbelt.tool.Ruler;
 import com.github.peter200lx.toolbelt.tool.Scroll;
 import com.github.peter200lx.toolbelt.tool.Shovel;
 import com.github.peter200lx.toolbelt.tool.Sledge;
+import com.github.peter200lx.toolbelt.tool.Tree;
 import com.github.peter200lx.toolbelt.tool.Watch;
 
 public class ToolBelt extends JavaPlugin {
@@ -213,6 +214,8 @@ public class ToolBelt extends JavaPlugin {
 		available.put(Pliers.NAME, new Pliers(gc));
 		available.put(Shovel.NAME, new Shovel(gc));
 		available.put(Chainsaw.NAME, new Chainsaw(gc));
+		available.put(Tree.NAME, new Tree(gc));
+
 
 		// Pull in config.yml .bind section for desired tools and bindings.
 		final ConfigurationSection sect = conf.getConfigurationSection(

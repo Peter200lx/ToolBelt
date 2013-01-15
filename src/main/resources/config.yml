@@ -106,6 +106,7 @@ tools:
     pliers: 348 # GLOWSTONE_DUST
     shovel: 284 # GOLD_SPADE
     saw: 286    # GOLD_AXE
+    tree: 6  # SAPLING
   global:
     onlyAllow: []
     stopCopy: [7, 8, 9, 10, 11, 46, 64, 71, 75, 90, 92, 93, 94, 95, 119, 137]
