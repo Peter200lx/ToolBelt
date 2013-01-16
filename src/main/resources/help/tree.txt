@@ -6,4 +6,4 @@
 
 tools:
   bind:
-    tree: 6  # SAPLING
+    tree: 6     # SAPLING

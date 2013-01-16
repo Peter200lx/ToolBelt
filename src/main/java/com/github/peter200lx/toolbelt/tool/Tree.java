@@ -19,7 +19,8 @@ import com.github.peter200lx.toolbelt.AbstractTool;
  * A basic tool definition provided to assist others to build tools.
  */
 public class Tree extends AbstractTool  {
-    private HashMap<Player, TreeSettings> selectedTreeType = new HashMap<Player, TreeSettings>();
+	private HashMap<Player, TreeSettings> selectedTreeType =
+			new HashMap<Player, TreeSettings>();
 
 	/**
 	 * Pass the global config object into Tool's constructor.
@@ -45,38 +46,41 @@ public class Tree extends AbstractTool  {
 
 	@Override
 	public final void handleInteract(PlayerInteractEvent event) {
-	    Player p = event.getPlayer();
-	    if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-	        TreeSettings ts;
-	        if (!selectedTreeType.containsKey(event.getPlayer())) {
-	            ts = setupUser(p);
-	        } else {
-	            ts = selectedTreeType.get(event.getPlayer());
-	        }
-	        Block block =  event.getClickedBlock().getRelative(event.getBlockFace());
-	        if (block.isEmpty() || block.isLiquid()) {
-    	        block.getWorld().generateTree(block.getLocation(), ts.treeType);
-	        } else {
-	            p.sendMessage(ChatColor.RED + "Block is not empty!");
-	        }
+		Player p = event.getPlayer();
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			TreeSettings ts;
+			if (!selectedTreeType.containsKey(event.getPlayer())) {
+				ts = setupUser(p);
+			} else {
+				ts = selectedTreeType.get(event.getPlayer());
+			}
+			Block block =  event.getClickedBlock().getRelative(
+					event.getBlockFace());
+			if (block.isEmpty() || block.isLiquid()) {
+				block.getWorld().generateTree(block.getLocation(), ts.treeType);
+			} else {
+				p.sendMessage(ChatColor.RED + "Block is not empty!");
+			}
 
-	    } else if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-	        if (selectedTreeType.containsKey(event.getPlayer())) {
-	            // User has already used the Tree tool:
-	            TreeSettings ts = selectedTreeType.get(event.getPlayer());
-	            TreeType[] treetypes = TreeType.values();
-	            if (ts.current == treetypes.length - 1) {
-	                ts.current = 0;
-	                ts.treeType = treetypes[0];
-                } else {
-	                ++ts.current;
-	                ts.treeType = treetypes[ts.current];
-	            }
-                p.sendMessage(ChatColor.GREEN + "Currently selected TreeType: " + ts.treeType.toString());
-	        } else {
-	            setupUser(p);
-	        } 
-	    }
+		} else if (event.getAction() == Action.LEFT_CLICK_AIR
+				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
+			if (selectedTreeType.containsKey(event.getPlayer())) {
+				// User has already used the Tree tool:
+				TreeSettings ts = selectedTreeType.get(event.getPlayer());
+				TreeType[] treetypes = TreeType.values();
+				if (ts.current == treetypes.length - 1) {
+					ts.current = 0;
+					ts.treeType = treetypes[0];
+				} else {
+					++ts.current;
+					ts.treeType = treetypes[ts.current];
+				}
+				p.sendMessage(ChatColor.GREEN + "Currently selected TreeType: "
+						+ ts.treeType.toString());
+			} else {
+				setupUser(p);
+			}
+		}
 	}
 
 	@Override
@@ -85,9 +89,9 @@ public class Tree extends AbstractTool  {
 			uPrint(PrintEnum.CMD, sender, "Right-Click with the "
 					+ ChatColor.GOLD + getType() + ChatColor.WHITE
 					+ " to place Tree");
-            uPrint(PrintEnum.CMD, sender, "Left-Click with the "
-                    + ChatColor.GOLD + getType() + ChatColor.WHITE
-                    + " to cycle through Tree Types");
+			uPrint(PrintEnum.CMD, sender, "Left-Click with the "
+					+ ChatColor.GOLD + getType() + ChatColor.WHITE
+					+ " to cycle through Tree Types");
 			//Also add any special case messages here
 			return true;
 		}
@@ -104,21 +108,24 @@ public class Tree extends AbstractTool  {
 	}
 
 	private class TreeSettings {
-	    // Settings initialized to standard tree
-	    public TreeType treeType = TreeType.TREE;
-	    public int current = TreeType.TREE.ordinal();
+		// Settings initialized to standard tree
+		public TreeType treeType = TreeType.TREE;
+		public int current = TreeType.TREE.ordinal();
 	}
-	
+
 	private TreeSettings setupUser(Player p) {
-        sendWelcomeMessage(p);
-        TreeSettings ts = new TreeSettings();
-        selectedTreeType.put(p, ts);
-        p.sendMessage(ChatColor.GREEN + "Currently selected TreeType: " + ts.treeType.toString());
-        return ts;
+		sendWelcomeMessage(p);
+		TreeSettings ts = new TreeSettings();
+		selectedTreeType.put(p, ts);
+		p.sendMessage(ChatColor.GREEN + "Currently selected TreeType: "
+				+ ts.treeType.toString());
+		return ts;
 	}
-	
+
 	private void sendWelcomeMessage(Player p) {
-	    p.sendMessage(new String[]{"Welcome to the tree tool!", "Use left click to cycle through the available TreeTypes", "Use right click to place a tree of the selected type"});
+		p.sendMessage(new String[]{"Welcome to the tree tool!",
+				"Use left click to cycle through the available TreeTypes",
+				"Use right click to place a tree of the selected type"});
 	}
 
 }
