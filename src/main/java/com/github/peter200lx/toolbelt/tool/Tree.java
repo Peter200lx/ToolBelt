@@ -16,7 +16,7 @@ import com.github.peter200lx.toolbelt.PrintEnum;
 import com.github.peter200lx.toolbelt.AbstractTool;
 
 /**
- * A basic tool definition provided to assist others to build tools.
+ * Allows the player to rapidly create trees of varying type.
  */
 public class Tree extends AbstractTool  {
 	private HashMap<Player, TreeSettings> selectedTreeType =
@@ -29,9 +29,6 @@ public class Tree extends AbstractTool  {
 	 */
 	public Tree(GlobalConf gc) {
 		super(gc);
-		// You shouldn't need to add anything here. However if you have
-		//  something you want to setup when the tool is loaded/reloaded
-		//  you can put that logic here.
 	}
 
 	/**
@@ -91,7 +88,6 @@ public class Tree extends AbstractTool  {
 			uPrint(PrintEnum.CMD, sender, "Left-Click with the "
 					+ ChatColor.GOLD + getType() + ChatColor.WHITE
 					+ " to cycle through Tree Types");
-			//Also add any special case messages here
 			uPrint(PrintEnum.CMD, sender, "Right-Click with the "
 					+ ChatColor.GOLD + getType() + ChatColor.WHITE
 					+ " to place Tree");
@@ -102,10 +98,6 @@ public class Tree extends AbstractTool  {
 
 	@Override
 	public final boolean loadConf(String tSet, ConfigurationSection conf) {
-		//There only needs to be logic in here if you have tool specific
-		// data you want to load. This function should always be present.
-		//This function should return true if all data loaded successfully
-		//  and return false if it got unknown data from config.yml
 		return true;
 	}
 
@@ -115,6 +107,12 @@ public class Tree extends AbstractTool  {
 		public int current = TreeType.TREE.ordinal();
 	}
 
+	/**
+	 * Initialize the Player with TREE type on first use of tool.
+	 *
+	 * @param subject subject to add to the Map
+	 * @return type of tree the player has selected by default
+	 */
 	private TreeSettings setupUser(Player subject) {
 		uPrint(PrintEnum.HINT, subject, "Welcome to the tree tool!"
 				+ "Use left click to cycle through the available TreeTypes"
