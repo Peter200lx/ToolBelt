@@ -47,13 +47,16 @@ public class Tree extends AbstractTool  {
 	@Override
 	public final void handleInteract(PlayerInteractEvent event) {
 		Player subject = event.getPlayer();
+		TreeType type = TreeType.TREE;
 		switch (event.getAction()) {
 		case RIGHT_CLICK_BLOCK:
-			TreeType type;
-			if (!pTreeType.containsKey(subject.getName())) {
-				type = setupUser(subject);
-			} else {
+			if (pTreeType.containsKey(subject.getName())) {
 				type = pTreeType.get(subject.getName());
+			} else {
+				pTreeType.put(subject.getName(), type);
+				uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
+						+ "Default TreeType is: " + ChatColor.GOLD
+						+ type.toString());
 			}
 			Block block =  event.getClickedBlock().getRelative(
 					event.getBlockFace());
@@ -73,13 +76,11 @@ public class Tree extends AbstractTool  {
 				typeIntVal++;
 				typeIntVal %= TreeType.values().length;
 				type = TreeType.values()[typeIntVal];
-				pTreeType.put(subject.getName(), type);
-				uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
-						+ "Currently selected TreeType: "
-						+ type.toString());
-			} else {
-				setupUser(subject);
 			}
+			pTreeType.put(subject.getName(), type);
+			uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
+					+ "Currently selected TreeType: "
+					+ ChatColor.GOLD + type.toString());
 		default:
 			break;
 		}
@@ -103,21 +104,4 @@ public class Tree extends AbstractTool  {
 	public final boolean loadConf(String tSet, ConfigurationSection conf) {
 		return true;
 	}
-
-	/**
-	 * Initialize the Player with TREE type on first use of tool.
-	 *
-	 * @param subject subject to add to the Map
-	 * @return type of tree the player has selected by default
-	 */
-	private TreeType setupUser(Player subject) {
-		uPrint(PrintEnum.HINT, subject, "Welcome to the tree tool!"
-				+ "Use left click to cycle through the available TreeTypes"
-				+ "Use right click to place a tree of the selected type");
-		pTreeType.put(subject.getName(), TreeType.TREE);
-		uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
-				+ "Currently selected TreeType: " + TreeType.TREE.toString());
-		return TreeType.TREE;
-	}
-
 }
