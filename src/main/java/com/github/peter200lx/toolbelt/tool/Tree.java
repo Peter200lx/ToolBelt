@@ -8,7 +8,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
@@ -44,7 +43,8 @@ public class Tree extends AbstractTool  {
 	@Override
 	public final void handleInteract(PlayerInteractEvent event) {
 		Player subject = event.getPlayer();
-		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+		switch (event.getAction()) {
+		case RIGHT_CLICK_BLOCK:
 			TreeSettings ts;
 			if (!selectedTreeType.containsKey(event.getPlayer())) {
 				ts = setupUser(subject);
@@ -59,12 +59,12 @@ public class Tree extends AbstractTool  {
 				uPrint(PrintEnum.WARN, subject, ChatColor.RED + "Can't place"
 						+ " tree as the starting block is not empty");
 			}
-
-		} else if (event.getAction() == Action.LEFT_CLICK_AIR
-				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
+			break;
+		case LEFT_CLICK_AIR:
+		case LEFT_CLICK_BLOCK:
 			if (selectedTreeType.containsKey(event.getPlayer())) {
 				// User has already used the Tree tool:
-				TreeSettings ts = selectedTreeType.get(event.getPlayer());
+				ts = selectedTreeType.get(event.getPlayer());
 				TreeType[] treetypes = TreeType.values();
 				if (ts.current == treetypes.length - 1) {
 					ts.current = 0;
@@ -79,6 +79,8 @@ public class Tree extends AbstractTool  {
 			} else {
 				setupUser(subject);
 			}
+		default:
+			break;
 		}
 	}
 
