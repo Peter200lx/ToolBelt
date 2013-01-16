@@ -47,13 +47,14 @@ public class Tree extends AbstractTool  {
 	@Override
 	public final void handleInteract(PlayerInteractEvent event) {
 		Player subject = event.getPlayer();
+		String name = subject.getName();
 		TreeType type = TreeType.TREE;
 		switch (event.getAction()) {
 		case RIGHT_CLICK_BLOCK:
-			if (pTreeType.containsKey(subject.getName())) {
-				type = pTreeType.get(subject.getName());
+			if (pTreeType.containsKey(name)) {
+				type = pTreeType.get(name);
 			} else {
-				pTreeType.put(subject.getName(), type);
+				pTreeType.put(name, type);
 				uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
 						+ "Default TreeType is: " + ChatColor.GOLD
 						+ type.toString());
@@ -69,15 +70,15 @@ public class Tree extends AbstractTool  {
 			break;
 		case LEFT_CLICK_AIR:
 		case LEFT_CLICK_BLOCK:
-			if (pTreeType.containsKey(subject.getName())) {
+			if (pTreeType.containsKey(name)) {
 				// User has already used the Tree tool:
-				type = pTreeType.get(subject.getName());
+				type = pTreeType.get(name);
 				int typeIntVal = type.ordinal();
 				typeIntVal++;
 				typeIntVal %= TreeType.values().length;
 				type = TreeType.values()[typeIntVal];
 			}
-			pTreeType.put(subject.getName(), type);
+			pTreeType.put(name, type);
 			uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
 					+ "Currently selected TreeType: "
 					+ ChatColor.GOLD + type.toString());
