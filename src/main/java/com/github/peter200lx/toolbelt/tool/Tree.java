@@ -46,11 +46,11 @@ public class Tree extends AbstractTool  {
 
 	@Override
 	public final void handleInteract(PlayerInteractEvent event) {
-		Player p = event.getPlayer();
+		Player subject = event.getPlayer();
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			TreeSettings ts;
 			if (!selectedTreeType.containsKey(event.getPlayer())) {
-				ts = setupUser(p);
+				ts = setupUser(subject);
 			} else {
 				ts = selectedTreeType.get(event.getPlayer());
 			}
@@ -59,7 +59,8 @@ public class Tree extends AbstractTool  {
 			if (block.isEmpty() || block.isLiquid()) {
 				block.getWorld().generateTree(block.getLocation(), ts.treeType);
 			} else {
-				p.sendMessage(ChatColor.RED + "Block is not empty!");
+				uPrint(PrintEnum.WARN, subject, ChatColor.RED + "Can't place"
+						+ " tree as the starting block is not empty");
 			}
 
 		} else if (event.getAction() == Action.LEFT_CLICK_AIR
@@ -75,10 +76,11 @@ public class Tree extends AbstractTool  {
 					++ts.current;
 					ts.treeType = treetypes[ts.current];
 				}
-				p.sendMessage(ChatColor.GREEN + "Currently selected TreeType: "
+				uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
+						+ "Currently selected TreeType: "
 						+ ts.treeType.toString());
 			} else {
-				setupUser(p);
+				setupUser(subject);
 			}
 		}
 	}
@@ -86,13 +88,13 @@ public class Tree extends AbstractTool  {
 	@Override
 	public final boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Right-Click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to place Tree");
 			uPrint(PrintEnum.CMD, sender, "Left-Click with the "
 					+ ChatColor.GOLD + getType() + ChatColor.WHITE
 					+ " to cycle through Tree Types");
 			//Also add any special case messages here
+			uPrint(PrintEnum.CMD, sender, "Right-Click with the "
+					+ ChatColor.GOLD + getType() + ChatColor.WHITE
+					+ " to place Tree");
 			return true;
 		}
 		return false;
@@ -113,19 +115,15 @@ public class Tree extends AbstractTool  {
 		public int current = TreeType.TREE.ordinal();
 	}
 
-	private TreeSettings setupUser(Player p) {
-		sendWelcomeMessage(p);
+	private TreeSettings setupUser(Player subject) {
+		uPrint(PrintEnum.HINT, subject, "Welcome to the tree tool!"
+				+ "Use left click to cycle through the available TreeTypes"
+				+ "Use right click to place a tree of the selected type");
 		TreeSettings ts = new TreeSettings();
-		selectedTreeType.put(p, ts);
-		p.sendMessage(ChatColor.GREEN + "Currently selected TreeType: "
-				+ ts.treeType.toString());
+		selectedTreeType.put(subject, ts);
+		uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
+				+ "Currently selected TreeType: " + ts.treeType.toString());
 		return ts;
-	}
-
-	private void sendWelcomeMessage(Player p) {
-		p.sendMessage(new String[]{"Welcome to the tree tool!",
-				"Use left click to cycle through the available TreeTypes",
-				"Use right click to place a tree of the selected type"});
 	}
 
 }
