@@ -66,14 +66,9 @@ public class Tree extends AbstractTool  {
 			if (pTreeType.containsKey(subject.getName())) {
 				// User has already used the Tree tool:
 				ts = pTreeType.get(subject.getName());
-				TreeType[] treetypes = TreeType.values();
-				if (ts.current == treetypes.length - 1) {
-					ts.current = 0;
-					ts.treeType = treetypes[0];
-				} else {
-					++ts.current;
-					ts.treeType = treetypes[ts.current];
-				}
+				ts.current++;
+				ts.current %= TreeType.values().length;
+				ts.treeType = TreeType.values()[ts.current];
 				uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
 						+ "Currently selected TreeType: "
 						+ ts.treeType.toString());
