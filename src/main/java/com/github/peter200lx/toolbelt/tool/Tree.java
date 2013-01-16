@@ -19,8 +19,6 @@ import com.github.peter200lx.toolbelt.AbstractTool;
  * Allows the player to rapidly create trees of varying type.
  */
 public class Tree extends AbstractTool  {
-	private Map<String, TreeSettings> pTreeType =
-			new HashMap<String, TreeSettings>();
 
 	/**
 	 * Pass the global config object into Tool's constructor.
@@ -36,6 +34,11 @@ public class Tree extends AbstractTool  {
 	 */
 	public static final String NAME = "tree";
 
+	/**
+	 * Map of Player names to TreeType selections.
+	 */
+	private Map<String, TreeType> pTreeType = new HashMap<String, TreeType>();
+
 	@Override
 	public final String getToolName() {
 		return NAME;
@@ -46,16 +49,16 @@ public class Tree extends AbstractTool  {
 		Player subject = event.getPlayer();
 		switch (event.getAction()) {
 		case RIGHT_CLICK_BLOCK:
-			TreeSettings ts;
+			TreeType type;
 			if (!pTreeType.containsKey(subject.getName())) {
-				ts = setupUser(subject);
+				type = setupUser(subject);
 			} else {
-				ts = pTreeType.get(subject.getName());
+				type = pTreeType.get(subject.getName());
 			}
 			Block block =  event.getClickedBlock().getRelative(
 					event.getBlockFace());
 			if (block.isEmpty() || block.isLiquid()) {
-				block.getWorld().generateTree(block.getLocation(), ts.treeType);
+				block.getWorld().generateTree(block.getLocation(), type);
 			} else {
 				uPrint(PrintEnum.WARN, subject, ChatColor.RED + "Can't place"
 						+ " tree as the starting block is not empty");
@@ -65,13 +68,15 @@ public class Tree extends AbstractTool  {
 		case LEFT_CLICK_BLOCK:
 			if (pTreeType.containsKey(subject.getName())) {
 				// User has already used the Tree tool:
-				ts = pTreeType.get(subject.getName());
-				ts.current++;
-				ts.current %= TreeType.values().length;
-				ts.treeType = TreeType.values()[ts.current];
+				type = pTreeType.get(subject.getName());
+				int typeIntVal = type.ordinal();
+				typeIntVal++;
+				typeIntVal %= TreeType.values().length;
+				type = TreeType.values()[typeIntVal];
+				pTreeType.put(subject.getName(), type);
 				uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
 						+ "Currently selected TreeType: "
-						+ ts.treeType.toString());
+						+ type.toString());
 			} else {
 				setupUser(subject);
 			}
@@ -99,27 +104,20 @@ public class Tree extends AbstractTool  {
 		return true;
 	}
 
-	private class TreeSettings {
-		// Settings initialized to standard tree
-		public TreeType treeType = TreeType.TREE;
-		public int current = TreeType.TREE.ordinal();
-	}
-
 	/**
 	 * Initialize the Player with TREE type on first use of tool.
 	 *
 	 * @param subject subject to add to the Map
 	 * @return type of tree the player has selected by default
 	 */
-	private TreeSettings setupUser(Player subject) {
+	private TreeType setupUser(Player subject) {
 		uPrint(PrintEnum.HINT, subject, "Welcome to the tree tool!"
 				+ "Use left click to cycle through the available TreeTypes"
 				+ "Use right click to place a tree of the selected type");
-		TreeSettings ts = new TreeSettings();
-		pTreeType.put(subject.getName(), ts);
+		pTreeType.put(subject.getName(), TreeType.TREE);
 		uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
-				+ "Currently selected TreeType: " + ts.treeType.toString());
-		return ts;
+				+ "Currently selected TreeType: " + TreeType.TREE.toString());
+		return TreeType.TREE;
 	}
 
 }
