@@ -1,6 +1,7 @@
 package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.TreeType;
@@ -18,8 +19,8 @@ import com.github.peter200lx.toolbelt.AbstractTool;
  * Allows the player to rapidly create trees of varying type.
  */
 public class Tree extends AbstractTool  {
-	private HashMap<Player, TreeSettings> selectedTreeType =
-			new HashMap<Player, TreeSettings>();
+	private Map<String, TreeSettings> pTreeType =
+			new HashMap<String, TreeSettings>();
 
 	/**
 	 * Pass the global config object into Tool's constructor.
@@ -46,10 +47,10 @@ public class Tree extends AbstractTool  {
 		switch (event.getAction()) {
 		case RIGHT_CLICK_BLOCK:
 			TreeSettings ts;
-			if (!selectedTreeType.containsKey(event.getPlayer())) {
+			if (!pTreeType.containsKey(subject.getName())) {
 				ts = setupUser(subject);
 			} else {
-				ts = selectedTreeType.get(event.getPlayer());
+				ts = pTreeType.get(subject.getName());
 			}
 			Block block =  event.getClickedBlock().getRelative(
 					event.getBlockFace());
@@ -62,9 +63,9 @@ public class Tree extends AbstractTool  {
 			break;
 		case LEFT_CLICK_AIR:
 		case LEFT_CLICK_BLOCK:
-			if (selectedTreeType.containsKey(event.getPlayer())) {
+			if (pTreeType.containsKey(subject.getName())) {
 				// User has already used the Tree tool:
-				ts = selectedTreeType.get(event.getPlayer());
+				ts = pTreeType.get(subject.getName());
 				TreeType[] treetypes = TreeType.values();
 				if (ts.current == treetypes.length - 1) {
 					ts.current = 0;
@@ -120,7 +121,7 @@ public class Tree extends AbstractTool  {
 				+ "Use left click to cycle through the available TreeTypes"
 				+ "Use right click to place a tree of the selected type");
 		TreeSettings ts = new TreeSettings();
-		selectedTreeType.put(subject, ts);
+		pTreeType.put(subject.getName(), ts);
 		uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
 				+ "Currently selected TreeType: " + ts.treeType.toString());
 		return ts;
