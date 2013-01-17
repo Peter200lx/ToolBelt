@@ -62,7 +62,10 @@ public class Tree extends AbstractTool  {
 			Block block =  event.getClickedBlock().getRelative(
 					event.getBlockFace());
 			if (block.isEmpty() || block.isLiquid()) {
-				block.getWorld().generateTree(block.getLocation(), type);
+				if (!block.getWorld().generateTree(block.getLocation(), type)) {
+					uPrint(PrintEnum.WARN, subject, ChatColor.RED + "Failed to"
+							+ " place the tree at this location");
+				}
 			} else {
 				uPrint(PrintEnum.WARN, subject, ChatColor.RED + "Can't place"
 						+ " tree as the starting block is not empty");
