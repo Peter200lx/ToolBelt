@@ -1,6 +1,8 @@
 package com.github.peter200lx.toolbelt.tool;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -39,6 +41,11 @@ public class Tree extends AbstractTool  {
 	 */
 	private Map<String, TreeType> pTreeType = new HashMap<String, TreeType>();
 
+	/**
+	 * List of TreeType that admin has configured to allow.
+	 */
+	private List<TreeType> availableTypes = new ArrayList<TreeType>();
+
 	@Override
 	public final String getToolName() {
 		return NAME;
@@ -48,7 +55,7 @@ public class Tree extends AbstractTool  {
 	public final void handleInteract(PlayerInteractEvent event) {
 		Player subject = event.getPlayer();
 		String name = subject.getName();
-		TreeType type = TreeType.TREE;
+		TreeType type = availableTypes.get(0);
 		switch (event.getAction()) {
 		case RIGHT_CLICK_BLOCK:
 			if (pTreeType.containsKey(name)) {
@@ -76,10 +83,10 @@ public class Tree extends AbstractTool  {
 			if (pTreeType.containsKey(name)) {
 				// User has already used the Tree tool:
 				type = pTreeType.get(name);
-				int typeIntVal = type.ordinal();
+				int typeIntVal = availableTypes.indexOf(type);
 				typeIntVal++;
-				typeIntVal %= TreeType.values().length;
-				type = TreeType.values()[typeIntVal];
+				typeIntVal %= availableTypes.size();
+				type = availableTypes.get(typeIntVal);
 			}
 			pTreeType.put(name, type);
 			uPrint(PrintEnum.INFO, subject, ChatColor.GREEN
@@ -106,6 +113,34 @@ public class Tree extends AbstractTool  {
 
 	@Override
 	public final boolean loadConf(String tSet, ConfigurationSection conf) {
+		List<String> availStr = conf.getStringList(tSet + "." + NAME
+				+ ".possible");
+		List<String> defStr = new ArrayList<String>();
+		for (TreeType defType: TreeType.values()) {
+			defStr.add(defType.toString());
+		}
+		if (availStr.isEmpty()) {
+			availStr = defStr;
+		}
+		for (String type: availStr) {
+			if (defStr.contains(type)) {
+				if (availableTypes.contains(TreeType.valueOf(type))) {
+					log.warning("[" + gc.modName + "] " + tSet + "." + NAME
+							+ ".possible: '" + type + "': is duplicated");
+					return false;
+				}
+				availableTypes.add(TreeType.valueOf(type));
+				if (isDebug()) {
+					log.info("[" + gc.modName + "][loadConf] added to " + NAME
+							+ ".possible: " + type);
+				}
+			} else {
+				log.warning("[" + gc.modName + "] " + tSet + "." + NAME
+						+ ".possible: '" + type + "': is not a TreeType");
+				return false;
+			}
+		}
+
 		return true;
 	}
 }

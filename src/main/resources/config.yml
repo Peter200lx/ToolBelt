@@ -170,3 +170,5 @@ tools:
     radiusSphere: 2.5
     onlyAllow: [17,18, 106]
     stopOverwrite: []
+  tree:
+    possible: []

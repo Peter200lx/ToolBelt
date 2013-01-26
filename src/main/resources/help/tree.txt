@@ -2,8 +2,29 @@
 # 
 # The "tools: bind:" setting is specified in greater detail
 #  in the config.yml file
+# 
+# tools: tree: possible: [<TreeType strings>, ...]
+#    This list controls the tree types that can be created. By default the
+#    list is empty, which means there is no restrictions. If any TreeType(s)
+#    are listed, then only those listed are allowed. That is to say that
+#    possible: is a whitelist as soon as it is not empty.
+# 
+# A list of all the accepted TreeType values can be found at:
+# https://github.com/Bukkit/Bukkit/blob/master/src/main/java/org/bukkit/TreeType.java
+# 
+# For example, to only allow the two Mushroom type trees to be created...
+#    possible: [RED_MUSHROOM, BROWN_MUSHROOM]
+# If you have a long list, it might not fit nicely on one line, in which case use...
+#    possible:
+#      - BIG_TREE
+#      - TALL_REDWOOD
+#      - JUNGLE
+#      - RED_MUSHROOM
+#      - BROWN_MUSHROOM
 
 
 tools:
   bind:
     tree: 294   # GOLD_HOE
+  tree:
+    possible: []
