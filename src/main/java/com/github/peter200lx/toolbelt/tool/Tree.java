@@ -5,13 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.BlockChangeDelegate;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.TreeType;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.material.MaterialData;
 
 import com.github.peter200lx.toolbelt.GlobalConf;
 import com.github.peter200lx.toolbelt.PrintEnum;
@@ -69,9 +73,12 @@ public class Tree extends AbstractTool  {
 			Block block =  event.getClickedBlock().getRelative(
 					event.getBlockFace());
 			if (block.isEmpty() || block.isLiquid()) {
-				if (!block.getWorld().generateTree(block.getLocation(), type)) {
-					uPrint(PrintEnum.WARN, subject, ChatColor.RED + "Failed to"
-							+ " place the tree at this location");
+				TreeBlockChangeDelegate delegate = new TreeBlockChangeDelegate(
+						gc, block.getWorld(), subject);
+				if (!block.getWorld().generateTree(block.getLocation(), type,
+						delegate)) {
+					uPrint(PrintEnum.WARN, subject, ChatColor.RED + "Failed"
+							+ " to place the tree at this location");
 				}
 			} else {
 				uPrint(PrintEnum.WARN, subject, ChatColor.RED + "Can't place"
@@ -142,5 +149,92 @@ public class Tree extends AbstractTool  {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Class for verifying block placement is respecting player permissions.
+	 */
+	private class TreeBlockChangeDelegate implements BlockChangeDelegate {
+
+		/**
+		 * Initialize block placement verification class for the Tree tool.
+		 *
+		 * @param gc plugin global variables
+		 * @param world what world to verify build rights in
+		 * @param subj player to test for block placement permissions
+		 */
+		TreeBlockChangeDelegate(GlobalConf gc, World world, Player subj) {
+			this.gc = gc;
+			this.world = world;
+			this.subject = subj;
+		}
+
+		/**
+		 * Reference to plugin global variables.
+		 */
+		private GlobalConf gc;
+
+		/**
+		 * World that block placement is to be verified in.
+		 */
+		private World world;
+
+		/**
+		 * Person to verify block placement permissions.
+		 */
+		private Player subject;
+
+		@Override
+		public int getHeight() {
+			return world.getMaxHeight() + 1;
+		}
+
+		@Override
+		public int getTypeId(int x, int y, int z) {
+			return world.getBlockTypeIdAt(x, y, z);
+		}
+
+		@Override
+		public boolean isEmpty(int x, int y, int z) {
+			return world.getBlockAt(x, y, z).getType().equals(Material.AIR);
+		}
+
+		@Override
+		public boolean setRawTypeId(int x, int y, int z, int typeId) {
+			return setRawTypeIdAndData(x, y, z, typeId, 0);
+		}
+
+		@Override
+		public boolean setRawTypeIdAndData(int x, int y, int z,
+				int typeId, int data) {
+			Block toChange = world.getBlockAt(x, y, z);
+			if (spawnBuild(toChange, subject)) {
+				final MaterialData set = new MaterialData(typeId, (byte) data);
+				if (gc.useEvent) {
+					if (safeReplace(set, toChange, subject, true)) {
+						updateUser(subject, toChange.getLocation(), set);
+						return true;
+					}
+				} else {
+					toChange.setTypeIdAndData(set.getItemTypeId(),
+							set.getData(), false);
+					updateUser(subject, toChange.getLocation(), set);
+					return true;
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public boolean setTypeId(int x, int y, int z, int typeId) {
+			return setRawTypeIdAndData(x, y, z, typeId, 0);
+		}
+
+		@Override
+		public boolean setTypeIdAndData(int x, int y, int z, int typeId,
+				int data) {
+			return setRawTypeIdAndData(x, y, z, typeId, data);
+		}
+
 	}
 }
