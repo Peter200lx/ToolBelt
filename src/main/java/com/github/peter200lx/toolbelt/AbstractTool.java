@@ -276,29 +276,8 @@ public abstract class AbstractTool implements ToolInterface {
 	 */
 	protected void uPrint(PrintEnum pri, CommandSender subject,
 			String message) {
-		if (gc.perm) {
-			PrintEnum usrLvl = null;
-			int count = 0;
-			for (PrintEnum level : PrintEnum.values()) {
-				if (subject.hasPermission(gc.modName.toLowerCase() + ".print."
-						+ level.getPermName())) {
-					count++;
-					usrLvl = level;
-				}
-			}
-			if (count > 1) {
-				log.warning("[" + gc.modName + "] " + subject.getName()
-						+ " has multiple print perms, using toolbelt.print."
-						+ usrLvl.getPermName());
-			}
-			if (usrLvl != null) {
-				if (usrLvl.shouldPrint(pri)) {
-					subject.sendMessage(message);
-				}
-			} else if (gc.pl.shouldPrint(pri)) {
-				subject.sendMessage(message);
-			}
-		} else if (gc.pl.shouldPrint(pri)) {
+		if ((gc.perm && gc.pl.shouldPrintPerm(gc.modName, pri, subject))
+				|| (!gc.perm && gc.pl.shouldPrint(pri))) {
 			subject.sendMessage(message);
 		}
 	}

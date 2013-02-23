@@ -1,5 +1,9 @@
 package com.github.peter200lx.toolbelt;
 
+import java.util.logging.Logger;
+
+import org.bukkit.command.CommandSender;
+
 /**
  * @author peter200lx
  *
@@ -85,4 +89,37 @@ public enum PrintEnum {
 		return (pri.getPri() <= this.priority);
 	}
 
+	/**
+	 * Test player for print permissions nodes.
+	 *
+	 * @param modName Name of the bukkit plugin. (ToolBelt)
+	 * @param pri priority of command to test
+	 * @param subject Player to test permission nodes
+	 * @return true if passed in priority should print, false otherwise
+	 */
+	public boolean shouldPrintPerm(String modName, PrintEnum pri,
+			CommandSender subject) {
+		PrintEnum usrLvl = null;
+		int count = 0;
+		for (PrintEnum level : PrintEnum.values()) {
+			if (subject.hasPermission(modName.toLowerCase() + ".print."
+					+ level.getPermName())) {
+				count++;
+				usrLvl = level;
+			}
+		}
+		if (count > 1) {
+			Logger.getLogger("Minecraft").warning("[" + modName + "] "
+					+ subject.getName() + " has multiple print perms, using "
+					+ modName.toLowerCase() + ".print." + usrLvl.getPermName());
+		}
+		if (usrLvl != null) {
+			if (usrLvl.shouldPrint(pri)) {
+				return true;
+			}
+		} else if (shouldPrint(pri)) {
+			return true;
+		}
+		return false;
+	}
 }
