@@ -301,7 +301,7 @@ public abstract class AbstractTool implements ToolInterface {
 			final int distanceFromSpawn = (int) Math.max(
 					Math.abs(target.getX() - spawn.getX()),
 					Math.abs(target.getZ() - spawn.getZ()));
-			if (distanceFromSpawn > spawnSize) {
+			if (distanceFromSpawn >= spawnSize) {
 				return true;
 			} else {
 				uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
