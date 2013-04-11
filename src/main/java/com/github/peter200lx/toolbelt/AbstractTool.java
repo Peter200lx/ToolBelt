@@ -940,7 +940,7 @@ public abstract class AbstractTool implements ToolInterface {
 			if ((data & 0x7) != 0x6) {
 				return ((Step) b).getMaterial().toString() + append;
 			} else {
-				return "" + data;
+				return "NETHER_BRICK" + append;
 			}
 		case DOUBLE_STEP:
 			return ((Step) b).getMaterial().toString();
