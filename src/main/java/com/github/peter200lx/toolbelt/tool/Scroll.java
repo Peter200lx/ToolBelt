@@ -146,6 +146,12 @@ public class Scroll extends AbstractTool {
 				data |= 0x08;
 			}
 			break;
+		case ACTIVATOR_RAIL:
+			data = simpScroll(act, (byte) (data & 0x07), 6);
+			if ((b.getData() & 0x8) == 0x8) {
+				data |= 0x08;
+			}
+			break;
 		case LEVER:
 			data = simpScroll(act, (byte) (data & 0x07), 0, 8);
 			if (((Lever) b).isPowered()) {
@@ -173,21 +179,29 @@ public class Scroll extends AbstractTool {
 		case LADDER:
 		case WALL_SIGN:
 		case FURNACE:
-		case DISPENSER:
+		case BURNING_FURNACE:
 			data = simpScroll(act, (byte) (data & 0x07), 2, 6);
+			break;
+		case DISPENSER:
+		case DROPPER:
+		case HOPPER:
+			data = simpScroll(act, (byte) (data & 0x07), 0, 6);
 			break;
 		case CHEST:
 		case LOCKED_CHEST:
 		case ENDER_CHEST:
+		case TRAPPED_CHEST:
 			// CHEST can not be scrolled because of double chests.
 			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
 					+ ChatColor.DARK_PURPLE + " is not scrollable");
 		case STONE_PLATE:
 		case WOOD_PLATE:
+		case GOLD_PLATE:
+		case IRON_PLATE:
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "There is no useful data to scroll");
 		case STEP:
-			data = handleStep(act, b, data, 7, 0x7);
+			data = handleStep(act, b, data, 8, 0x7);
 			break;
 		case WOOD_STEP:
 			data = handleStep(act, b, data, 4, 0x3);
@@ -201,6 +215,12 @@ public class Scroll extends AbstractTool {
 			final byte tick = (byte) (data & (0x08 | 0x04));
 			data = simpScroll(act, (byte) (data & 0x03), 4);
 			data |= tick;
+			break;
+		case REDSTONE_COMPARATOR_OFF:
+		case REDSTONE_COMPARATOR_ON:
+			final byte hold = (byte) (data & (0x08 | 0x04));
+			data = simpScroll(act, (byte) (data & 0x03), 4);
+			data |= hold;
 			break;
 		case REDSTONE_WIRE:
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
@@ -386,6 +406,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.RAILS, 10);
 		dm.put(Material.POWERED_RAIL, 0);
 		dm.put(Material.DETECTOR_RAIL, 0);
+		dm.put(Material.ACTIVATOR_RAIL, 0);
 		dm.put(Material.WOOD_STAIRS, 8);
 		dm.put(Material.COBBLESTONE_STAIRS, 8);
 		dm.put(Material.BRICK_STAIRS, 8);
@@ -395,6 +416,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.BIRCH_WOOD_STAIRS, 8);
 		dm.put(Material.JUNGLE_WOOD_STAIRS, 8);
 		dm.put(Material.SANDSTONE_STAIRS, 8);
+		dm.put(Material.QUARTZ_STAIRS, 8);
 		dm.put(Material.LEVER, 0);
 		dm.put(Material.WOODEN_DOOR, 0);
 		dm.put(Material.IRON_DOOR_BLOCK, 0);
@@ -403,18 +425,24 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.LADDER, 0);
 		dm.put(Material.WALL_SIGN, 0);
 		dm.put(Material.FURNACE, 0);
+		dm.put(Material.BURNING_FURNACE, 0);
 		dm.put(Material.DISPENSER, 0);
+		dm.put(Material.DROPPER, 0);
+		dm.put(Material.HOPPER, 0);
 		dm.put(Material.CHEST, 0);
 		dm.put(Material.LOCKED_CHEST, 0);
 		dm.put(Material.ENDER_CHEST, 0);
+		dm.put(Material.TRAPPED_CHEST, 0);
 		dm.put(Material.PUMPKIN, 4);
 		dm.put(Material.JACK_O_LANTERN, 4);
 		dm.put(Material.STONE_PLATE, 0);
 		dm.put(Material.WOOD_PLATE, 0);
+		dm.put(Material.GOLD_PLATE, 0);
+		dm.put(Material.IRON_PLATE, 0);
 		// Add Coal? No block to click
 		// Add Tools & Armor? No block to click
 		dm.put(Material.STEP, 0);
-		dm.put(Material.DOUBLE_STEP, 7);
+		dm.put(Material.DOUBLE_STEP, 10);
 		dm.put(Material.WOOD_STEP, 0);
 		dm.put(Material.WOOD_DOUBLE_STEP, 4);
 		dm.put(Material.SNOW, 8);
@@ -422,6 +450,8 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.BED_BLOCK, 0);
 		dm.put(Material.DIODE_BLOCK_OFF, 0);
 		dm.put(Material.DIODE_BLOCK_ON, 0);
+		dm.put(Material.REDSTONE_COMPARATOR_OFF, 0);
+		dm.put(Material.REDSTONE_COMPARATOR_ON, 0);
 		dm.put(Material.REDSTONE_WIRE, 0);
 		dm.put(Material.LONG_GRASS, GrassSpecies.values().length);
 		dm.put(Material.TRAP_DOOR, 0);
@@ -450,6 +480,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.WOOD_BUTTON, 0);
 		dm.put(Material.SKULL, 0);
 		dm.put(Material.ANVIL, 0);
+		dm.put(Material.QUARTZ_BLOCK, 5);
 		return dm;
 	}
 
