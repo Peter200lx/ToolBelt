@@ -204,6 +204,8 @@ public class Duplicator extends AbstractTool {
 		dm.put(Material.TRIPWIRE, Material.STRING);
 		dm.put(Material.FLOWER_POT, Material.FLOWER_POT_ITEM);
 		dm.put(Material.SKULL, Material.SKULL_ITEM);
+		dm.put(Material.REDSTONE_COMPARATOR_OFF, Material.REDSTONE_COMPARATOR);
+		dm.put(Material.REDSTONE_COMPARATOR_ON, Material.REDSTONE_COMPARATOR);
 		return dm;
 	}
 
