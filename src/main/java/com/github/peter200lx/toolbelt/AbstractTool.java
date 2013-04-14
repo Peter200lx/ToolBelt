@@ -855,6 +855,7 @@ public abstract class AbstractTool implements ToolInterface {
 					+ (((Rails) b).isCurve() ? " on a curve" : (((Rails) b)
 							.isOnSlope() ? " on a slope" : ""));
 		case POWERED_RAIL:
+		case ACTIVATOR_RAIL:
 			return ((PoweredRail) b).getDirection()
 					+ (((PoweredRail) b).isOnSlope() ? " on a slope" : "");
 		case DETECTOR_RAIL:
@@ -869,6 +870,7 @@ public abstract class AbstractTool implements ToolInterface {
 		case BIRCH_WOOD_STAIRS:
 		case JUNGLE_WOOD_STAIRS:
 		case SANDSTONE_STAIRS:
+		case QUARTZ_STAIRS:
 			String append = "";
 			if ((data & 0x4) == 0x4) {
 				append = " and UPSIDE-DOWN";
@@ -920,8 +922,10 @@ public abstract class AbstractTool implements ToolInterface {
 		case WALL_SIGN:
 			return ((Sign) b).getAttachedFace().toString();
 		case FURNACE:
+		case BURNING_FURNACE:
 			return ((Directional) b).getFacing().toString();
 		case DISPENSER:
+		case DROPPER:
 			return ((Directional) b).getFacing().toString();
 		case PUMPKIN:
 		case JACK_O_LANTERN:
@@ -937,13 +941,26 @@ public abstract class AbstractTool implements ToolInterface {
 			if ((data & 0x8) == 0x8) {
 				append = " TOP-HALF";
 			}
-			if ((data & 0x7) != 0x6) {
-				return ((Step) b).getMaterial().toString() + append;
-			} else {
+			switch (data & 0x7) {
+			case 6:
 				return "NETHER_BRICK" + append;
+			case 7:
+				return "QUARTZ" + append;
+			default:
+				return ((Step) b).getMaterial().toString() + append;
 			}
 		case DOUBLE_STEP:
-			return ((Step) b).getMaterial().toString();
+			switch (data) {
+			case 6:
+				return "NETHER_BRICK";
+			case 7:
+				return "QUARTZ";
+			case 8:
+			case 9:
+				return "SMOOTH " + ((Step) b).getMaterial().toString();
+			default:
+				return ((Step) b).getMaterial().toString();
+			}
 		case WOOD_STEP:
 			append = " BOTTOM-HALF";
 			if ((data & 0x8) == 0x8) {
@@ -1227,6 +1244,61 @@ public abstract class AbstractTool implements ToolInterface {
 			} else {
 				return "East-West";
 			}
+		case REDSTONE_COMPARATOR_OFF:
+		case REDSTONE_COMPARATOR_ON:
+			String direction = "";
+			switch (data & 0x3) {
+			case 0:
+			default:
+				direction = "NORTH";
+				break;
+			case 1:
+				direction = "EAST";
+				break;
+			case 2:
+				direction = "SOUTH";
+				break;
+			case 3:
+				direction = "WEST";
+				break;
+			}
+			if ((data & 0x4) == 0x0) {
+				return direction + " repeat mode";
+			} else {
+				return direction + " subtraction mode";
+			}
+		case HOPPER:
+			switch (data & 0x7) {
+			case 0:
+				return "DOWN";
+			case 1:
+				return "UNCONNECTED";
+			case 2:
+				return "NORTH";
+			case 3:
+				return "SOUTH";
+			case 4:
+				return "WEST";
+			case 5:
+				return "EAST";
+			default:
+				return "" + data;
+			}
+		case QUARTZ_BLOCK:
+			switch (data) {
+			case 0:
+				return "Smooth";
+			case 1:
+				return "Chiseled";
+			case 2:
+				return "Pillar Vertical";
+			case 3:
+				return "Pillar East-West";
+			case 4:
+				return "Pillar North-South";
+			default:
+				return "" + data;
+			}
 		default:
 			return "" + data;
 		}
@@ -1250,6 +1322,7 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.REDSTONE_TORCH_ON);
 		printData.add(Material.RAILS);
 		printData.add(Material.POWERED_RAIL);
+		printData.add(Material.ACTIVATOR_RAIL);
 		printData.add(Material.DETECTOR_RAIL);
 		printData.add(Material.WOOD_STAIRS);
 		printData.add(Material.COBBLESTONE_STAIRS);
@@ -1260,6 +1333,7 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.BIRCH_WOOD_STAIRS);
 		printData.add(Material.JUNGLE_WOOD_STAIRS);
 		printData.add(Material.SANDSTONE_STAIRS);
+		printData.add(Material.QUARTZ_STAIRS);
 		printData.add(Material.LEVER);
 		printData.add(Material.WOODEN_DOOR);
 		printData.add(Material.IRON_DOOR_BLOCK);
@@ -1268,7 +1342,9 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.LADDER);
 		printData.add(Material.WALL_SIGN);
 		printData.add(Material.FURNACE);
+		printData.add(Material.BURNING_FURNACE);
 		printData.add(Material.DISPENSER);
+		printData.add(Material.DROPPER);
 		printData.add(Material.PUMPKIN);
 		printData.add(Material.JACK_O_LANTERN);
 		printData.add(Material.STONE_PLATE);
@@ -1306,6 +1382,10 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.WOOD_BUTTON);
 		printData.add(Material.SKULL);
 		printData.add(Material.ANVIL);
+		printData.add(Material.REDSTONE_COMPARATOR_OFF);
+		printData.add(Material.REDSTONE_COMPARATOR_ON);
+		printData.add(Material.HOPPER);
+		printData.add(Material.QUARTZ_BLOCK);
 	}
 
 }
