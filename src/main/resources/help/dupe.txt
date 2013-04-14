@@ -36,4 +36,4 @@ tools:
       137: 0    # COMMAND to AIR (Disable duplication entirely)
       141: 391  # CARROT to CARROT_ITEM
       142: 392  # POTATO to POTATO_ITEM
-    keepData: [5, 6, 17, 18, 24, 31, 35, 43, 44, 78, 97, 98, 99, 100, 125, 126, 139, 263, 351, 373, 383]
+    keepData: [5, 6, 17, 18, 24, 31, 35, 43, 44, 78, 97, 98, 99, 100, 125, 126, 139, 155, 263, 351, 373, 383]
