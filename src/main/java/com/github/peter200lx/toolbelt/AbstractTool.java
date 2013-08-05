@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
@@ -1299,6 +1300,20 @@ public abstract class AbstractTool implements ToolInterface {
 			default:
 				return "" + data;
 			}
+		case STAINED_CLAY:
+		case CARPET:
+			return DyeColor.getByWoolData(data).toString();
+		case HAY_BLOCK:
+			switch (data & 0xC) {
+			case 0x0:
+				return " is Vertical";
+			case 0x4:
+				return " is East-West";
+			case 0x8:
+				return " is North-South";
+			case 0xC:
+				return " is Directionless";
+			}
 		default:
 			return "" + data;
 		}
@@ -1386,6 +1401,9 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.REDSTONE_COMPARATOR_ON);
 		printData.add(Material.HOPPER);
 		printData.add(Material.QUARTZ_BLOCK);
+		printData.add(Material.STAINED_CLAY);
+		printData.add(Material.HAY_BLOCK);
+		printData.add(Material.CARPET);
 	}
 
 }
