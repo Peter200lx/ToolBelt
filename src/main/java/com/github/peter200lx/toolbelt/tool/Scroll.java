@@ -283,6 +283,10 @@ public class Scroll extends AbstractTool {
 			data = (byte) (simpScroll(act, (byte) (data & 0x01), 2)
 					| (data & ~0x01));
 			break;
+		case HAY_BLOCK:
+			data = (byte) (simpScroll(act, (byte) (data >> 2), 4) << 2);
+			data = (byte) ((data & 0xC) | (oldData & 0x3));
+			break;
 		default:
 			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
 					+ ChatColor.DARK_PURPLE + " is not yet scrollable");
@@ -481,6 +485,9 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.SKULL, 0);
 		dm.put(Material.ANVIL, 0);
 		dm.put(Material.QUARTZ_BLOCK, 5);
+		dm.put(Material.STAINED_CLAY, DyeColor.values().length);
+		dm.put(Material.HAY_BLOCK, 0);
+		dm.put(Material.CARPET, DyeColor.values().length);
 		return dm;
 	}
 
