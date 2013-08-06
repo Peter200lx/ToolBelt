@@ -3,15 +3,14 @@
 # The "tools: bind:" and "tools: global: *:" settings are
 #  specified in greater detail in the config.yml file.
 # 
-# tools: scroll: override: <true|false>
-#    By default there are only certain types of materials that can
-#    be scrolled. If you want to allow your users to only access a
-#    subset of those items, enable the override, and set the desired
-#    materials in the below list
-# 
-# tools: scroll: allow: [ <id>, ...]
-#    If the above override is set, only materials that are listed
-#    here and are supported by the scroll tool will scroll for users.
+# tools: scroll: all: <"no"|"values"|"blocks">
+#    *Not recommended to change* (Scroll tool works fine without all:)
+#    This allows the administrator to bypass the intelligence of the scroll
+#    tool and just mindlessly scroll through all 16 possible values for blocks.
+#    "no"     - behave normally, scrolling through meaningful values. (default) 
+#    "values" - scroll through all 16 values for all blocks where the data
+#               means anything.
+#    "blocks" - scroll through all 16 values for all blocks.
 
 
 tools:
@@ -23,3 +22,4 @@ tools:
   scroll:
     onlyAllow: []
     stopOverwrite: []
+    all: "no"

@@ -42,6 +42,9 @@ public class Scroll extends AbstractTool {
 
 	private Map<Material, Integer> dataMap;
 
+	private boolean scrollAllBlocks = false;
+	private boolean scrollAllValues = false;
+
 	@Override
 	public String getToolName() {
 		return NAME;
@@ -59,7 +62,7 @@ public class Scroll extends AbstractTool {
 				|| (act.equals(Action.RIGHT_CLICK_BLOCK))) {
 			final Block clicked = event.getClickedBlock();
 			final Material type = clicked.getType();
-			if (!dataMap.containsKey(type)) {
+			if (!dataMap.containsKey(type) && !scrollAllBlocks) {
 				uPrint(PrintEnum.DEBUG, subject, "" + ChatColor.GOLD + type
 						+ ChatColor.DARK_PURPLE
 						+ " is not supported for scrolling");
@@ -75,7 +78,12 @@ public class Scroll extends AbstractTool {
 							+ " the server, it is just client side");
 				}
 
-				final int max = dataMap.get(type);
+				int max;
+				if (scrollAllValues) {
+					max = 16;
+				} else {
+					max = dataMap.get(type);
+				}
 				byte data = clicked.getData();
 
 				if (max != 0) {
@@ -365,6 +373,30 @@ public class Scroll extends AbstractTool {
 
 	@Override
 	public boolean loadConf(String tSet, ConfigurationSection conf) {
+
+		String scrollAll = conf.getString(tSet + "." + NAME + ".all", "no");
+		if (scrollAll.contentEquals("no")) {
+			//Default values are false
+		} else if (scrollAll.contentEquals("values")) {
+			scrollAllValues = true;
+		} else if (scrollAll.contentEquals("blocks")) {
+			scrollAllValues = true;
+			scrollAllBlocks = true;
+		} else if (scrollAll.contentEquals("false")) {
+			log.warning("[" + gc.modName + "][loadConf] " + NAME + ".all is "
+					+ "not a recognized value of (no|values|blocks)");
+			log.warning("[" + gc.modName + "][loadConf] it was not recognized "
+					+ "as a string, did you include the quotes?");
+			return false;
+		} else {
+			log.warning("[" + gc.modName + "][loadConf] " + NAME + ".all is "
+					+ "not a recognized value of (no|values|blocks)");
+			return false;
+		}
+		if (isDebug()) {
+			log.info("[" + gc.modName + "][loadConf] Scrolling override"
+					+ " is set to " + scrollAll);
+		}
 
 		// Load the repeat delay
 		if (!loadRepeatDelay(tSet, conf, -1)) {
