@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -22,7 +25,8 @@ public class Chainsaw extends AbstractTool {
 
 	public static final String NAME = "saw";
 
-	private int widthCube;
+	private int horzLimit = 16;
+	private int vertLimit = 40;
 	private double radiusSphere;
 
 	@Override
@@ -48,7 +52,14 @@ public class Chainsaw extends AbstractTool {
 		switch (event.getAction()) {
 		case LEFT_CLICK_BLOCK:
 			target = event.getClickedBlock();
-			toChange = getCube(target, widthCube, subRanks);
+			if (!noOverwrite(subRanks, target.getType())) {
+				toChange = recursiveRemove(target, subRanks,
+						new ArrayList<Block>(), target.getLocation());
+			} else {
+				uPrint(PrintEnum.HINT, subject, ChatColor.RED
+						+ "Need to click on a block the saw can cut");
+				return;
+			}
 			break;
 		case RIGHT_CLICK_BLOCK:
 			target = event.getClickedBlock();
@@ -78,21 +89,30 @@ public class Chainsaw extends AbstractTool {
 		}
 	}
 
-	private List<Block> getCube(Block center, int width,
-			List<String> subRanks) {
-		final int bound = (width - 1) / 2;
-		final List<Block> toRet = new ArrayList<Block>();
-		for (int x = -bound; x <= bound; ++x) {
-			for (int y = -bound; y <= bound; ++y) {
-				for (int z = -bound; z <= bound; ++z) {
-					final Block loc = center.getRelative(x, y, z);
-					if (!noOverwrite(subRanks, loc.getType())) {
-						toRet.add(loc);
-					}
-				}
+	private static final BlockFace[] possible = {
+			BlockFace.DOWN,
+			BlockFace.WEST,
+			BlockFace.EAST,
+			BlockFace.NORTH,
+			BlockFace.SOUTH,
+			BlockFace.UP,
+	};
+
+	private List<Block> recursiveRemove(Block target, List<String> subRanks,
+			List<Block> soFar, Location source) {
+		if ((Math.abs(target.getX() - source.getX()) >= horzLimit)
+				|| (Math.abs(target.getZ() - source.getZ()) >= horzLimit)
+				|| (Math.abs(target.getY() - source.getY()) >= vertLimit)) {
+			return soFar;
+		}
+		soFar.add(target);
+		for (BlockFace check: possible) {
+			final Block loc = target.getRelative(check);
+			if (!soFar.contains(loc) && !noOverwrite(subRanks, loc.getType())) {
+				recursiveRemove(loc, subRanks, soFar, source);
 			}
 		}
-		return toRet;
+		return soFar;
 	}
 
 	private List<Block> getSphere(Block center, double radius,
@@ -132,11 +152,16 @@ public class Chainsaw extends AbstractTool {
 			return false;
 		}
 
-		widthCube = conf.getInt(tSet + "." + NAME + ".widthCube", 3);
+		horzLimit = conf.getInt(
+				tSet + "." + NAME + ".recursiveHorizontalMax", 16);
+		vertLimit = conf.getInt(
+				tSet + "." + NAME + ".recursiveVerticalMax", 40);
 		radiusSphere = conf.getDouble(tSet + "." + NAME + ".radiusSphere", 2.5);
 		if (isDebug()) {
-			log.info("[" + gc.modName + "][loadConf] Chainsaw Cube size set to "
-					+ widthCube);
+			log.info("[" + gc.modName + "][loadConf] Chainsaw horizontal"
+					+ " recursion max set to " + horzLimit);
+			log.info("[" + gc.modName + "][loadConf] Chainsaw vertical"
+					+ " recursion max set to " + vertLimit);
 			log.info("[" + gc.modName + "][loadConf] Chainsaw Sphere radius"
 					+ " set to " + radiusSphere);
 		}

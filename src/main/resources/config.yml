@@ -166,7 +166,8 @@ tools:
     onlyAllow: [1,2,3,12,13]
     stopOverwrite: []
   saw:
-    widthCube: 3
+    recursiveHorizontalMax: 16
+    recursiveVerticalMax: 40
     radiusSphere: 2.5
     onlyAllow: [17,18, 106]
     stopOverwrite: []

@@ -3,9 +3,16 @@
 # The "tools: bind:" and "tools: global: *:" settings are
 #  specified in greater detail in the config.yml file
 # 
-# tools: saw: widthCube: <Number for width of cube>
-#    This number should be odd as it is centered around the clicked
-#    block. Even numbers will be rounded down one.
+# tools: saw: recursiveHorizontalMax: <Number for max N.S.E.W range>
+#    This controls how far away the recursive block removal of the saw
+#    can effect blocks to the North, South, East and West of the clicked
+#    location. Default is selected to remove a BIG_TREE even if selected
+#    from one corner.
+# 
+# tools: saw: recursiveVerticalMax: <Number for max vertical range>
+#    This controls how far away the recursive block removal of the saw
+#    can effect blocks in the vertical dimension. Default is selected to
+#    remove a JUNGLE tree even if selected from the bottom.
 # 
 # tools: saw: radiusSphere: <Number for radius of sphere>
 #    This number can have fractional components, this will alter
@@ -29,7 +36,8 @@ tools:
     onlyAllow: []
     stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119, 137]
   saw:
-    widthCube: 3
+    recursiveHorizontalMax: 16
+    recursiveVerticalMax: 40
     radiusSphere: 2.5
     onlyAllow: [17,18, 106]
     stopOverwrite: []
