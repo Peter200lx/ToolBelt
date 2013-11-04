@@ -98,8 +98,8 @@ public class ToolBelt extends JavaPlugin {
 					}
 					this.reloadConfig();
 					if (loadConf()) {
-						sender.sendMessage("Configuration file config.yml has"
-								+ " been reloaded");
+						sender.sendMessage(MODNAME + " configuration file"
+								+ " config.yml has been reloaded");
 					} else {
 						sender.sendMessage("[WARNING] Configuration file load"
 								+ " error, check console logs");
