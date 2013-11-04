@@ -27,6 +27,19 @@ public class Paint extends AbstractTool {
 
 	public static final String NAME = "paint";
 
+	/**
+	 * Delay between how often a given user can acquire a paint. This is in
+	 *     milliseconds, and is used to prevent multiple actions on a single
+	 *     click.
+	 */
+	private int acquRepeatDelay = 300;
+
+	/**
+	 * Storage for how recently a given user has acquired a paint, used to
+	 *     limit performing multiple actions for a single click.
+	 */
+	private final Map<String, Long> pAcquCooldown = new HashMap<String, Long>();
+
 	private Integer rangeDef = 0;
 	private Integer rangeCrouch = 25;
 
@@ -53,6 +66,9 @@ public class Paint extends AbstractTool {
 		case LEFT_CLICK_BLOCK:
 		case LEFT_CLICK_AIR:
 			// Acquire paint
+			if (!acquireDelayElapsed(subject.getName())) {
+				return;
+			}
 			MaterialData mdTarget = null;
 			if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 				mdTarget = event.getClickedBlock().getState().getData();
@@ -158,6 +174,25 @@ public class Paint extends AbstractTool {
 		}
 	}
 
+	/**
+	 * Check to determine if the user has waited longer then acquRepeatDelay
+	 *     since the last use.
+	 *
+	 * @param userName user to check time difference for
+	 * @return true if last check > then acquRepeatDelay, false otherwise
+	 */
+	private boolean acquireDelayElapsed(String userName) {
+		if (acquRepeatDelay == 0) {
+			return true;
+		}
+		if (pAcquCooldown.containsKey(userName) && (System.currentTimeMillis()
+						< (pAcquCooldown.get(userName) + acquRepeatDelay))) {
+			return false;
+		}
+		pAcquCooldown.put(userName, System.currentTimeMillis());
+		return true;
+	}
+
 	@Override
 	public void handleItemChange(PlayerItemHeldEvent event) {
 		final Player subject = event.getPlayer();
@@ -200,6 +235,21 @@ public class Paint extends AbstractTool {
 		// Load the repeat delay
 		if (!loadRepeatDelay(tSet, conf, 0)) {
 			return false;
+		}
+
+		acquRepeatDelay = conf.getInt(tSet + "." + getToolName()
+				+ ".aquireRepeatDelay", 300);
+		if (acquRepeatDelay < 0) {
+			log.warning("[" + gc.modName + "] " + tSet + "." + getToolName()
+					+ ".acquireRepeatDelay has an invalid value of "
+					+ acquRepeatDelay);
+			log.warning("[" + gc.modName + "] (The delay must be greater"
+					+ " than or equal to zero)");
+			return false;
+		}
+		if (isDebug()) {
+			log.info("[" + gc.modName + "][loadConf] Aquire Paint repeat"
+					+ " delay is " + acquRepeatDelay);
 		}
 
 		rangeDef = conf.getInt(tSet + "." + NAME + ".rangeDefault", 0);
