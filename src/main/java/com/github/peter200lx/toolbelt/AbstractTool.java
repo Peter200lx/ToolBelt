@@ -1332,7 +1332,7 @@ public abstract class AbstractTool implements ToolInterface {
 				return " is East-West";
 			case 0x8:
 				return " is North-South";
-			case 0xC:
+			default: //0xC
 				return " is Directionless";
 			}
 		default:

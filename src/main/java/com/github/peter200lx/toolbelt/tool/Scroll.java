@@ -375,9 +375,11 @@ public class Scroll extends AbstractTool {
 
 		String scrollAll = conf.getString(tSet + "." + NAME + ".all", "no");
 		if (scrollAll.contentEquals("no")) {
-			//Default values are false
+			scrollAllValues = false;
+			scrollAllBlocks = false;
 		} else if (scrollAll.contentEquals("values")) {
 			scrollAllValues = true;
+			scrollAllBlocks = false;
 		} else if (scrollAll.contentEquals("blocks")) {
 			scrollAllValues = true;
 			scrollAllBlocks = true;
