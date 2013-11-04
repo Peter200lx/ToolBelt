@@ -363,9 +363,8 @@ public class Scroll extends AbstractTool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Click with the "
-					+ ChatColor.GOLD + getType()
-					+ ChatColor.WHITE + " to change a block's data value");
+			uPrint(PrintEnum.CMD, sender, useFormat("Left/Right click to"
+					+ " change a block's  data value"));
 			return true;
 		}
 		return false;

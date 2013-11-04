@@ -98,9 +98,8 @@ public class Duplicator extends AbstractTool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Right-click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to duplicate the item selected");
+			uPrint(PrintEnum.CMD, sender, useFormat(
+					"Right click to duplicate the item selected"));
 			return true;
 		}
 		return false;

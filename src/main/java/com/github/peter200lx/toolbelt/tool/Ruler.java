@@ -132,9 +132,8 @@ public class Ruler extends AbstractTool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Left and right click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to get distance information (crouch for range)");
+			uPrint(PrintEnum.CMD, sender, useFormat("Left/Right click"
+					+ " for measurements (crouch for range)"));
 			return true;
 		}
 		return false;

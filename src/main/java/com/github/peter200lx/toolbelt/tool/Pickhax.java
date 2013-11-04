@@ -111,9 +111,8 @@ public class Pickhax extends AbstractTool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to delete a block (Right-click for no-physics)");
+			uPrint(PrintEnum.CMD, sender, useFormat("Delete blocks"
+					+ " (Right click = no-physics)"));
 			return true;
 		}
 		return false;

@@ -86,9 +86,8 @@ public class Watch extends AbstractTool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Left click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to set time to day, right for night");
+			uPrint(PrintEnum.CMD, sender, useFormat("Left click"
+					+ " to set time to day, Right for night"));
 			return true;
 		}
 		return false;

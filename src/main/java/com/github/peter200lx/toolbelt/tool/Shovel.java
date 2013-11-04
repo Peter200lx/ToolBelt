@@ -139,8 +139,7 @@ public class Shovel extends AbstractTool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Click with the " + ChatColor.GOLD
-					+ getType() + ChatColor.WHITE + " to make big digs");
+			uPrint(PrintEnum.CMD, sender, useFormat("Click to make big digs"));
 			return true;
 		}
 		return false;

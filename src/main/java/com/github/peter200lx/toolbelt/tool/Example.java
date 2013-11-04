@@ -1,6 +1,5 @@
 package com.github.peter200lx.toolbelt.tool;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -58,9 +57,8 @@ public class Example extends AbstractTool  {
 	@Override
 	public final boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "(Right-,Left-,)Click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to (description of tool action)");
+			uPrint(PrintEnum.CMD, sender, useFormat(
+					"(player action) to (description of tool action)"));
 			//Also add any special case messages here
 			return true;
 		}

@@ -173,20 +173,20 @@ public class Paint extends AbstractTool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Left-click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to load a block");
-			uPrint(PrintEnum.CMD, sender, "Right-click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to paint the loaded block");
+			uPrint(PrintEnum.CMD, sender, useFormat(
+					"Left click to load a block"));
+			uPrint(PrintEnum.CMD, sender, useFormatExtra(
+					"Right click to paint the loaded block"));
 			if (hasRangePerm(sender)) {
 				if (rangeDef > 0) {
-					uPrint(PrintEnum.CMD, sender, "Be careful, you can paint"
-							+ " at a range of up to " + rangeDef + " blocks.");
+					uPrint(PrintEnum.CMD, sender, useFormatExtra(
+							"Be careful, you paint at a range of up to "
+							+ rangeDef + " blocks."));
 				}
 				if (rangeCrouch > 0) {
-					uPrint(PrintEnum.CMD, sender, "If you crouch, you can"
-							+ " paint at a range of " + rangeCrouch);
+					uPrint(PrintEnum.CMD, sender, useFormatExtra(
+							"If you crouch, you paint at a range of "
+							+ rangeCrouch + " blocks."));
 				}
 			}
 			return true;

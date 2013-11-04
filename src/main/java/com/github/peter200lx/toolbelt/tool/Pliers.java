@@ -96,11 +96,10 @@ public class Pliers extends AbstractTool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "left/right click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to copy and push or pull blocks");
-			uPrint(PrintEnum.HINT, sender,
-					"Crouch to push or pull into more then just air");
+			uPrint(PrintEnum.CMD, sender, useFormat("Left/Right click to"
+					+ " duplicate blocks"));
+			uPrint(PrintEnum.HINT, sender, useFormatExtra("Crouch to push"
+					+ " or pull into more then just air"));
 			return true;
 		}
 		return false;

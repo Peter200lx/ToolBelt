@@ -242,6 +242,27 @@ public abstract class AbstractTool implements ToolInterface {
 	public abstract boolean printUse(CommandSender sender);
 
 	/**
+	 * Format the first line for printUse.
+	 *
+	 * @param desc Plugin description to print
+	 * @return Formatted string with plugin name and description
+	 */
+	protected String useFormat(String desc) {
+		return "" + ChatColor.YELLOW + getType() + ChatColor.RESET + ": "
+				+ ChatColor.AQUA + desc;
+	}
+
+	/**
+	 * Format any additional lines for printUse.
+	 *
+	 * @param desc additional lines for printing
+	 * @return Formatted string
+	 */
+	protected String useFormatExtra(String desc) {
+		return "    " + ChatColor.AQUA + ChatColor.ITALIC + desc;
+	}
+
+	/**
 	 * Load the tool specific configuration settings. All tools must implement
 	 *     this, even if they don't have any settings to load. If that is the
 	 *     case, just return true;

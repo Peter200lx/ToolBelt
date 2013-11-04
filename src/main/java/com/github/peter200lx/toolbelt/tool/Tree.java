@@ -107,12 +107,10 @@ public class Tree extends AbstractTool  {
 	@Override
 	public final boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Left-Click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to cycle through Tree Types");
-			uPrint(PrintEnum.CMD, sender, "Right-Click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to place Tree");
+			uPrint(PrintEnum.CMD, sender, useFormat("Left Click"
+					+ " to cycle through Tree Types"));
+			uPrint(PrintEnum.CMD, sender, useFormatExtra(
+					"Right-Click to place Tree"));
 			return true;
 		}
 		return false;

@@ -117,9 +117,8 @@ public class Chainsaw extends AbstractTool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Click with the " + ChatColor.GOLD
-					+ getType() + ChatColor.WHITE
-					+ " to cut down large chunks of trees");
+			uPrint(PrintEnum.CMD, sender, useFormat(
+					"Cut down large chunks of trees"));
 			return true;
 		}
 		return false;

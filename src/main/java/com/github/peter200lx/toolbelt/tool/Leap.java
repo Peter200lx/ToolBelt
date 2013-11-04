@@ -215,12 +215,11 @@ public class Leap extends AbstractTool {
 	@Override
 	public boolean printUse(CommandSender sender) {
 		if (hasPerm(sender)) {
-			uPrint(PrintEnum.CMD, sender, "Right-Click with the "
-					+ ChatColor.GOLD + getType() + ChatColor.WHITE
-					+ " to make magnificent leaps");
+			uPrint(PrintEnum.CMD, sender, useFormat(
+					"Right click to make magnificent leaps"));
 			if (hasTeleportPerm(sender) && leapTeleport) {
-				uPrint(PrintEnum.CMD, sender,
-						"Crouch while leaping to teleport");
+				uPrint(PrintEnum.CMD, sender, useFormatExtra(
+						"Crouch while leaping to teleport"));
 			}
 			return true;
 		}
