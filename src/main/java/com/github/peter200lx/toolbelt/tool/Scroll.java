@@ -373,6 +373,11 @@ public class Scroll extends AbstractTool {
 	@Override
 	public boolean loadConf(String tSet, ConfigurationSection conf) {
 
+		// Load the repeat delay
+		if (!loadRepeatDelay(tSet, conf, -1)) {
+			return false;
+		}
+
 		String scrollAll = conf.getString(tSet + "." + NAME + ".all", "no");
 		if (scrollAll.contentEquals("no")) {
 			scrollAllValues = false;
@@ -397,11 +402,6 @@ public class Scroll extends AbstractTool {
 		if (isDebug()) {
 			log.info("[" + gc.modName + "][loadConf] Scrolling override"
 					+ " is set to " + scrollAll);
-		}
-
-		// Load the repeat delay
-		if (!loadRepeatDelay(tSet, conf, -1)) {
-			return false;
 		}
 
 		// Initialize the dataMap list
