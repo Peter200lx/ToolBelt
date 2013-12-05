@@ -11,6 +11,7 @@ import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -90,7 +91,7 @@ public class Scroll extends AbstractTool {
 					data = simpScroll(act, data, max);
 				} else {
 					try {
-						data = specialCase(subject, act, clicked, type, data);
+						data = specialCase(subject, act, clicked.getState());
 					} catch (UnsupportedOperationException error) {
 						if (error.getMessage() != null) {
 							uPrint(PrintEnum.DEBUG, subject,
@@ -100,7 +101,7 @@ public class Scroll extends AbstractTool {
 					}
 				}
 
-				final MaterialData newInfo = clicked.getState().getData();
+				MaterialData newInfo = clicked.getState().getData();
 				newInfo.setData(data);
 				if (spawnBuild(clicked, subject)) {
 					if (isUseEvent()) {
@@ -126,11 +127,10 @@ public class Scroll extends AbstractTool {
 		}
 	}
 
-	private byte specialCase(Player subject, Action act, Block clicked,
-			Material type, byte oldData) {
-		byte data = oldData;
-		final MaterialData b = clicked.getState().getData();
-		switch (type) {
+	private byte specialCase(Player subject, Action act, BlockState src) {
+		final MaterialData b = src.getData();
+		byte data = b.getData();
+		switch (b.getItemType()) {
 		case JUKEBOX:
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "Data value indicates contained record, can't scroll");
@@ -200,7 +200,8 @@ public class Scroll extends AbstractTool {
 		case ENDER_CHEST:
 		case TRAPPED_CHEST:
 			// CHEST can not be scrolled because of double chests.
-			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
+			throw new UnsupportedOperationException(""
+					+ ChatColor.GOLD + b.getItemType()
 					+ ChatColor.DARK_PURPLE + " is not scrollable");
 		case STONE_PLATE:
 		case WOOD_PLATE:
@@ -209,14 +210,15 @@ public class Scroll extends AbstractTool {
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "There is no useful data to scroll");
 		case STEP:
-			data = handleStep(act, b, data, 8, 0x7);
+			data = handleStep(act, b, 8, 0x7);
 			break;
 		case WOOD_STEP:
-			data = handleStep(act, b, data, 4, 0x3);
+			data = handleStep(act, b, 4, 0x3);
 			break;
 		case BED_BLOCK:
 			// TODO More research into modifying foot and head of  bed at once
-			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
+			throw new UnsupportedOperationException(""
+					+ ChatColor.GOLD + b.getItemType()
 					+ ChatColor.DARK_PURPLE + " is not yet scrollable");
 		case DIODE_BLOCK_OFF:
 		case DIODE_BLOCK_ON:
@@ -293,18 +295,19 @@ public class Scroll extends AbstractTool {
 			break;
 		case HAY_BLOCK:
 			data = (byte) (simpScroll(act, (byte) (data >> 2), 4) << 2);
-			data = (byte) ((data & 0xC) | (oldData & 0x3));
+			data = (byte) ((data & 0xC) | (b.getData() & 0x3));
 			break;
 		default:
-			throw new UnsupportedOperationException("" + ChatColor.GOLD + type
+			throw new UnsupportedOperationException(""
+					+ ChatColor.GOLD + b.getItemType()
 					+ ChatColor.DARK_PURPLE + " is not yet scrollable");
 		}
 		return data;
 	}
 
-	private byte handleStep(Action act, MaterialData b, byte oldData,
-			int stepMax, int mask) {
-		byte data = oldData;
+	private byte handleStep(Action act, MaterialData b, int stepMax,
+			int mask) {
+		byte data = b.getData();
 		boolean inverted;
 		if (b instanceof Step) {
 			inverted = ((Step) b).isInverted();
