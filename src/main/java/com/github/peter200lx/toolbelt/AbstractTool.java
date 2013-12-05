@@ -807,10 +807,38 @@ public abstract class AbstractTool implements ToolInterface {
 	protected String data2Str(MaterialData b) {
 		byte data = b.getData();
 		switch (b.getItemType()) {
+		case DIRT:
+			switch (data & 0x03) {
+			case 0:
+				return "Default";
+			case 1:
+				return "Grassless";
+			case 2:
+				return "Podzol";
+			default:
+				return "" + data;
+			}
+		case SAND:
+			switch (data & 0x01) {
+			case 0:
+				return "Default";
+			case 1:
+				return "Red";
+			default:
+				return "" + data;
+			}
 		case LOG:
+		case LOG_2:
 			String species = "";
-			if (((Tree) b).getSpecies() != null) {
-				species = ((Tree) b).getSpecies().toString();
+			if (b.getItemType().equals(Material.LOG)) {
+				if (((Tree) b).getSpecies() != null) {
+					species = ((Tree) b).getSpecies().toString();
+				}
+			} else {
+				if (TreeSpecies.getByData((byte) ((data & 0x3) + 4)) != null) {
+					species = TreeSpecies.getByData((byte) ((data & 0x3) + 4)
+							).toString();
+				}
 			}
 			switch (data & 0x0C) {
 			case 0x0:
@@ -822,11 +850,23 @@ public abstract class AbstractTool implements ToolInterface {
 			default:
 				return species + " is Directionless";
 			}
-		case WOOD:
 		case LEAVES:
-		case SAPLING:
 			if (((Tree) b).getSpecies() != null) {
 				return ((Tree) b).getSpecies().toString();
+			} else {
+				return "" + data;
+			}
+		case LEAVES_2:
+			if (TreeSpecies.getByData((byte) ((data & 0x3) + 4)) != null) {
+				return TreeSpecies.getByData((byte) ((data & 0x3) + 4)
+						).toString();
+			} else {
+				return "" + data;
+			}
+		case WOOD:
+		case SAPLING:
+			if (TreeSpecies.getByData((byte) (data & 0x7)) != null) {
+				return TreeSpecies.getByData((byte) (data & 0x7)).toString();
 			} else {
 				return "" + data;
 			}
@@ -893,6 +933,8 @@ public abstract class AbstractTool implements ToolInterface {
 		case JUNGLE_WOOD_STAIRS:
 		case SANDSTONE_STAIRS:
 		case QUARTZ_STAIRS:
+		case ACACIA_STAIRS:
+		case DARK_OAK_STAIRS:
 			String append = "";
 			if ((data & 0x4) == 0x4) {
 				append = " and UPSIDE-DOWN";
@@ -988,9 +1030,20 @@ public abstract class AbstractTool implements ToolInterface {
 			if ((data & 0x8) == 0x8) {
 				append = " TOP-HALF";
 			}
-			return ((WoodenStep) b).getSpecies().toString() + append;
+			if (TreeSpecies.getByData((byte) (data & 0x7)) != null) {
+				return TreeSpecies.getByData((byte) (data & 0x7)).toString()
+						+ append;
+			} else {
+				return "" + data + append;
+			}
+			//return ((WoodenStep) b).getSpecies().toString() + append;
 		case WOOD_DOUBLE_STEP:
-			return ((WoodenStep) b).getSpecies().toString();
+			if (TreeSpecies.getByData((byte) (data & 0x7)) != null) {
+				return TreeSpecies.getByData((byte) (data & 0x7)).toString();
+			} else {
+				return "" + data;
+			}
+			//return ((WoodenStep) b).getSpecies().toString();
 		case SNOW:
 			switch (data) {
 			case 0x0:
@@ -1142,6 +1195,12 @@ public abstract class AbstractTool implements ToolInterface {
 				return Material.COBBLESTONE.toString();
 			case 0x2:
 				return Material.SMOOTH_BRICK.toString();
+			case 0x3:
+				return "MOSSY " + Material.SMOOTH_BRICK.toString();
+			case 0x4:
+				return "CRACKED " + Material.SMOOTH_BRICK.toString();
+			case 0x5:
+				return "CIRCLE " + Material.SMOOTH_BRICK.toString();
 			default:
 				return "" + data;
 			}
@@ -1284,10 +1343,16 @@ public abstract class AbstractTool implements ToolInterface {
 				direction = "WEST";
 				break;
 			}
+			String mode = "";
 			if ((data & 0x4) == 0x0) {
-				return direction + " repeat mode";
+				mode = " repeat mode";
 			} else {
-				return direction + " subtraction mode";
+				mode = " subtraction mode";
+			}
+			if ((data & 0x8) == 0x8) {
+				return direction + mode + " powered";
+			} else {
+				return direction + mode;
 			}
 		case HOPPER:
 			switch (data & 0x7) {
@@ -1323,6 +1388,8 @@ public abstract class AbstractTool implements ToolInterface {
 			}
 		case STAINED_CLAY:
 		case CARPET:
+		case STAINED_GLASS:
+		case STAINED_GLASS_PANE:
 			return DyeColor.getByWoolData(data).toString();
 		case HAY_BLOCK:
 			switch (data & 0xC) {
@@ -1335,6 +1402,50 @@ public abstract class AbstractTool implements ToolInterface {
 			default: //0xC
 				return " is Directionless";
 			}
+		case RED_ROSE:
+			switch (data) {
+			case 0x0:
+				return "POPPY";
+			case 0x1:
+				return "BLUE_ORCHID";
+			case 0x2:
+				return "ALLIUM";
+			case 0x3:
+				return "AZURE_BLUET";
+			case 0x4:
+				return "RED_TULIP";
+			case 0x5:
+				return "ORANGE_TULIP";
+			case 0x6:
+				return "WHITE_TULIP";
+			case 0x7:
+				return "PINK_TULIP";
+			case 0x8:
+				return "OXEYE_DAISY";
+			default:
+				return "" + data;
+			}
+		case DOUBLE_PLANT:
+			if ((data & 0x8) == 0x8) {
+				return "TOP half";
+			} else {
+				switch (data & 0x7) {
+				case 0x0:
+					return "BOTTOM half, SUNFLOWER";
+				case 0x1:
+					return "BOTTOM half, LILAC";
+				case 0x2:
+					return "BOTTOM half, DOUBLE_TALLGRASS";
+				case 0x3:
+					return "BOTTOM half, LARGE_FERN";
+				case 0x4:
+					return "BOTTOM half, ROSE_BUSH";
+				case 0x5:
+					return "BOTTOM half, PEONY";
+				default:
+					return "" + data;
+				}
+			}
 		default:
 			return "" + data;
 		}
@@ -1345,9 +1456,13 @@ public abstract class AbstractTool implements ToolInterface {
 	 *     printing data values.
 	 */
 	private static void setPrintData() {
+		printData.add(Material.DIRT);
+		printData.add(Material.SAND);
 		printData.add(Material.LOG);
+		printData.add(Material.LOG_2);
 		printData.add(Material.WOOD);
 		printData.add(Material.LEAVES);
+		printData.add(Material.LEAVES_2);
 		printData.add(Material.SAPLING);
 		printData.add(Material.JUKEBOX);
 		printData.add(Material.CROPS);
@@ -1370,6 +1485,8 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.JUNGLE_WOOD_STAIRS);
 		printData.add(Material.SANDSTONE_STAIRS);
 		printData.add(Material.QUARTZ_STAIRS);
+		printData.add(Material.ACACIA_STAIRS);
+		printData.add(Material.DARK_OAK_STAIRS);
 		printData.add(Material.LEVER);
 		printData.add(Material.WOODEN_DOOR);
 		printData.add(Material.IRON_DOOR_BLOCK);
@@ -1423,8 +1540,12 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.HOPPER);
 		printData.add(Material.QUARTZ_BLOCK);
 		printData.add(Material.STAINED_CLAY);
+		printData.add(Material.STAINED_GLASS);
+		printData.add(Material.STAINED_GLASS_PANE);
 		printData.add(Material.HAY_BLOCK);
 		printData.add(Material.CARPET);
+		printData.add(Material.RED_ROSE);
+		printData.add(Material.DOUBLE_PLANT);
 	}
 
 }
