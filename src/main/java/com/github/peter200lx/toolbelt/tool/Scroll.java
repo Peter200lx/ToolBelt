@@ -131,6 +131,21 @@ public class Scroll extends AbstractTool {
 		final MaterialData b = src.getData();
 		byte data = b.getData();
 		switch (b.getItemType()) {
+		case LOG_2:
+			//Map down removing bit 0x2 which is unused currently (MC1.7)
+			data = (byte) (((data & 0xC) >>> 1) | (data & 0x1));
+			data = (byte) (simpScroll(act, data, 8));
+			//Expand up leaving bit 0x2 as 0
+			data = (byte) (((data & 0x6) << 1) | (data & 0x1));
+			break;
+		case LEAVES:
+			data = (byte) (simpScroll(act, (byte) (data & 0x3), 4)
+					| (data & 0xC));
+			break;
+		case LEAVES_2:
+			data = (byte) (simpScroll(act, (byte) (data & 0x3), 2)
+					| (data & 0xC));
+			break;
 		case JUKEBOX:
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "Data value indicates contained record, can't scroll");
@@ -213,7 +228,7 @@ public class Scroll extends AbstractTool {
 			data = handleStep(act, b, 8, 0x7);
 			break;
 		case WOOD_STEP:
-			data = handleStep(act, b, 4, 0x3);
+			data = handleStep(act, b, TreeSpecies.values().length, 0x7);
 			break;
 		case BED_BLOCK:
 			// TODO More research into modifying foot and head of  bed at once
@@ -222,15 +237,13 @@ public class Scroll extends AbstractTool {
 					+ ChatColor.DARK_PURPLE + " is not yet scrollable");
 		case DIODE_BLOCK_OFF:
 		case DIODE_BLOCK_ON:
-			final byte tick = (byte) (data & (0x08 | 0x04));
 			data = simpScroll(act, (byte) (data & 0x03), 4);
-			data |= tick;
+			data |= (byte) (b.getData() & 0x0C);
 			break;
 		case REDSTONE_COMPARATOR_OFF:
 		case REDSTONE_COMPARATOR_ON:
-			final byte hold = (byte) (data & (0x08 | 0x04));
 			data = simpScroll(act, (byte) (data & 0x03), 4);
-			data |= hold;
+			data |= (byte) (b.getData() & 0x0C);
 			break;
 		case REDSTONE_WIRE:
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
@@ -296,6 +309,14 @@ public class Scroll extends AbstractTool {
 		case HAY_BLOCK:
 			data = (byte) (simpScroll(act, (byte) (data >> 2), 4) << 2);
 			data = (byte) ((data & 0xC) | (b.getData() & 0x3));
+			break;
+		case DOUBLE_PLANT:
+			if ((data & 0x8) == 0x8) {
+				uPrint(PrintEnum.INFO, subject, "Clicking the top half of a"
+						+ " tall flower can't change the type.");
+				throw new UnsupportedOperationException();
+			}
+			data = simpScroll(act, data, 6);
 			break;
 		default:
 			throw new UnsupportedOperationException(""
@@ -425,9 +446,13 @@ public class Scroll extends AbstractTool {
 		final Map<Material, Integer> dm = new HashMap<Material, Integer>();
 		// If the integer is 0, that means that a simple numerical shift won't
 		// work
+		dm.put(Material.DIRT, 3);
+		dm.put(Material.SAND, 2);
 		dm.put(Material.LOG, 16);
+		dm.put(Material.LOG_2, 0);
 		dm.put(Material.WOOD, TreeSpecies.values().length);
-		dm.put(Material.LEAVES, TreeSpecies.values().length);
+		dm.put(Material.LEAVES, 0);
+		dm.put(Material.LEAVES_2, 0);
 		dm.put(Material.JUKEBOX, 0);
 		dm.put(Material.SAPLING, TreeSpecies.values().length);
 		dm.put(Material.CACTUS, 16);
@@ -457,6 +482,8 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.JUNGLE_WOOD_STAIRS, 8);
 		dm.put(Material.SANDSTONE_STAIRS, 8);
 		dm.put(Material.QUARTZ_STAIRS, 8);
+		dm.put(Material.ACACIA_STAIRS, 8);
+		dm.put(Material.DARK_OAK_STAIRS, 8);
 		dm.put(Material.LEVER, 0);
 		dm.put(Material.WOODEN_DOOR, 0);
 		dm.put(Material.IRON_DOOR_BLOCK, 0);
@@ -484,7 +511,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.STEP, 0);
 		dm.put(Material.DOUBLE_STEP, 10);
 		dm.put(Material.WOOD_STEP, 0);
-		dm.put(Material.WOOD_DOUBLE_STEP, 4);
+		dm.put(Material.WOOD_DOUBLE_STEP, TreeSpecies.values().length);
 		dm.put(Material.SNOW, 8);
 		dm.put(Material.CAKE_BLOCK, 6);
 		dm.put(Material.BED_BLOCK, 0);
@@ -506,7 +533,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.FENCE_GATE, 0);
 		dm.put(Material.COCOA, 12);
 		// Add Potions? No block to click
-		dm.put(Material.MONSTER_EGGS, 3);
+		dm.put(Material.MONSTER_EGGS, 6);
 		dm.put(Material.BREWING_STAND, 0);
 		dm.put(Material.CAULDRON, 4);
 		dm.put(Material.ENDER_PORTAL_FRAME, 4);
@@ -524,6 +551,10 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.STAINED_CLAY, DyeColor.values().length);
 		dm.put(Material.HAY_BLOCK, 0);
 		dm.put(Material.CARPET, DyeColor.values().length);
+		dm.put(Material.STAINED_GLASS, DyeColor.values().length);
+		dm.put(Material.STAINED_GLASS_PANE, DyeColor.values().length);
+		dm.put(Material.RED_ROSE, 9);
+		dm.put(Material.DOUBLE_PLANT, 0);
 		return dm;
 	}
 
