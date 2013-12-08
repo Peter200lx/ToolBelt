@@ -61,6 +61,13 @@ public class Duplicator extends AbstractTool {
 				return;
 			}
 
+			if (clicked.getType().equals(Material.DOUBLE_PLANT)
+					&& ((clicked.getData() & 0x8) == 0x8)) {
+				uPrint(PrintEnum.HINT, subject, ChatColor.RED + "Duplicating "
+						+ "the top half of DOUBLE_PLANT is not supported");
+				return;
+			}
+
 			if ((clicked.getData() != 0) && (keepData.contains(toUse))
 					&& (type.equals(toUse)
 					|| type.equals(Material.WOOL)
