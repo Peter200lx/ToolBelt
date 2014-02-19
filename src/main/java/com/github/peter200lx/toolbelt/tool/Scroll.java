@@ -541,7 +541,6 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.TRIPWIRE_HOOK, 0);
 		dm.put(Material.TRIPWIRE, 0);
 		dm.put(Material.COBBLE_WALL, 2);
-		dm.put(Material.FLOWER_POT, 12);
 		dm.put(Material.CARROT, 8);
 		dm.put(Material.POTATO, 8);
 		dm.put(Material.WOOD_BUTTON, 0);
