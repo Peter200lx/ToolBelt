@@ -333,6 +333,29 @@ public abstract class AbstractTool implements ToolInterface {
 		}
 	}
 
+	/*
+	 * Wrapper class to allow plugins to distinguish ToolBelt
+	 *  BlockDamageEvent from generic BlockDamageEvent.
+	 */
+	private class ToolBeltBlockDamageEvent extends BlockDamageEvent {
+		public ToolBeltBlockDamageEvent(Player player, Block block,
+				ItemStack itemInHand, boolean instaBreak) {
+			super(player, block, itemInHand, instaBreak);
+			// TODO Auto-generated constructor stub
+		}
+	}
+
+	/*
+	 * Wrapper class to allow plugins to distinguish ToolBelt
+	 *  BlockBreakEvent from generic BlockBreakEvent.
+	 */
+	private class ToolBeltBlockBreakEvent extends BlockBreakEvent {
+		public ToolBeltBlockBreakEvent(Block theBlock, Player player) {
+			super(theBlock, player);
+			// TODO Auto-generated constructor stub
+		}
+	}
+
 	/**
 	 * Delete a block in the world while respecting all build rights and region
 	 *     protection settings. This function calls both BlockDamageEvent and
@@ -354,15 +377,15 @@ public abstract class AbstractTool implements ToolInterface {
 	protected boolean safeBreak(Block target, Player subject,
 			boolean applyPhysics) {
 		final ItemStack hand = subject.getItemInHand();
-		final BlockDamageEvent canDamage = new BlockDamageEvent(subject, target,
-				hand, true);
+		final BlockDamageEvent canDamage = new ToolBeltBlockDamageEvent(subject,
+				target, hand, true);
 		gc.server.getPluginManager().callEvent(canDamage);
 		if (canDamage.isCancelled()) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "You can't damage blocks here");
 			return false;
 		}
-		BlockBreakEvent canBreak = new BlockBreakEvent(target, subject);
+		BlockBreakEvent canBreak = new ToolBeltBlockBreakEvent(target, subject);
 		gc.server.getPluginManager().callEvent(canBreak);
 		if (!canBreak.isCancelled()) {
 			target.setTypeId(0, applyPhysics);
@@ -373,6 +396,20 @@ public abstract class AbstractTool implements ToolInterface {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "You can't break blocks here");
 			return false;
+		}
+	}
+
+	/*
+	 * Wrapper class to allow plugins to distinguish ToolBelt
+	 *  BlockPlaceEvent from generic BlockPlaceEvent.
+	 */
+	private class ToolBeltBlockPlaceEvent extends BlockPlaceEvent {
+		public ToolBeltBlockPlaceEvent(Block placedBlock,
+				BlockState replacedBlockState, Block placedAgainst,
+				ItemStack itemInHand, Player thePlayer, boolean canBuild) {
+			super(placedBlock, replacedBlockState, placedAgainst, itemInHand,
+					thePlayer, canBuild);
+			// TODO Auto-generated constructor stub
 		}
 	}
 
@@ -457,8 +494,8 @@ public abstract class AbstractTool implements ToolInterface {
 					false);
 		}
 		ItemStack newType = newInfo.toItemStack();
-		BlockPlaceEvent canPlace = new BlockPlaceEvent(old, oldInfo, old,
-				newType, subject, canBuild);
+		BlockPlaceEvent canPlace = new ToolBeltBlockPlaceEvent(old, oldInfo,
+				old, newType, subject, canBuild);
 		gc.server.getPluginManager().callEvent(canPlace);
 		if (canPlace.isCancelled()) {
 			if (oldInfo.getType().equals(newInfo.getItemType())) {
