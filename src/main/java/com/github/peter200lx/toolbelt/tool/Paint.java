@@ -2,6 +2,7 @@ package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -81,7 +82,7 @@ public class Paint extends AbstractTool {
 									+ " the server, it is just client side");
 				}
 			} else {
-				mdTarget = subject.getTargetBlock(null,
+				mdTarget = subject.getTargetBlock((Set<Material>)null,
 						200).getState().getData();
 			}
 
@@ -108,9 +109,11 @@ public class Paint extends AbstractTool {
 				if (hasRangePerm(subject)
 						&& event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
 					if ((rangeDef > 0) && !subject.isSneaking()) {
-						bTarget = subject.getTargetBlock(null, rangeDef);
+						bTarget = subject.getTargetBlock((Set<Material>)null,
+								rangeDef);
 					} else if ((rangeCrouch > 0) && subject.isSneaking()) {
-						bTarget = subject.getTargetBlock(null, rangeCrouch);
+						bTarget = subject.getTargetBlock((Set<Material>)null,
+								rangeCrouch);
 					}
 				} else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 					bTarget = event.getClickedBlock();

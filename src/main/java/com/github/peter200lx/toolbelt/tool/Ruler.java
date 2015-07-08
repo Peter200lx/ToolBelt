@@ -3,9 +3,11 @@ package com.github.peter200lx.toolbelt.tool;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -58,7 +60,8 @@ public class Ruler extends AbstractTool {
 			break;
 		case LEFT_CLICK_AIR:
 			if (subject.isSneaking()) {
-				ptArray[0] = subject.getTargetBlock(null, 0).getLocation();
+				ptArray[0] = subject.getTargetBlock((Set<Material>)null,
+						0).getLocation();
 				uPrint(PrintEnum.IMPORT, subject, ChatColor.GREEN
 						+ "Point 0 is now: "
 						+ ChatColor.GOLD + loc2Str(ptArray[0]));
@@ -70,7 +73,8 @@ public class Ruler extends AbstractTool {
 			break;
 		case RIGHT_CLICK_AIR:
 			if (subject.isSneaking()) {
-				ptArray[1] = subject.getTargetBlock(null, 0).getLocation();
+				ptArray[1] = subject.getTargetBlock((Set<Material>)null,
+						0).getLocation();
 				uPrint(PrintEnum.IMPORT, subject, ChatColor.GREEN
 						+ "Point 1 is now: "
 						+ ChatColor.GOLD + loc2Str(ptArray[1]));

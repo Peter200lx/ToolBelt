@@ -2,6 +2,7 @@ package com.github.peter200lx.toolbelt.tool;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -51,7 +52,7 @@ public class Pickhax extends AbstractTool {
 			physics = true;
 		case RIGHT_CLICK_AIR:
 			if (subject.isSneaking() && hasRangePerm(subject) && (range > 0)) {
-				target = subject.getTargetBlock(null, range);
+				target = subject.getTargetBlock((Set<Material>)null, range);
 			} else if (!warningElapsed(subject.getName())) {
 				return;
 			} else if (range <= 0) {
