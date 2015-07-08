@@ -1,5 +1,6 @@
 package com.github.peter200lx.toolbelt;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -650,7 +651,7 @@ public abstract class AbstractTool implements ToolInterface {
 			byte data) {
 		int horizon = (gc.server.getViewDistance() + 1) * 16;
 		int horSqr = horizon * horizon;
-		Player[] online = gc.server.getOnlinePlayers();
+		Collection<? extends Player> online = gc.server.getOnlinePlayers();
 		for (Player other : online) {
 			if (loc.getWorld().equals(other.getWorld())
 					&& loc.distanceSquared(other.getLocation()) < horSqr) {
