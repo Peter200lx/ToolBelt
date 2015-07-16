@@ -195,6 +195,25 @@ public class Scroll extends AbstractTool {
 			uPrint(PrintEnum.HINT, subject, "Top door half now "
 					+ " looks funny, open/close door to fix");
 			break;
+		case SPRUCE_DOOR:
+		case BIRCH_DOOR:
+		case JUNGLE_DOOR:
+		case ACACIA_DOOR:
+		case DARK_OAK_DOOR:
+			// Bug for Spigot/Bukkit, these don't have Door.class
+			boolean top_half = ((data & 0x8) == 0x8);
+			if (top_half) {
+				uPrint(PrintEnum.INFO, subject, "Clicking the top half of a"
+						+ " door can't scroll the rotation corner.");
+				throw new UnsupportedOperationException();
+			}
+			data = simpScroll(act, (byte) (data & 0x07), 4);
+			if (top_half) {
+				data |= 0x04;
+			}
+			uPrint(PrintEnum.HINT, subject, "Top door half now "
+					+ " looks funny, open/close door to fix");
+			break;
 		case STONE_BUTTON:
 		case WOOD_BUTTON:
 			data = simpScroll(act, (byte) (data & 0x07), 1, 5);
@@ -211,7 +230,6 @@ public class Scroll extends AbstractTool {
 			data = simpScroll(act, (byte) (data & 0x07), 0, 6);
 			break;
 		case CHEST:
-		case LOCKED_CHEST:
 		case ENDER_CHEST:
 		case TRAPPED_CHEST:
 			// CHEST can not be scrolled because of double chests.
@@ -229,6 +247,16 @@ public class Scroll extends AbstractTool {
 			break;
 		case WOOD_STEP:
 			data = handleStep(act, b, TreeSpecies.values().length, 0x7);
+			break;
+		case STONE_SLAB2:
+			data = handleStep(act, b, 1, 0x7);
+			break;
+		case DOUBLE_STONE_SLAB2:
+			if ((data & 0x8) == 0x8) {
+				data &= 0x7;
+			} else {
+				data |= 0x8;
+			}
 			break;
 		case BED_BLOCK:
 			// TODO More research into modifying foot and head of  bed at once
@@ -277,6 +305,11 @@ public class Scroll extends AbstractTool {
 							+ "not be scrolled");
 			throw new UnsupportedOperationException();
 		case FENCE_GATE:
+		case SPRUCE_FENCE_GATE:
+		case BIRCH_FENCE_GATE:
+		case JUNGLE_FENCE_GATE:
+		case DARK_OAK_FENCE_GATE:
+		case ACACIA_FENCE_GATE:
 			data = simpScroll(act, (byte) (data & 0x03), 4);
 			if ((b.getData() & 0x04) == 0x04) {
 				data |= 0x04;
@@ -318,6 +351,9 @@ public class Scroll extends AbstractTool {
 			}
 			data = simpScroll(act, data, 6);
 			break;
+		case WALL_BANNER:
+			data = simpScroll(act, (byte) (data & 0x07), 2, 6);
+			break;
 		default:
 			throw new UnsupportedOperationException(""
 					+ ChatColor.GOLD + b.getItemType()
@@ -335,8 +371,8 @@ public class Scroll extends AbstractTool {
 		} else if (b instanceof WoodenStep) {
 			inverted = ((WoodenStep) b).isInverted();
 		} else {
-			// If more Step classes are added, they will need to be added here.
-			inverted = false;
+			// The new slabs don't have a class
+			inverted = ((data & 0x8) == 0x8);
 		}
 
 		data = (byte) (data & mask);
@@ -446,6 +482,7 @@ public class Scroll extends AbstractTool {
 		final Map<Material, Integer> dm = new HashMap<Material, Integer>();
 		// If the integer is 0, that means that a simple numerical shift won't
 		// work
+		dm.put(Material.STONE, 7);
 		dm.put(Material.DIRT, 3);
 		dm.put(Material.SAND, 2);
 		dm.put(Material.LOG, 16);
@@ -484,9 +521,15 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.QUARTZ_STAIRS, 8);
 		dm.put(Material.ACACIA_STAIRS, 8);
 		dm.put(Material.DARK_OAK_STAIRS, 8);
+		dm.put(Material.RED_SANDSTONE_STAIRS, 8);
 		dm.put(Material.LEVER, 0);
 		dm.put(Material.WOODEN_DOOR, 0);
 		dm.put(Material.IRON_DOOR_BLOCK, 0);
+		dm.put(Material.SPRUCE_DOOR, 0);
+		dm.put(Material.BIRCH_DOOR, 0);
+		dm.put(Material.JUNGLE_DOOR, 0);
+		dm.put(Material.ACACIA_DOOR, 0);
+		dm.put(Material.DARK_OAK_DOOR, 0);
 		dm.put(Material.STONE_BUTTON, 0);
 		dm.put(Material.SIGN_POST, 16);
 		dm.put(Material.LADDER, 0);
@@ -497,7 +540,6 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.DROPPER, 0);
 		dm.put(Material.HOPPER, 0);
 		dm.put(Material.CHEST, 0);
-		dm.put(Material.LOCKED_CHEST, 0);
 		dm.put(Material.ENDER_CHEST, 0);
 		dm.put(Material.TRAPPED_CHEST, 0);
 		dm.put(Material.PUMPKIN, 4);
@@ -531,6 +573,11 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.HUGE_MUSHROOM_2, 11);
 		dm.put(Material.VINE, 16);
 		dm.put(Material.FENCE_GATE, 0);
+		dm.put(Material.SPRUCE_FENCE_GATE, 0);
+		dm.put(Material.BIRCH_FENCE_GATE, 0);
+		dm.put(Material.JUNGLE_FENCE_GATE, 0);
+		dm.put(Material.DARK_OAK_FENCE_GATE, 0);
+		dm.put(Material.ACACIA_FENCE_GATE, 0);
 		dm.put(Material.COCOA, 12);
 		// Add Potions? No block to click
 		dm.put(Material.MONSTER_EGGS, 6);
@@ -554,6 +601,14 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.STAINED_GLASS_PANE, DyeColor.values().length);
 		dm.put(Material.RED_ROSE, 9);
 		dm.put(Material.DOUBLE_PLANT, 0);
+		dm.put(Material.SPONGE, 2);
+		dm.put(Material.PRISMARINE, 3);
+		dm.put(Material.HARD_CLAY, DyeColor.values().length);
+		dm.put(Material.STANDING_BANNER, 16);
+		dm.put(Material.WALL_BANNER, 0);
+		dm.put(Material.RED_SANDSTONE, 3);
+		dm.put(Material.DOUBLE_STONE_SLAB2, 0);
+		dm.put(Material.STONE_SLAB2, 0);
 		return dm;
 	}
 
