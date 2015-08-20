@@ -212,6 +212,11 @@ public class Duplicator extends AbstractTool {
 		dm.put(Material.SKULL, Material.SKULL_ITEM);
 		dm.put(Material.REDSTONE_COMPARATOR_OFF, Material.REDSTONE_COMPARATOR);
 		dm.put(Material.REDSTONE_COMPARATOR_ON, Material.REDSTONE_COMPARATOR);
+		dm.put(Material.SPRUCE_DOOR, Material.SPRUCE_DOOR_ITEM);
+		dm.put(Material.BIRCH_DOOR, Material.BIRCH_DOOR_ITEM);
+		dm.put(Material.JUNGLE_DOOR, Material.JUNGLE_DOOR_ITEM);
+		dm.put(Material.ACACIA_DOOR, Material.ACACIA_DOOR_ITEM);
+		dm.put(Material.DARK_OAK_DOOR, Material.DARK_OAK_DOOR_ITEM);
 		return dm;
 	}
 

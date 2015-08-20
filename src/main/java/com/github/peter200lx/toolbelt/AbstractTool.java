@@ -1014,6 +1014,32 @@ public abstract class AbstractTool implements ToolInterface {
 				return "BOTTOM half, " + ((Door) b).getHingeCorner().toString()
 						+ " is " + (((Door) b).isOpen() ? "OPEN" : "CLOSED");
 			}
+		case SPRUCE_DOOR:
+		case BIRCH_DOOR:
+		case JUNGLE_DOOR:
+		case ACACIA_DOOR:
+		case DARK_OAK_DOOR:
+			boolean top_half = ((data & 0x8) == 0x8);
+			if (top_half) {
+				return "TOP half," + " hinge "
+						+ (((data & 0x1) == 0x1) ? "LEFT" : "RIGHT");
+			} else {
+				append = "BOTTOM half, ";
+				if ((data & 0x3) == 0x3) {
+					append += "NORTH_WEST";
+				} else if ((data & 0x1) == 0x1) {
+					append += "SOUTH_EAST";
+				} else if ((data & 0x2) == 0x2) {
+					append += "SOUTH_WEST";
+				} else {
+					append += "NORTH_EAST";
+				}
+				if ((data & 0x4) == 0x4) {
+					return append + " is OPEN";
+				} else {
+					return append + " is CLOSED";
+				}
+			}
 		case STONE_BUTTON:
 		case WOOD_BUTTON:
 			return ((Button) b).getAttachedFace().toString();
@@ -1528,6 +1554,11 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.LEVER);
 		printData.add(Material.WOODEN_DOOR);
 		printData.add(Material.IRON_DOOR_BLOCK);
+		printData.add(Material.SPRUCE_DOOR);
+		printData.add(Material.BIRCH_DOOR);
+		printData.add(Material.JUNGLE_DOOR);
+		printData.add(Material.ACACIA_DOOR);
+		printData.add(Material.DARK_OAK_DOOR);
 		printData.add(Material.STONE_BUTTON);
 		printData.add(Material.SIGN_POST);
 		printData.add(Material.LADDER);

@@ -201,14 +201,14 @@ public class Scroll extends AbstractTool {
 		case ACACIA_DOOR:
 		case DARK_OAK_DOOR:
 			// Bug for Spigot/Bukkit, these don't have Door.class
-			boolean top_half = ((data & 0x8) == 0x8);
-			if (top_half) {
+			if ((data & 0x8) == 0x8) {
 				uPrint(PrintEnum.INFO, subject, "Clicking the top half of a"
 						+ " door can't scroll the rotation corner.");
 				throw new UnsupportedOperationException();
 			}
+			boolean is_open = ((data & 0x4) == 0x4);
 			data = simpScroll(act, (byte) (data & 0x07), 4);
-			if (top_half) {
+			if (is_open) {
 				data |= 0x04;
 			}
 			uPrint(PrintEnum.HINT, subject, "Top door half now "
