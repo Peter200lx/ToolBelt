@@ -1108,6 +1108,23 @@ public abstract class AbstractTool implements ToolInterface {
 				return "" + data;
 			}
 			//return ((WoodenStep) b).getSpecies().toString();
+		case STONE_SLAB2:
+			append = " BOTTOM-HALF";
+			if ((data & 0x8) == 0x8) {
+				append = " TOP-HALF";
+			}
+			switch (data & 0x7) {
+			case 0:
+				return "Red Sandstone" + append;
+			default:
+				return "" + (data & 0x7) + append;
+			}
+		case DOUBLE_STONE_SLAB2:
+			if ((data & 0x8) == 0x8) {
+				return "Smooth Red Sandstone";
+			} else {
+				return "Red Sandstone";
+			}
 		case SNOW:
 			switch (data) {
 			case 0x0:
@@ -1235,6 +1252,11 @@ public abstract class AbstractTool implements ToolInterface {
 			}
 			return ret;
 		case FENCE_GATE:
+		case SPRUCE_FENCE_GATE:
+		case BIRCH_FENCE_GATE:
+		case JUNGLE_FENCE_GATE:
+		case DARK_OAK_FENCE_GATE:
+		case ACACIA_FENCE_GATE:
 			append = " is Closed";
 			if ((data & 0x4) == 0x4) {
 				append = " is OPEN";
@@ -1590,6 +1612,11 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.HUGE_MUSHROOM_2);
 		printData.add(Material.VINE);
 		printData.add(Material.FENCE_GATE);
+		printData.add(Material.SPRUCE_FENCE_GATE);
+		printData.add(Material.BIRCH_FENCE_GATE);
+		printData.add(Material.JUNGLE_FENCE_GATE);
+		printData.add(Material.DARK_OAK_FENCE_GATE);
+		printData.add(Material.ACACIA_FENCE_GATE);
 		printData.add(Material.MONSTER_EGGS);
 		printData.add(Material.BREWING_STAND);
 		printData.add(Material.CAULDRON);
@@ -1615,6 +1642,8 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.CARPET);
 		printData.add(Material.RED_ROSE);
 		printData.add(Material.DOUBLE_PLANT);
+		printData.add(Material.DOUBLE_STONE_SLAB2);
+		printData.add(Material.STONE_SLAB2);
 	}
 
 }
