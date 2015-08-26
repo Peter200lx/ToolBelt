@@ -214,10 +214,6 @@ public class Scroll extends AbstractTool {
 			uPrint(PrintEnum.HINT, subject, "Top door half now "
 					+ " looks funny, open/close door to fix");
 			break;
-		case STONE_BUTTON:
-		case WOOD_BUTTON:
-			data = simpScroll(act, (byte) (data & 0x07), 1, 5);
-			break;
 		case LADDER:
 		case WALL_SIGN:
 		case FURNACE:
@@ -277,6 +273,7 @@ public class Scroll extends AbstractTool {
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "There is no useful data to scroll");
 		case TRAP_DOOR:
+		case IRON_TRAPDOOR:
 			Boolean inverted = ((data & 0x08) == 0x08);
 			if (act.equals(Action.LEFT_CLICK_BLOCK) && ((data & 0x03) == 0x0)
 					|| (act.equals(Action.RIGHT_CLICK_BLOCK)
@@ -530,7 +527,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.JUNGLE_DOOR, 0);
 		dm.put(Material.ACACIA_DOOR, 0);
 		dm.put(Material.DARK_OAK_DOOR, 0);
-		dm.put(Material.STONE_BUTTON, 0);
+		dm.put(Material.STONE_BUTTON, 6);
 		dm.put(Material.SIGN_POST, 16);
 		dm.put(Material.LADDER, 0);
 		dm.put(Material.WALL_SIGN, 0);
@@ -564,6 +561,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.REDSTONE_WIRE, 0);
 		dm.put(Material.LONG_GRASS, GrassSpecies.values().length);
 		dm.put(Material.TRAP_DOOR, 0);
+		dm.put(Material.IRON_TRAPDOOR, 0);
 		dm.put(Material.PISTON_BASE, 0);
 		dm.put(Material.PISTON_STICKY_BASE, 0);
 		dm.put(Material.PISTON_EXTENSION, 0);
@@ -590,7 +588,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.COBBLE_WALL, 2);
 		dm.put(Material.CARROT, 8);
 		dm.put(Material.POTATO, 8);
-		dm.put(Material.WOOD_BUTTON, 0);
+		dm.put(Material.WOOD_BUTTON, 6);
 		dm.put(Material.SKULL, 0);
 		dm.put(Material.ANVIL, 0);
 		dm.put(Material.QUARTZ_BLOCK, 5);
@@ -603,7 +601,6 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.DOUBLE_PLANT, 0);
 		dm.put(Material.SPONGE, 2);
 		dm.put(Material.PRISMARINE, 3);
-		dm.put(Material.HARD_CLAY, DyeColor.values().length);
 		dm.put(Material.STANDING_BANNER, 16);
 		dm.put(Material.WALL_BANNER, 0);
 		dm.put(Material.RED_SANDSTONE, 3);

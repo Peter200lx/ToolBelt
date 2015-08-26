@@ -845,6 +845,25 @@ public abstract class AbstractTool implements ToolInterface {
 	protected String data2Str(MaterialData b) {
 		byte data = b.getData();
 		switch (b.getItemType()) {
+		case STONE:
+			switch (data) {
+			case 0:
+				return "Default";
+			case 1:
+				return "Granite";
+			case 2:
+				return "Polished Granite";
+			case 3:
+				return "Diorite";
+			case 4:
+				return "Polished Diorite";
+			case 5:
+				return "Andesite";
+			case 6:
+				return "Polished Andesite";
+			default:
+				return "" + data;
+			}
 		case DIRT:
 			switch (data & 0x03) {
 			case 0:
@@ -906,6 +925,15 @@ public abstract class AbstractTool implements ToolInterface {
 			if (TreeSpecies.getByData((byte) (data & 0x7)) != null) {
 				return TreeSpecies.getByData((byte) (data & 0x7)).toString();
 			} else {
+				return "" + data;
+			}
+		case SPONGE:
+			switch (data) {
+			case 0x0:
+				return "Default";
+			case 0x1:
+				return "Wet";
+			default:
 				return "" + data;
 			}
 		case JUKEBOX:
@@ -973,6 +1001,7 @@ public abstract class AbstractTool implements ToolInterface {
 		case QUARTZ_STAIRS:
 		case ACACIA_STAIRS:
 		case DARK_OAK_STAIRS:
+		case RED_SANDSTONE_STAIRS:
 			String append = "";
 			if ((data & 0x4) == 0x4) {
 				append = " and UPSIDE-DOWN";
@@ -1155,6 +1184,7 @@ public abstract class AbstractTool implements ToolInterface {
 		case LONG_GRASS:
 			return ((LongGrass) b).getSpecies().toString();
 		case TRAP_DOOR:
+		case IRON_TRAPDOOR:
 			return ((TrapDoor) b).getAttachedFace().toString()
 					+ (((data & 0x08) == 0x08) ? " INVERTED" : "") + " is "
 					+ (((TrapDoor) b).isOpen() ? "OPEN" : "CLOSED");
@@ -1532,6 +1562,28 @@ public abstract class AbstractTool implements ToolInterface {
 					return "" + data;
 				}
 			}
+		case PRISMARINE:
+			switch (data) {
+			case 0x0:
+				return "Default";
+			case 0x1:
+				return "Bricks";
+			case 0x2:
+				return "Dark";
+			default:
+				return "" + data;
+			}
+		case RED_SANDSTONE:
+			switch (data) {
+			case 0x0:
+				return "Default";
+			case 0x1:
+				return "Chiseled";
+			case 0x2:
+				return "Smooth";
+			default:
+				return "" + data;
+			}
 		default:
 			return "" + data;
 		}
@@ -1542,6 +1594,7 @@ public abstract class AbstractTool implements ToolInterface {
 	 *     printing data values.
 	 */
 	private static void setPrintData() {
+		printData.add(Material.STONE);
 		printData.add(Material.DIRT);
 		printData.add(Material.SAND);
 		printData.add(Material.LOG);
@@ -1549,6 +1602,7 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.WOOD);
 		printData.add(Material.LEAVES);
 		printData.add(Material.LEAVES_2);
+		printData.add(Material.SPONGE);
 		printData.add(Material.SAPLING);
 		printData.add(Material.JUKEBOX);
 		printData.add(Material.CROPS);
@@ -1573,6 +1627,7 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.QUARTZ_STAIRS);
 		printData.add(Material.ACACIA_STAIRS);
 		printData.add(Material.DARK_OAK_STAIRS);
+		printData.add(Material.RED_SANDSTONE_STAIRS);
 		printData.add(Material.LEVER);
 		printData.add(Material.WOODEN_DOOR);
 		printData.add(Material.IRON_DOOR_BLOCK);
@@ -1598,12 +1653,15 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.DOUBLE_STEP);
 		printData.add(Material.WOOD_STEP);
 		printData.add(Material.WOOD_DOUBLE_STEP);
+		printData.add(Material.STONE_SLAB2);
+		printData.add(Material.DOUBLE_STONE_SLAB2);
 		printData.add(Material.SNOW);
 		printData.add(Material.CAKE_BLOCK);
 		printData.add(Material.DIODE_BLOCK_OFF);
 		printData.add(Material.DIODE_BLOCK_ON);
 		printData.add(Material.LONG_GRASS);
 		printData.add(Material.TRAP_DOOR);
+		printData.add(Material.IRON_TRAPDOOR);
 		printData.add(Material.PISTON_BASE);
 		printData.add(Material.PISTON_STICKY_BASE);
 		printData.add(Material.SANDSTONE);
@@ -1642,8 +1700,8 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.CARPET);
 		printData.add(Material.RED_ROSE);
 		printData.add(Material.DOUBLE_PLANT);
-		printData.add(Material.DOUBLE_STONE_SLAB2);
-		printData.add(Material.STONE_SLAB2);
+		printData.add(Material.PRISMARINE);
+		printData.add(Material.RED_SANDSTONE);
 	}
 
 }
