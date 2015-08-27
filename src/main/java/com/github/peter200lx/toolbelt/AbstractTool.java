@@ -27,6 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Banner;
 import org.bukkit.material.Button;
 import org.bukkit.material.Cake;
 import org.bukkit.material.Coal;
@@ -1573,6 +1574,10 @@ public abstract class AbstractTool implements ToolInterface {
 			default:
 				return "" + data;
 			}
+		case STANDING_BANNER:
+			return ((Banner) b).getFacing().toString();
+		case WALL_BANNER:
+			return ((Banner) b).getAttachedFace().toString();
 		case RED_SANDSTONE:
 			switch (data) {
 			case 0x0:
@@ -1701,6 +1706,8 @@ public abstract class AbstractTool implements ToolInterface {
 		printData.add(Material.RED_ROSE);
 		printData.add(Material.DOUBLE_PLANT);
 		printData.add(Material.PRISMARINE);
+		printData.add(Material.STANDING_BANNER);
+		printData.add(Material.WALL_BANNER);
 		printData.add(Material.RED_SANDSTONE);
 	}
 
