@@ -222,8 +222,25 @@ public class Scroll extends AbstractTool {
 			break;
 		case DISPENSER:
 		case DROPPER:
-		case HOPPER:
+			boolean active = (data & 0x08) == 0x08;
 			data = simpScroll(act, (byte) (data & 0x07), 0, 6);
+			if (active) {
+				data |= 0x08;
+			}
+			break;
+		case HOPPER:
+			active = (data & 0x08) == 0x08;
+			//We have to skip 1 as that is unused (up is invalid)
+			if (((data & 0x7) == 0) && act == Action.RIGHT_CLICK_BLOCK) {
+				data = 2;
+			} else if (((data & 0x7) == 2) && act == Action.LEFT_CLICK_BLOCK) {
+				data = 0;
+			} else {
+				data = simpScroll(act, (byte) (data & 0x07), 0, 6);
+			}
+			if (active) {
+				data |= 0x08;
+			}
 			break;
 		case CHEST:
 		case ENDER_CHEST:
@@ -316,6 +333,11 @@ public class Scroll extends AbstractTool {
 			throw new UnsupportedOperationException(ChatColor.DARK_PURPLE
 					+ "Stand data just is for visual "
 					+ "indication of placed glass bottles");
+		case ENDER_PORTAL_FRAME:
+			byte eye = (byte)(data & 0x04);
+			data = simpScroll(act, (byte) (data & 0x03), 4);
+			data |= eye;
+			break;
 		case TRIPWIRE_HOOK:
 			data = simpScroll(act, (byte) (data & 0x03), 4);
 			if (((TripwireHook) b).isConnected()) {
@@ -333,11 +355,11 @@ public class Scroll extends AbstractTool {
 					+ "Direction partly controlled by Tile Entity, "
 					+ "unsupported");
 		case ANVIL:
-			data = (byte) (simpScroll(act, (byte) (data & 0x01), 2)
-					| (data & ~0x01));
+			data = (byte) (simpScroll(act, (byte) (data & 0x03), 4)
+					| (data & ~0x03));
 			break;
 		case HAY_BLOCK:
-			data = (byte) (simpScroll(act, (byte) (data >> 2), 4) << 2);
+			data = (byte) (simpScroll(act, (byte) (data >> 2), 3) << 2);
 			data = (byte) ((data & 0xC) | (b.getData() & 0x3));
 			break;
 		case DOUBLE_PLANT:
@@ -581,7 +603,7 @@ public class Scroll extends AbstractTool {
 		dm.put(Material.MONSTER_EGGS, 6);
 		dm.put(Material.BREWING_STAND, 0);
 		dm.put(Material.CAULDRON, 4);
-		dm.put(Material.ENDER_PORTAL_FRAME, 4);
+		dm.put(Material.ENDER_PORTAL_FRAME, 0);
 		// Add EGG? No block to click
 		dm.put(Material.TRIPWIRE_HOOK, 0);
 		dm.put(Material.TRIPWIRE, 0);

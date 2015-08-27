@@ -1362,8 +1362,23 @@ public abstract class AbstractTool implements ToolInterface {
 				return "" + data;
 			}
 		case ENDER_PORTAL_FRAME:
-			// TODO Add intelligence here
-			return "" + data;
+			if ((data & 0x04) == 0x04) {
+				append = " with EYE_OF_ENDER";
+			} else {
+				append = "";
+			}
+			switch (data & 0x3) {
+			case 0:
+				return "SOUTH" + append;
+			case 1:
+				return "WEST" + append;
+			case 2:
+				return "NORTH" + append;
+			case 3:
+				return "EAST" + append;
+			default:
+				return "" + data;
+			}
 		case EGG:
 			// TODO Is there anywhere we can get a mapping of entity id to name?
 			return "" + data;
@@ -1437,10 +1452,29 @@ public abstract class AbstractTool implements ToolInterface {
 		case SKULL:
 			return ((Skull) b).getFacing().toString();
 		case ANVIL:
-			if ((data & 0x01) == 0x0) {
-				return "North-South";
-			} else {
-				return "East-West";
+			String wear = "";
+			switch (data & 0x0c) {
+			case 0x00:
+				wear = " Undamaged";
+				break;
+			case 0x04:
+				wear = " Slightly Damaged";
+				break;
+			case 0x08:
+				wear = " Very Damaged";
+				break;
+			}
+			switch (data & 0x03) {
+			case 0:
+				return "North-South" + wear;
+			case 1:
+				return "East-West" + wear;
+			case 2:
+				return "South-North" + wear;
+			case 3:
+				return "West-East" + wear;
+			default:
+				return "" + data;
 			}
 		case REDSTONE_COMPARATOR_OFF:
 		case REDSTONE_COMPARATOR_ON:
@@ -1476,7 +1510,7 @@ public abstract class AbstractTool implements ToolInterface {
 			case 0:
 				return "DOWN";
 			case 1:
-				return "UNCONNECTED";
+				return "INVALID";
 			case 2:
 				return "NORTH";
 			case 3:
@@ -1517,7 +1551,7 @@ public abstract class AbstractTool implements ToolInterface {
 			case 0x8:
 				return " is North-South";
 			default: //0xC
-				return " is Directionless";
+				return "" + data;
 			}
 		case RED_ROSE:
 			switch (data) {
