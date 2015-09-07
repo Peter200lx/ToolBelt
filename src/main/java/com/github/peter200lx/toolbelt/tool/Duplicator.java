@@ -200,7 +200,6 @@ public class Duplicator extends AbstractTool {
 		dm.put(Material.CAKE_BLOCK, Material.CAKE);
 		dm.put(Material.DIODE_BLOCK_OFF, Material.DIODE);
 		dm.put(Material.DIODE_BLOCK_ON, Material.DIODE);
-		dm.put(Material.LOCKED_CHEST, Material.CHEST);
 		// Do we want to block Material.NETHER_WARTS ?
 		dm.put(Material.BREWING_STAND, Material.BREWING_STAND_ITEM);
 		dm.put(Material.CAULDRON, Material.CAULDRON_ITEM);
