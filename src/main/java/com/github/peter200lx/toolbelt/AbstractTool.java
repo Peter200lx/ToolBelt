@@ -493,6 +493,11 @@ public abstract class AbstractTool implements ToolInterface {
 					+ "Plugin doesn't support overwriting "
 					+ ChatColor.GOLD + "Banners");
 			return false;
+		} else if (oldInfo.getType().equals(Material.FLOWER_POT)) {
+			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
+					+ "Plugin doesn't support overwriting "
+					+ ChatColor.GOLD + "Flower Pots");
+			return false;
 		} else {
 			old.setTypeIdAndData(newInfo.getItemTypeId(), newInfo.getData(),
 					false);
