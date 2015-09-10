@@ -178,14 +178,13 @@ public class Duplicator extends AbstractTool {
 
 	private Map<Material, Material> defDupeMap() {
 		final Map<Material, Material> dm = new HashMap<Material, Material>();
-		// What about Material.GLOWING_REDSTONE_ORE ? It is safe to place
+		dm.put(Material.GLOWING_REDSTONE_ORE, Material.REDSTONE_ORE);
 		// TODO Investigate (Stationary)Water/Lava
 		// Material.STATIONARY_LAVA    Material.STATIONARY_WATER
 		// Material.LAVA               Material.WATER
 		dm.put(Material.BED_BLOCK, Material.BED);
 		dm.put(Material.PISTON_EXTENSION, Material.PISTON_BASE);
 		dm.put(Material.PISTON_MOVING_PIECE, Material.PISTON_BASE);
-		// Material.DOUBLE_STEP This is fine for someone to have
 		// Can anyone even click on Material.FIRE ? No
 		// Do we want to block Material.MOB_SPAWNER ?
 		dm.put(Material.REDSTONE_WIRE, Material.REDSTONE);
@@ -200,7 +199,6 @@ public class Duplicator extends AbstractTool {
 		dm.put(Material.CAKE_BLOCK, Material.CAKE);
 		dm.put(Material.DIODE_BLOCK_OFF, Material.DIODE);
 		dm.put(Material.DIODE_BLOCK_ON, Material.DIODE);
-		// Do we want to block Material.NETHER_WARTS ?
 		dm.put(Material.BREWING_STAND, Material.BREWING_STAND_ITEM);
 		dm.put(Material.CAULDRON, Material.CAULDRON_ITEM);
 		// Can anyone even click Material.ENDER_PORTAL ?
@@ -216,6 +214,12 @@ public class Duplicator extends AbstractTool {
 		dm.put(Material.JUNGLE_DOOR, Material.JUNGLE_DOOR_ITEM);
 		dm.put(Material.ACACIA_DOOR, Material.ACACIA_DOOR_ITEM);
 		dm.put(Material.DARK_OAK_DOOR, Material.DARK_OAK_DOOR_ITEM);
+		dm.put(Material.DAYLIGHT_DETECTOR_INVERTED, Material.DAYLIGHT_DETECTOR);
+		dm.put(Material.DOUBLE_STEP, Material.STEP);
+		dm.put(Material.WOOD_DOUBLE_STEP, Material.WOOD_STEP);
+		dm.put(Material.DOUBLE_STONE_SLAB2, Material.STONE_SLAB2);
+		dm.put(Material.STANDING_BANNER, Material.BANNER);
+		dm.put(Material.WALL_BANNER, Material.BANNER);
 		return dm;
 	}
 
