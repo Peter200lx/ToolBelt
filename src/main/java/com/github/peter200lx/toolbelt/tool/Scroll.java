@@ -192,8 +192,6 @@ public class Scroll extends AbstractTool {
 			if (((Door) b).isOpen()) {
 				data |= 0x04;
 			}
-			uPrint(PrintEnum.HINT, subject, "Top door half now "
-					+ " looks funny, open/close door to fix");
 			break;
 		case SPRUCE_DOOR:
 		case BIRCH_DOOR:
@@ -211,8 +209,6 @@ public class Scroll extends AbstractTool {
 			if (is_open) {
 				data |= 0x04;
 			}
-			uPrint(PrintEnum.HINT, subject, "Top door half now "
-					+ " looks funny, open/close door to fix");
 			break;
 		case LADDER:
 		case WALL_SIGN:
