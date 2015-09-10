@@ -439,10 +439,8 @@ public abstract class AbstractTool implements ToolInterface {
 	protected boolean safeReplace(MaterialData newInfo, Block old,
 			Player subject, boolean canBuild) {
 		BlockState oldInfo = old.getState();
-		if (oldInfo.getType().equals(Material.SIGN_POST)
-				|| oldInfo.getType().equals(Material.WALL_SIGN)
-				|| newInfo.getItemType().equals(Material.SIGN_POST)
-				|| newInfo.getItemType().equals(Material.WALL_SIGN)) {
+		if (newInfo instanceof org.bukkit.block.Sign ||
+				oldInfo instanceof org.bukkit.block.Sign) {
 			// LogBlock doesn't catch BlockPlaceEvent's having to do with signs
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Plugin doesn't support writing or overwriting "
@@ -455,44 +453,42 @@ public abstract class AbstractTool implements ToolInterface {
 					+ "Plugin doesn't support overwriting "
 					+ ChatColor.GOLD + "Container Blocks");
 			return false;
-		} else if (oldInfo.getType().equals(Material.SIGN_POST)
-				|| oldInfo.getType().equals(Material.WALL_SIGN)) {
+		} else if (oldInfo instanceof org.bukkit.block.Sign) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Plugin doesn't support overwriting "
 					+ ChatColor.GOLD + "Signs");
 			return false;
-		} else if (oldInfo.getType().equals(Material.NOTE_BLOCK)) {
+		} else if (oldInfo instanceof org.bukkit.block.NoteBlock) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Plugin doesn't support overwriting "
 					+ ChatColor.GOLD + "NoteBlocks");
 			return false;
-		} else if (oldInfo.getType().equals(Material.JUKEBOX)) {
+		} else if (oldInfo instanceof org.bukkit.block.Jukebox) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Plugin doesn't support overwriting "
-					+ ChatColor.GOLD + "Jukeboxs");
+					+ ChatColor.GOLD + "Jukeboxes");
 			return false;
-		} else if (oldInfo.getType().equals(Material.MOB_SPAWNER)) {
+		} else if (oldInfo instanceof org.bukkit.block.CreatureSpawner) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Plugin doesn't support overwriting "
 					+ ChatColor.GOLD + "CreatureSpawners");
 			return false;
-		} else if (oldInfo.getType().equals(Material.COMMAND)) {
+		} else if (oldInfo instanceof org.bukkit.block.CommandBlock) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Plugin doesn't support overwriting "
 					+ ChatColor.GOLD + "CommandBlocks");
 			return false;
-		} else if (oldInfo.getType().equals(Material.BEACON)) {
+		} else if (oldInfo instanceof org.bukkit.block.Beacon) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Plugin doesn't support overwriting "
 					+ ChatColor.GOLD + "Beacons");
 			return false;
-		} else if (oldInfo.getType().equals(Material.SKULL)) {
+		} else if (oldInfo instanceof org.bukkit.block.Skull) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Plugin doesn't support overwriting "
 					+ ChatColor.GOLD + "Skulls");
 			return false;
-		} else if (oldInfo.getType().equals(Material.STANDING_BANNER)
-				|| oldInfo.getType().equals(Material.WALL_BANNER)) {
+		} else if (oldInfo instanceof org.bukkit.block.Banner) {
 			uPrint(PrintEnum.DEBUG, subject, ChatColor.DARK_PURPLE
 					+ "Plugin doesn't support overwriting "
 					+ ChatColor.GOLD + "Banners");
@@ -509,8 +505,7 @@ public abstract class AbstractTool implements ToolInterface {
 			if (oldInfo.getType().equals(newInfo.getItemType())) {
 				old.setData(oldInfo.getRawData(), false);
 			} else {
-				old.setTypeIdAndData(oldInfo.getTypeId(), oldInfo.getRawData(),
-						false);
+				oldInfo.update(true, false);
 			}
 		}
 		if (!canPlace.isCancelled()) {
