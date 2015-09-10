@@ -169,7 +169,7 @@ tools:
     recursiveHorizontalMax: 16
     recursiveVerticalMax: 40
     radiusSphere: 2.5
-    onlyAllow: [17,18, 106]
+    onlyAllow: [17, 18, 106, 161, 162]
     stopOverwrite: []
   tree:
     possible: []
