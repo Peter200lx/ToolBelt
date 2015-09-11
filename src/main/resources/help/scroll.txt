@@ -18,7 +18,7 @@ tools:
     scroll: 352 # BONE
   global:
     onlyAllow: []
-    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119, 137]
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119, 137, 193, 194, 195, 196, 197]
   scroll:
     onlyAllow: []
     stopOverwrite: []

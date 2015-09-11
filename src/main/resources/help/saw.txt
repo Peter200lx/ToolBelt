@@ -34,10 +34,10 @@ tools:
     saw: 286    # GOLD_AXE
   global:
     onlyAllow: []
-    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119, 137]
+    stopOverwrite: [7, 8, 9, 10, 11, 64, 71, 90, 119, 137, 193, 194, 195, 196, 197]
   saw:
     recursiveHorizontalMax: 16
     recursiveVerticalMax: 40
     radiusSphere: 2.5
-    onlyAllow: [17,18, 106]
+    onlyAllow: [17, 18, 106, 161, 162]
     stopOverwrite: []
